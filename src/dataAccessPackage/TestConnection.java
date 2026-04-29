@@ -7,12 +7,12 @@ public class TestConnection {
 
     public static void main(String[] args) {
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
-
+        try {
+            Connection connection = DatabaseConnection.getInstance();
             System.out.println("Connexion réussie à la base de données !");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Erreur de connexion : " + e.getMessage());
         }
     }
 }
