@@ -1,0 +1,8 @@
+package exceptionPackage;
+
+public class InvalidPasswordException extends Exception {
+  public InvalidPasswordException(String message) {
+    super(message);
+    // pas de wrongValue → on ne stocke pas le mot de passe en clair !
+  }
+}

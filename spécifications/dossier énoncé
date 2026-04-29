@@ -1,0 +1,608 @@
+Programmation orienté objet avancée
+Dossier d’énoncé du projet de Java
+
+
+
+Vous devez remplir chacune des zones bleues encadrées dans le document et soumettre ce dossier à votre professeur de labo pour acceptation. Le dossier doit être validé pour fin mars au plus tard !
+
+
+
+UE Projet informatique intégré
+1	Identification des étudiants du groupe
+1.1	Etudiant 1
+Prénom et nom :
+Mat LOUIS
+Bloc (1, 2 ou 3 ?) N.B. Si vous avez encore des UE du bloc 1 dans le PAE  bloc 1 :
+2
+Groupe de labo Java choisi en bloc 2 (A ou B ?) :
+B
+
+
+1.2	Etudiant 2
+Prénom et nom :
+Ethan BAR
+Bloc (1, 2 ou 3 ?) N.B. Si vous avez encore des UE du bloc 1 dans le PAE  bloc 1 :
+2
+Groupe de labo Java choisi en bloc 2 (A ou B ?) :
+B
+
+
+2	Domaine d’application
+2.1	Sujet
+Gestion d’une salle de sport
+
+2.2	Description du domaine d’application
+Cette application permet de gérer une salle de sport et centralise les informations liées aux membres, aux coachs, aux séances, aux paiements, rendez-vous et administrateurs.
+Elle permet d’enregistrer les différents utilisateurs : membres, coachs ou administrateurs, qui sont tous des personnes partageant les mêmes types d’informations tel que le prénom, le nom, etc.
+Le système gère les abonnements proposés par la salle et définit pour chacun les installations auxquelles le membre a accès. Il garde également l'historique des paiements de chaque membre.
+Les coachs peuvent renseigner leurs créneaux de disponibilité. Les membres peuvent alors prendre un rendez-vous sur un créneau libre avec un coach de leur choix, en précisant un objectif et une salle si nécessaire.
+Les rendez-vous possèdent un statut permettant de suivre son évolution (en attente, confirmé, annulé). Le système prend également en charge le parrainage entre membres : un membre peut parrainer un ou plusieurs autres membres, chaque membre ne pouvant avoir qu'un seul parrain.
+L'objectif de l'application est ainsi de faciliter à la fois la gestion administrative de la salle et le suivi personnalisé de l'activité de chaque membre au quotidien.
+
+
+
+
+3	Base de données
+3.1	Schéma entités-associations
+
+
+
+3.2	Schéma relationnel (tables)
+Pour rappel, les noms de tables et de colonnes doivent être en anglais.
+
+
+
+3.3	Documentation des tables
+Pour chacune des tables, remplissez sa documentation.
+Dupliquez le formulaire de documentation pour chaque table.
+N.B. Dans la description des colonnes :
+- placez une croix dans "Obligatoire" si la colonne est obligatoire ;
+- placez une croix dans "ID" si la colonne est identifiante à elle seule (clé primaire ou secondaire (unique)) ;
+- s’il s’agit d’une colonne clé étrangère, placez une croix dans "FK" et précisez le nom de la table référencée.
+
+
+person
+Nom de la table :
+Définition de la table :
+Table qui répertorie toutes les personnes de la salle de sport (membres, coachs ou admins).
+
+id
+Clé primaire :
+
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+id	Identifiant unique de la personne.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X	X
+
+Nom de colonne	Définition de la colonne
+first_name	Prénom de la personne.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(30)	X
+
+Nom de colonne	Définition de la colonne
+last_name	Nom de famille de la personne.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(50)	X
+
+Nom de colonne	Définition de la colonne
+birth_date	Date de naissance de la personne.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+date	X
+
+
+
+Nom de colonne	Définition de la colonne
+email	Adresse mail (unique) de la personne.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(50)	X
+
+Nom de colonne	Définition de la colonne
+phone	Numéro de téléphone de la personne.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(20)
+
+Nom de colonne	Définition de la colonne
+locker_number	Numéro de casier attribué.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+smallint
+
+Nom de colonne	Définition de la colonne
+username	Nom d’utilisateur unique du compte de la personne.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(50)	X
+
+Nom de colonne	Définition de la colonne
+password	Mot de passe du compte de la personne.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(150)	X
+
+
+room
+Nom de la table :
+Définition de la table :
+Table où sont répertoriés les différentes salles utilisables pour les entrainements des membres premium et VIP avec coach.
+id
+Clé primaire :
+
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+id	Identifiant de la salle.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+tinyint	X	X
+
+Nom de colonne	Définition de la colonne
+name	Nom de la salle.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(30)	X
+
+Nom de colonne	Définition de la colonne
+capacity	Capacité de la salle.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+tinyint	X
+
+
+speciality
+Nom de la table :
+Définition de la table :
+Table qui répertorie les spécialités (sportives) que les coachs maitrise parfaitement / indique leurs domaines (ex : Musculation, yoga, etc).
+
+name
+Clé primaire :
+
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+name	Nom unique de la spécialité.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(25)	X	X
+
+Nom de colonne	Définition de la colonne
+description	Déscription de la spécialité.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(100)	X
+
+
+facility
+Nom de la table :
+Définition de la table :
+Table où sont listés les endroits dédiés au bien être (piscine, sauna, etc).
+
+name
+Clé primaire :
+
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+name	Nom unique de l’endroit.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(50)	X	X
+
+Nom de colonne	Définition de la colonne
+description	Description de l’endroit (Avantages, niveau de l’abonnement requis,…).
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(300)	X
+
+
+subscription
+Nom de la table :
+Définition de la table :
+Table où sont stocké les informations sur les abonnements des membres (niveau, prix, durée).
+id
+Clé primaire :
+
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+id	Clé primaire qui identifie un abonnement.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int 	X	X
+
+Nom de colonne	Définition de la colonne
+tier	Niveau de l’abonnement du membre.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+tinyint	X
+
+Nom de colonne	Définition de la colonne
+price	Prix de l’abonnement.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+decimal(6,2)	X
+
+Nom de colonne	Définition de la colonne
+duration_months	Durée de l’abonnement en mois.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+tinyint	X
+
+
+coach
+Nom de la table :
+Définition de la table :
+Table qui répertorie les coachs de la salle de sport. C’est un sous-type de Person grâce à l’héritage.
+
+person_id
+Clé primaire :
+
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+person_id	Identifiant du coach.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X	X	X	person
+
+Nom de colonne	Définition de la colonne
+has_degree	Indique si le coach a un diplôme (0 = Non et 1 = Oui).
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+bit	X
+
+
+admin
+
+Nom de la table :
+Définition de la table :
+Table répertoriant les administrateurs de la salle de sport. C’est encore un sous-type de Person via l’héritage.
+
+person_id
+Clé primaire :
+
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+person_id	Identifiant de l’admin.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X	X	X	person
+
+Nom de colonne	Définition de la colonne
+access_level	Niveau d’accès de l’admin (0 = standard, 1 = superadmin).
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+bit	X
+
+
+gym_member
+Nom de la table :
+Définition de la table :
+Table où sont stocké toutes les données sur les membres de la salle de sport. Sous-type de Person grâce à l’héritage.
+id
+Clé primaire :
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+person_id	Clé primaire qui identifie le membre.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X	X	X	person
+
+
+Nom de colonne	Définition de la colonne
+is_active	Vérifie si le membre est actif (abonnement actif).
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+bit	X
+
+Nom de colonne	Définition de la colonne
+weight	Poids du membre en kg.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+decimal(5,2)
+
+Nom de colonne	Définition de la colonne
+height	Taille du membre en cm.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+smallint
+
+Nom de colonne	Définition de la colonne
+enrollment	Lien avec la table Subscription vers l’abonnement du membre.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X		X	subscription
+
+
+
+access
+Nom de la table :
+Définition de la table :
+Table indiquant quelles « facilities » sont accessbiles en fonctiuon du tier de l’abonnement.
+
+(subscription_id, facility_name)
+Clé primaire :
+
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+subscription_id	Référence vers l’abonnement.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X	X	X	subscription
+
+Nom de colonne	Définition de la colonne
+facility_name	Référence vers la facility.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(50)	X	X	X	facility
+
+
+qualification
+Nom de la table :
+Définition de la table :
+Table reliant les coachs à leurs spécialités.
+coach_id, speciality_name
+Clé primaire :
+
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+coach_id	Référence vers l’id du coach concerné.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X	X	X	coach
+
+Nom de colonne	Définition de la colonne
+speciality_name	Référence vers la spécialité du coach.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(25)	X	X	X	speciality
+
+
+
+payment
+Nom de la table :
+Table où sont stockés tous les paiements des membres pour leurs abonnements.
+Définition de la table :
+id
+
+Clé primaire :
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+id	Clé primaire qui identifie le paiement.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X	X
+
+Nom de colonne	Définition de la colonne
+amount 	Montant de la transaction.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+decimal(6,2)	X
+
+Nom de colonne	Définition de la colonne
+date_payment 	Date de la transaction.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+date	X
+
+Nom de colonne	Définition de la colonne
+Billing 	Lien avec la table membre (identitée de la personne qui a effectué le paiement).
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X		X	gym_member
+
+sponsorship
+Nom de la table :
+Définition de la table :
+Table répertoriant les parrainages entre membres. Un membre peut parrainer jusqu’à 3 personnes et un membre ne peut être parrainé qu’une seule fois.
+id
+Clé primaire :
+
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+id	Identifiant unique du parrainage.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X	X
+
+Nom de colonne	Définition de la colonne
+sponsor_id	Référence vers le parrain.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X		X	Gym_member
+
+Nom de colonne	Définition de la colonne
+sponsored_id	Référence vers le parrainé.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X		X	Gym_member
+
+Nom de colonne	Définition de la colonne
+start_date	Date de début du parrainage (calcul des réductions).
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+date	X
+
+
+
+coach_availability
+Nom de la table :
+Définition de la table :
+Table qui répertorie les créneaux de disponibilité des coachs.
+
+id
+Clé primaire :
+
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+id	Identifiant unique du créneau.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X	X
+
+Nom de colonne	Définition de la colonne
+person_id	Référence vers le coach.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X		X	coach
+
+Nom de colonne	Définition de la colonne
+available_date	Date du créneau de disponibilité.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+date	X
+
+Nom de colonne	Définition de la colonne
+start_time	Heure de début du créneau.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+time	X
+
+
+
+Nom de colonne	Définition de la colonne
+end_time	Heure de fin du créneau.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+time	X
+
+Nom de colonne	Définition de la colonne
+is_booked	Indique si le créneau est déjà réservé.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+bit	X
+
+
+
+appointment
+Nom de la table :
+Définition de la table :
+Table répertoriant les rendez-vous entre un membre et un coach sur un certain créneau disponible.
+id
+Clé primaire :
+
+Description des colonnes :
+Nom de colonne	Définition de la colonne
+id	Identifiant unique du rendez-vous.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X	X
+
+Nom de colonne	Définition de la colonne
+member_id	Référence vers le membre ayant réservé.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X		X	gym_member
+
+Nom de colonne	Définition de la colonne
+availability_id	Référence vers le créneau réservé.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+int	X		X	coach_availability
+
+Nom de colonne	Définition de la colonne
+objective	Déscription de l’objectif de la séance.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(200)
+
+Nom de colonne	Définition de la colonne
+room_id	Référence vers la salle réservée pour la séance.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+tinyint			X	room
+
+Nom de colonne	Définition de la colonne
+status	Statut du rendez-vous 0 = en attente, 1 = Confirmé, 2 = Annulé coach, 3 = Annulé membre.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+tinyint	X
+
+Nom de colonne	Définition de la colonne
+cancellation_reason	Motif d’annulation si rendez-vous annulé.
+Type(longueur)	Obligatoire	ID	FK	Table référencée
+varchar(200)
+
+
+4	Fonctionnalités
+4.1	CRUD : insertion, listing, modification, suppression
+Vous devez prévoir les fonctionnalités complètes d’administration d’une table de la base de données. Les opérations CRUD (Create, Read, Update et Delete) doivent être faites sur la table qui contient :
+•	des colonnes de types différents (au moins une colonne de type texte, au moins une colonne de type numérique, au moins une colonne de type date et au moins un booléen) ;
+•	plusieurs colonnes facultatives ;
+•	au moins une colonne clé étrangère vers une autre table de la base de données.
+N.B. 4 Fonctionnalités seront donc implémentées sur la table, à savoir le listing du contenu de la table (dans une JTable), un formulaire d’insertion d’une nouvelle ligne dans la table, la suppression d’une ou plusieurs lignes choisie(s) par l’utilisateur et la possibilité de modifier une ligne de la table (en remplissant d’abord les champs du formulaire d’insertion avec les valeurs de la ligne choisie, en permettant ensuite à l’utilisateur de modifier les champs du formulaire et enfin de sauver la ligne ainsi modifiée).
+
+ Nom de la table pour les opérations CRUD :
+gym_member
+
+ Vérification du respect des contraintes :
+ Colonne de type date :
+birth_date (dans person, mais récupéré dans gym_member)
+ Colonne de type booléen :
+is_active (bit)
+ Plusieurs colonnes facultatives :
+- weight
+- height
+- phone
+- locker_number
+ Colonne clé étrangère (précisez vers quelle table) :
+
+enrollment  table subscription
+person_id  table person
+
+4.2	Recherches
+Chaque recherche doit contenir une jointure entre au moins 3 tables.
+Pour chacune des recherches, les sorties doivent être composées de plusieurs lignes, chaque ligne contenant des colonnes provenant d’au moins 3 tables différentes.
+N.B. Les valeurs des critères de recherche ne doivent pas être réaffichées comme colonne dans les lignes de sortie.
+
+4.2.1	Recherche 1
+Objectif de la recherche :
+Lister les rendez-vous d’un membre choisi, entre deux dates sélectionnées avec les infos du coach et de la salle assignée.
+
+
+Description des entrées (introduites par l’utilisateur) :
+Critère de recherche	Format (type de composant Swing)
+Membre 	JComboBox
+Date débiut	JSpinner
+Date fin	JSpinner
+Sorties : colonnes affichées dans une JTable (autres colonnes que les critères de recherche) provenant d’au moins 3 tables différentes :
+Nom de la table 1 	person (coach)
+Nom de colonne provenant de la table 1	first_name
+Nom de colonne provenant de la table 1	last_name
+Nom de colonne provenant de la table 1
+Nom de la table 2 	coach_availability
+Nom de colonne provenant de la table 2	available_date
+Nom de colonne provenant de la table 2	start_time
+Nom de colonne provenant de la table 2	end_time
+Nom de la table 3 	appointment
+Nom de colonne provenant de la table 3	objective
+Nom de colonne provenant de la table 3	status
+Nom de colonne provenant de la table 3
+
+Nom de la table 4	room
+Nom de colonne provenant de la table 4	name
+
+
+4.2.2	Recherche 2
+Objectif de la recherche :
+Lister les membres parrainés par un parrain choisi par l’utilisateur, avec leurs informations personnelles et les détails de leur abonnement.
+
+
+Description des entrées (introduites par l’utilisateur) :
+Critère de recherche	Format (type de composant Swing)
+Parrain	JComboBox
+
+
+Sorties : colonnes affichées dans une JTable (autres colonnes que les critères de recherche) provenant d’au moins 3 tables différentes :
+Nom de la table 1 	person
+Nom de colonne provenant de la table 1	first_name
+Nom de colonne provenant de la table 1	last_name
+Nom de colonne provenant de la table 1	email
+Nom de la table 2 	gym_member
+Nom de colonne provenant de la table 2	is_active
+Nom de colonne provenant de la table 2	weight
+Nom de colonne provenant de la table 2	height
+Nom de la table 3 	subscription
+Nom de colonne provenant de la table 3	tier
+Nom de colonne provenant de la table 3	price
+Nom de colonne provenant de la table 3	duration_months
+
+4.2.3	Recherche 3
+Objectif de la recherche :
+Lister les créneaux disponible des coachs qualifiés dans une spécialité choisie, entre deux dates sélectionnées par l’utilisateur.
+
+
+Description des entrées (introduites par l’utilisateur) :
+Critère de recherche	Format (type de composant Swing)
+Spécialité	JComboBox
+Date de début	JSpinner
+Date de fin	JSpinner
+Sorties : colonnes affichées dans une JTable (autres colonnes que les critères de recherche) provenant d’au moins 3 tables différentes :
+Nom de la table 1 	person
+Nom de colonne provenant de la table 1	first_name
+Nom de colonne provenant de la table 1	last_name
+Nom de colonne provenant de la table 1
+Nom de la table 2 	coach
+Nom de colonne provenant de la table 2	has_degree
+Nom de colonne provenant de la table 2
+Nom de colonne provenant de la table 2
+Nom de la table 3 	coach_availibility
+Nom de colonne provenant de la table 3	available_date
+Nom de colonne provenant de la table 3	start_time
+Nom de colonne provenant de la table 3	end_time
+
+
+4.3	Tâche métier
+Vous devez implémenter une fonctionnalité relative à votre projet autre que les précédentes (exemples : planification, règles métier,…). Cette tâche sera implémentée dans la couche métier (calculs, règles métier…). L’exécution de cette tâche métier peut nécessiter éventuellement l’affichage de plusieurs écrans successifs, l’obtention d’informations auprès de l’utilisateur ou des accès en lecture et/ou écriture à la base de données.
+Cette tâche métier devrait idéalement nécessiter des calculs ou traitements à effectuer dans la couche métier ; elles pourraient ainsi être testées par des JUnit.
+Description de la tâche métier :
+Permettre à un membre de prendre rendez-vous avec un coach qualifié dans une spécialité choisie. La couche métier vérifie que le membre est actif, que le créneau est disponible et qu’il n’a pas déjà un rendez-vous ce jour là. Si toutes ces conditions sont remplies, alors le rendez-vous est enregistré.
+
+
+
+
+
+Entrées (saisies auprès de l’utilisateur) :
+Spécialité souhaitée (JComboBox depuis speciality)
+Plage de dates (JSpinner)
+Créneau sélectionné (Ligne dans une JTable)
+Objectif du rendez-vous (JTextField facultatif)
+
+
+
+4.4	Thread
+Ne prévoyez pas de thread qui nécessite l’accès en base de données !
+Proposez par exemple une animation graphique en rapport avec votre domaine d’application, suffisamment dynamique pour qu’on puisse la tester, la visualiser en l’espace de quelques secondes.
+Description du processus parallèle (autre que l’affichage de l’heure) :
+Le thread affiche en continu dans la fenêtre principale un bandeau de texte défilant horizontalement, présentant des messages d’infos relatifs à la salle de sport tels que « Bienvenue chez (nom de la salle) – « Prenez rendez-vous avec un coach », et d’autres messages comme « Fermeture exceptionnelle le 20/04 » etc. Ce bandeau servira donc également pour la communication spontanée/journalière.
+
+Il tournera en continu en arrière-plan dès le lancement de l’application, indépendamment de toute interaction utilisateur, et ne nécessite aucun accès en BD.
+
