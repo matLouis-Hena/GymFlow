@@ -20,6 +20,10 @@ public class Coach extends Person {
         this.has_degree = has_degree;
     }
 
-    public Boolean getHas_degree() { return has_degree; }
-    public void setHas_degree(Boolean has_degree) { this.has_degree = has_degree; }
+    public Boolean getHas_degree() {
+        return has_degree;
+    }
+    public void setHas_degree(Boolean has_degree) {
+        this.has_degree = has_degree;
+    }
 }

@@ -1,7 +1,6 @@
 package modelPackage;
 
-import exceptionPackage.InvalidDurationException;
-import exceptionPackage.InvalidPriceException;
+import exceptionPackage.*;
 
 public class Subscription {
     private int id;

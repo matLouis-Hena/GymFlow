@@ -1,14 +1,6 @@
 package modelPackage;
 
-import exceptionPackage.InvalidFirstNameException;
-import exceptionPackage.InvalidLastNameException;
-import exceptionPackage.InvalidGenderException;
-import exceptionPackage.InvalidEmailException;
-import exceptionPackage.InvalidPhoneException;
-import exceptionPackage.InvalidLockerNumberException;
-import exceptionPackage.InvalidUsernameException;
-import exceptionPackage.InvalidPasswordException;
-
+import exceptionPackage.*;
 import java.time.LocalDate;
 
 public class Person {

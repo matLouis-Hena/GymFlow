@@ -6,6 +6,7 @@ public class InvalidGenderException extends Exception {
         super(message);
         this.wrongGender = wrongGender;
     }
+
     public char getWrongGender() {
         return wrongGender;
     }

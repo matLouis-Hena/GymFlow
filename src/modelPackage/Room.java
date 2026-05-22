@@ -1,5 +1,7 @@
 package modelPackage;
 
+import exceptionPackage.*;
+
 public class Room {
     private int id;
     private String name;
@@ -20,7 +22,10 @@ public class Room {
         this.name = name;
     }
 
-    public void setCapacity(int capacity) {
+    public void setCapacity(int capacity) throws InvalidCapacityException {
+        if (capacity <= 0) {
+            throw new InvalidCapacityException(capacity, "La capacité doit être supérieure à 0");
+        }
         this.capacity = capacity;
     }
 }

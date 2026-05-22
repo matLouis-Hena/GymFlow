@@ -28,5 +28,7 @@ public class Admin extends Person {
         this.accessLevel = accessLevel;
     }
 
-    public AccessLevel getAccessLevel() { return accessLevel; }
+    public AccessLevel getAccessLevel() {
+        return accessLevel;
+    }
 }

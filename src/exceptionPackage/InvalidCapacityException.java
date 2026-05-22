@@ -1,8 +1,8 @@
 package exceptionPackage;
 
-public class InvalidLockerNumberException extends Exception {
+public class InvalidCapacityException extends RuntimeException {
     private int wrongValue;
-    public InvalidLockerNumberException(int wrongValue, String message) {
+    public InvalidCapacityException(int wrongValue, String message) {
         super(message);
         this.wrongValue = wrongValue;
     }
