@@ -6,6 +6,7 @@ public class InvalidEmailException extends Exception {
         super(message);
         this.wrongValue = wrongValue;
     }
+
     public String getWrongValue() {
         return wrongValue;
     }
