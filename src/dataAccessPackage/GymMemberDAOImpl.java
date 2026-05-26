@@ -1,6 +1,7 @@
 package dataAccessPackage;
 
 import exceptionPackage.DataAccessException;
+import modelPackage.Gender;
 import modelPackage.GymMember;
 import modelPackage.Person;
 import modelPackage.Subscription;
@@ -86,7 +87,9 @@ public class GymMemberDAOImpl implements GymMemberDAO {
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getDate("birth_date").toLocalDate(),
-                        rs.getString("gender").charAt(0),
+                        Gender.fromDatabaseValue(
+                                rs.getString("gender")
+                        ),
                         rs.getString("email"),
                         rs.getString("phone"),
                         (Integer) rs.getObject("locker_number"),
@@ -144,7 +147,9 @@ public class GymMemberDAOImpl implements GymMemberDAO {
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getDate("birth_date").toLocalDate(),
-                        rs.getString("gender").charAt(0),
+                        Gender.fromDatabaseValue(
+                                rs.getString("gender")
+                        ),
                         rs.getString("email"),
                         rs.getString("phone"),
                         (Integer) rs.getObject("locker_number"),
