@@ -10,7 +10,7 @@ public class GymMember extends Person {
     private Integer height;
     private Subscription enrollment;
 
-    public GymMember(int id, String firstName, String lastName, LocalDate birthDate, char gender, String email, String phone, Integer lockerNumber, String username, String password,
+    public GymMember(int id, String firstName, String lastName, LocalDate birthDate, Gender gender, String email, String phone, Integer lockerNumber, String username, String password,
                      boolean isActive, Double weight, Integer height, Subscription enrollment)
             throws InvalidFirstNameException, InvalidLastNameException, InvalidGenderException, InvalidEmailException, InvalidPhoneException, InvalidLockerNumberException, InvalidUsernameException, InvalidPasswordException, InvalidWeightException, InvalidHeightException {
         super(id, firstName, lastName, birthDate, gender, email, phone, lockerNumber, username, password);
