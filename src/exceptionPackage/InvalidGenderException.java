@@ -1,14 +1,15 @@
 package exceptionPackage;
 
-public class InvalidGenderException extends Exception {
-    private char wrongGender;
+import modelPackage.Gender;
 
-    public InvalidGenderException(char wrongGender, String message) {
+public class InvalidGenderException extends Exception {
+    private Gender wrongGender;
+    public InvalidGenderException(Gender wrongGender, String message) {
         super(message);
         this.wrongGender = wrongGender;
     }
 
-    public char getWrongGender() {
+    public Gender getWrongGender() {
         return wrongGender;
     }
 }

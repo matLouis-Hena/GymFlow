@@ -41,7 +41,7 @@ public class GymMember extends Person {
     }
 
     public void setWeight(Double weight) throws InvalidWeightException {
-        if (weight != null && weight <= 0) {
+        if (weight == null || weight <= 0) {
             String message = "La valeur " + weight + " proposée pour le poids est invalide (doit être > 0)";
             throw new InvalidWeightException(weight, message);
         }
@@ -49,7 +49,7 @@ public class GymMember extends Person {
     }
 
     public void setHeight(Integer height) throws InvalidHeightException {
-        if (height != null && height <= 0) {
+        if (height == null || height <= 0) {
             String message = "La valeur " + height + " proposée pour la taille est invalide (doit être > 0)";
             throw new InvalidHeightException(height, message);
         }

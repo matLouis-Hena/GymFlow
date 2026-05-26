@@ -21,8 +21,8 @@ public class DatabaseConnection {
                         .getResourceAsStream("db.properties");
                 props.load(input);
 
-                String url      = props.getProperty("db.url");
-                String user     = props.getProperty("db.user");
+                String url = props.getProperty("db.url");
+                String user = props.getProperty("db.user");
                 String password = props.getProperty("db.password");
 
                 instance = DriverManager.getConnection(url, user, password);

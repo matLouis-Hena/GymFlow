@@ -8,14 +8,14 @@ public class Person {
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
-    private char gender;
+    private Gender gender;
     private String email;
     private String phone;
     private Integer lockerNumber;
     private String username;
     private String password;
 
-    public Person(int id, String firstName, String lastName, LocalDate birthDate, char gender, String email, String phone, Integer lockerNumber, String username, String password)
+    public Person(int id, String firstName, String lastName, LocalDate birthDate, Gender gender, String email, String phone, Integer lockerNumber, String username, String password)
             throws InvalidFirstNameException, InvalidLastNameException, InvalidGenderException, InvalidEmailException, InvalidPhoneException, InvalidLockerNumberException, InvalidUsernameException, InvalidPasswordException {
         this.id = id;
         setFirstName(firstName);
@@ -85,17 +85,26 @@ public class Person {
         this.lastName = lastName;
     }
 
+    public void setGender(Gender gender) throws InvalidGenderException, InvalidPhoneException, InvalidEmailException, InvalidPasswordException, InvalidUsernameException, InvalidLockerNumberException {
+        if(gender == null) {
+            throw new InvalidGenderException(
+                    null,
+                    "Le genre est obligatoire"
+            );
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
-    public void setGender(char gender) throws InvalidGenderException {
-        if (gender != 'm' && gender != 'f' && gender != 'x') {
-            String message = "La valeur " + gender + " proposée pour le genre est invalide (valeurs acceptées : m, f, x)";
-            throw new InvalidGenderException(gender, message);
+    public void setGender(Gender gender) throws InvalidGenderException {
+        if(gender == null) {
+            throw new InvalidGenderException(
+                    null,
+                    "Le genre est obligatoire"
+            );
         }
         this.gender = gender;
     }
+
 
     public void setEmail(String email) throws InvalidEmailException {
         if (email == null || !email.matches("^[\\w\\-\\.]+@([\\w-]+\\.)+[\\w-]{2,}$")) {
