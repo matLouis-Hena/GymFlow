@@ -13,6 +13,14 @@ public enum AccessLevel {
         this.description = description;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public static AccessLevel fromString(String name) {
         try {
             return AccessLevel.valueOf(name.toUpperCase());

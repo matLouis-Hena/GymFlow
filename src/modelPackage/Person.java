@@ -20,7 +20,7 @@ public class Person {
         this.id = id;
         setFirstName(firstName);
         setLastName(lastName);
-        this.birthDate = birthDate;
+        setBirthDate(birthDate);
         setGender(gender);
         setEmail(email);
         setPhone(phone);
@@ -29,10 +29,49 @@ public class Person {
         setPassword(password);
     }
 
-    // Setters
+    public int getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public char getGender() {
+        return gender;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public Integer getLockerNumber() {
+        return lockerNumber;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     public void setFirstName(String firstName) throws InvalidFirstNameException {
         if (firstName == null || firstName.trim().isEmpty()) {
-            String message = "Le prénom de peut pas être vide !";
+            String message = "Le prénom ne peut pas être vide !";
             throw new InvalidFirstNameException(firstName, message);
         }
         this.firstName = firstName;
@@ -46,6 +85,10 @@ public class Person {
         this.lastName = lastName;
     }
 
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
     public void setGender(char gender) throws InvalidGenderException {
         if (gender != 'm' && gender != 'f' && gender != 'x') {
             String message = "La valeur " + gender + " proposée pour le genre est invalide (valeurs acceptées : m, f, x)";
@@ -55,7 +98,7 @@ public class Person {
     }
 
     public void setEmail(String email) throws InvalidEmailException {
-        if (email == null || !email.contains("@") || !email.contains(".")) {
+        if (email == null || !email.matches("^[\\w\\-\\.]+@([\\w-]+\\.)+[\\w-]{2,}$")) {
             String message = "La valeur " + email + " proposée pour l'email est invalide";
             throw new InvalidEmailException(email, message);
         }
@@ -63,9 +106,15 @@ public class Person {
     }
 
     public void setPhone(String phone) throws InvalidPhoneException {
-        if (phone != null && !phone.matches("[0-9+\\s]{7,20}")) {
-            String message = "La valeur " + phone + " proposée pour le numéro de téléphone est invalide";
-            throw new InvalidPhoneException(phone, message);
+        if (phone != null) {
+            // Conversion automatique 0 → +32
+            if (phone.startsWith("0")) {
+                phone = "+32" + phone.substring(1);
+            }
+            if (!phone.matches("^\\+324[56789]\\d{7}$")) {
+                String message = "La valeur " + phone + " proposée pour le numéro de téléphone est invalide";
+                throw new InvalidPhoneException(phone, message);
+            }
         }
         this.phone = phone;
     }
@@ -92,15 +141,5 @@ public class Person {
             throw new InvalidPasswordException(message);
         }
         this.password = password;
-    }
-
-    // Getters
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
     }
 }

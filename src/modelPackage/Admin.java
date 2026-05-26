@@ -20,15 +20,14 @@ public class Admin extends Person {
         setAccessLevel(accessLevel);
     }
 
-    public void setAccessLevel(AccessLevel accessLevel) {
-        if (accessLevel == null) {
-            String message = "Le niveau d'accès ne peut pas être null";
-            throw new IllegalArgumentException(message);
-        }
-        this.accessLevel = accessLevel;
-    }
-
     public AccessLevel getAccessLevel() {
         return accessLevel;
+    }
+
+    public void setAccessLevel(AccessLevel accessLevel) {
+        if (accessLevel == null) {
+            throw new IllegalArgumentException("Le niveau d'accès ne peut pas être null");
+        }
+        this.accessLevel = accessLevel;
     }
 }

@@ -16,6 +16,22 @@ public class Subscription {
         setDurationMonths(durationMonths);
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getTier() {
+        return tier;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getDurationMonths() {
+        return durationMonths;
+    }
+
     public void setPrice(double price) throws InvalidPriceException {
         if (price <= 0) {
             throw new InvalidPriceException(price, "Le prix doit être supérieur à 0");

@@ -2,6 +2,7 @@ package exceptionPackage;
 
 public class InvalidWeightException extends Exception {
     private double wrongValue;
+
     public InvalidWeightException(double wrongValue, String message) {
         super(message);
         this.wrongValue = wrongValue;

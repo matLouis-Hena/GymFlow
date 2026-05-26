@@ -11,24 +11,58 @@ public class Appointment {
 
     public Appointment(int id, GymMember member, CoachAvailability availability, String objective, Room room, AppointmentStatus status, String cancellationReason) {
         this.id = id;
-        this.member = member;
-        this.availability = availability;
+        setMember(member);
+        setAvailability(availability);
         this.objective = objective;
         this.room = room;
         setStatus(status);
-        this.cancellationReason = cancellationReason;
+        setCancellationReason(cancellationReason);
     }
 
-    // Setters
+    public int getId() {
+        return id;
+    }
+
+    public GymMember getMember() {
+        return member;
+    }
+
+    public CoachAvailability getAvailability() {
+        return availability;
+    }
+
+    public String getObjective() {
+        return objective;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public AppointmentStatus getStatus() {
+        return status;
+    }
+
+    public String getCancellationReason() {
+        return cancellationReason;
+    }
+
+
     public void setId(int id) {
         this.id = id;
     }
 
     public void setMember(GymMember member) {
+        if (member == null) {
+            throw new IllegalArgumentException("Le membre ne peut pas être null");
+        }
         this.member = member;
     }
 
     public void setAvailability(CoachAvailability availability) {
+        if (availability == null) {
+            throw new IllegalArgumentException("La disponibilité ne peut pas être null");
+        }
         this.availability = availability;
     }
 
@@ -48,6 +82,11 @@ public class Appointment {
     }
 
     public void setCancellationReason(String cancellationReason) {
+        if ((this.status == AppointmentStatus.CANCELLED_BY_COACH
+                || this.status == AppointmentStatus.CANCELLED_BY_MEMBER)
+                && (cancellationReason == null || cancellationReason.trim().isEmpty())) {
+            throw new IllegalArgumentException("Une raison d'annulation est obligatoire si le rendez-vous est annulé");
+        }
         this.cancellationReason = cancellationReason;
     }
 }

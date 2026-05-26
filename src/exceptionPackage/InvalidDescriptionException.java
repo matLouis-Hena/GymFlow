@@ -1,9 +1,9 @@
 package exceptionPackage;
 
-public class InvalidUsernameException extends Exception {
+public class InvalidDescriptionException extends Exception {
     private String wrongValue;
 
-    public InvalidUsernameException(String wrongValue, String message) {
+    public InvalidDescriptionException(String wrongValue, String message) {
         super(message);
         this.wrongValue = wrongValue;
     }

@@ -10,25 +10,38 @@ public class Payment {
 
     public Payment(int id, double amount, LocalDate datePayment, GymMember billing) {
         this.id = id;
-        this.amount = amount;
-        this.datePayment = datePayment;
-        this.billing = billing;
+        setAmount(amount);
+        this.datePayment = LocalDate.now();
+        setBilling(billing);
     }
 
-    // Setters
-    public void setId(int id) {
-        this.id = id;
+    public int getId() {
+        return id;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public LocalDate getDatePayment() {
+        return datePayment;
+    }
+
+    public GymMember getBilling() {
+        return billing;
     }
 
     public void setAmount(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Le montant doit être supérieur à 0");
+        }
         this.amount = amount;
     }
 
-    public void setDatePayment(LocalDate datePayment) {
-        this.datePayment = datePayment;
-    }
-
     public void setBilling(GymMember billing) {
+        if (billing == null) {
+            throw new IllegalArgumentException("Le membre ne peut pas être null");
+        }
         this.billing = billing;
     }
 }

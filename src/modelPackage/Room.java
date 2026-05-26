@@ -7,18 +7,28 @@ public class Room {
     private String name;
     private int capacity;
 
-    public Room(int id, String name, int capacity) {
+    public Room(int id, String name, int capacity) throws InvalidCapacityException, InvalidNameException {
         this.id = id;
-        this.name = name;
-        this.capacity = capacity;
+        setName(name);
+        setCapacity(capacity);
     }
 
-    // Setters
-    public void setId(int id) {
-        this.id = id;
+    public int getId() {
+        return id;
     }
 
-    public void setName(String name) {
+    public String getName() {
+        return name;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setName(String name) throws InvalidNameException {
+        if (name == null || name.trim().isEmpty()) {
+            throw new InvalidNameException(name, "Le nom de la salle ne peut pas être vide");
+        }
         this.name = name;
     }
 
