@@ -1,6 +1,7 @@
 package dataAccessPackage;
 
 import exceptionPackage.DataAccessException;
+import modelPackage.Gender;
 import modelPackage.Person;
 
 import java.sql.*;
@@ -88,7 +89,9 @@ public class PersonDAOImpl implements PersonDAO {
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getDate("birth_date").toLocalDate(),
-                        rs.getString("gender").charAt(0),
+                        Gender.fromDatabaseValue(
+                                rs.getString("gender")
+                        ),
                         rs.getString("email"),
                         rs.getString("phone"),
                         (Integer) rs.getObject("locker_number"),
@@ -134,7 +137,9 @@ public class PersonDAOImpl implements PersonDAO {
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getDate("birth_date").toLocalDate(),
-                        rs.getString("gender").charAt(0),
+                        Gender.fromDatabaseValue(
+                                rs.getString("gender")
+                        ),
                         rs.getString("email"),
                         rs.getString("phone"),
                         (Integer) rs.getObject("locker_number"),
