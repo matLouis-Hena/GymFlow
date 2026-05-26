@@ -8,14 +8,14 @@ public class Person {
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
-    private char gender;
+    private Gender gender;
     private String email;
     private String phone;
     private Integer lockerNumber;
     private String username;
     private String password;
 
-    public Person(int id, String firstName, String lastName, LocalDate birthDate, char gender, String email, String phone, Integer lockerNumber, String username, String password)
+    public Person(int id, String firstName, String lastName, LocalDate birthDate, Gender gender, String email, String phone, Integer lockerNumber, String username, String password)
             throws InvalidFirstNameException, InvalidLastNameException, InvalidGenderException, InvalidEmailException, InvalidPhoneException, InvalidLockerNumberException, InvalidUsernameException, InvalidPasswordException {
         this.id = id;
         setFirstName(firstName);
@@ -29,7 +29,6 @@ public class Person {
         setPassword(password);
     }
 
-    // Setters
     public void setFirstName(String firstName) throws InvalidFirstNameException {
         if (firstName == null || firstName.trim().isEmpty()) {
             String message = "Le prénom de peut pas être vide !";
@@ -46,10 +45,12 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public void setGender(char gender) throws InvalidGenderException {
-        if (gender != 'm' && gender != 'f' && gender != 'x') {
-            String message = "La valeur " + gender + " proposée pour le genre est invalide (valeurs acceptées : m, f, x)";
-            throw new InvalidGenderException(gender, message);
+    public void setGender(Gender gender) throws InvalidGenderException {
+        if(gender == null) {
+            throw new InvalidGenderException(
+                    null,
+                    "Le genre est obligatoire"
+            );
         }
         this.gender = gender;
     }
@@ -94,7 +95,9 @@ public class Person {
         this.password = password;
     }
 
-    // Getters
+    public int getId() {
+        return id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -102,5 +105,33 @@ public class Person {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public Integer getLockerNumber() {
+        return lockerNumber;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

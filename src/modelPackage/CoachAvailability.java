@@ -12,15 +12,14 @@ public class CoachAvailability {
     private Coach coach;
 
     public CoachAvailability(int id, LocalDate availableDate, Time startTime, Time endTime, Boolean isBooked, Coach coach) {
-        this.id = id;
-        this.availableDate = availableDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.isBooked = isBooked;
-        this.coach = coach;
+        setId(id);
+        setAvailableDate(availableDate);
+        setStartTime(startTime);
+        setEndTime(endTime);
+        setIsBooked(isBooked);
+        setCoach(coach);
     }
 
-    // Setters
     public void setId(int id) {
         this.id = id;
     }

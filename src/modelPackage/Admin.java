@@ -7,7 +7,7 @@ public class Admin extends Person {
     private AccessLevel accessLevel;
 
     public Admin(int id, String firstName, String lastName, LocalDate birthDate,
-                 char gender, String email, String phone, Integer lockerNumber,
+                 Gender gender, String email, String phone, Integer lockerNumber,
                  String username, String password,
                  AccessLevel accessLevel)
             throws InvalidFirstNameException, InvalidLastNameException,
