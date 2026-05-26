@@ -2,9 +2,9 @@ package modelPackage;
 
 public enum Gender {
 
-    Masculin("M"),
-    Feminin("F"),
-    Autre("Other");
+    Male("Masculin"),
+    Female("Féminin"),
+    Other("Autre");
 
     private final String databaseValue;
 

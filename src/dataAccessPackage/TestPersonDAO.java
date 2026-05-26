@@ -1,6 +1,7 @@
 package dataAccessPackage;
 
 import exceptionPackage.*;
+import modelPackage.Gender;
 import modelPackage.Person;
 
 import java.time.LocalDate;
@@ -17,7 +18,7 @@ public class TestPersonDAO {
                     "Mat",
                     "Test",
                     LocalDate.of(2000,1,1),
-                    'm',
+                    Gender.Male,
                     "mat@test.com",
                     null,
                     null,
@@ -30,7 +31,7 @@ public class TestPersonDAO {
                     "Ethan",
                     "Test",
                     LocalDate.of(1998,5,10),
-                    'm',
+                    Gender.Male,
                     "ethan@test.com",
                     "+32499999999",
                     12,

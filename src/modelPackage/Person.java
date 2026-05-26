@@ -45,7 +45,7 @@ public class Person {
         return birthDate;
     }
 
-    public char getGender() {
+    public Gender getGender() {
         return gender;
     }
 
@@ -85,12 +85,6 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public void setGender(Gender gender) throws InvalidGenderException, InvalidPhoneException, InvalidEmailException, InvalidPasswordException, InvalidUsernameException, InvalidLockerNumberException {
-        if(gender == null) {
-            throw new InvalidGenderException(
-                    null,
-                    "Le genre est obligatoire"
-            );
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
@@ -104,7 +98,6 @@ public class Person {
         }
         this.gender = gender;
     }
-
 
     public void setEmail(String email) throws InvalidEmailException {
         if (email == null || !email.matches("^[\\w\\-\\.]+@([\\w-]+\\.)+[\\w-]{2,}$")) {
