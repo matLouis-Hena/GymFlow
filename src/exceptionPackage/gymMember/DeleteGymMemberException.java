@@ -1,9 +1,9 @@
-package exceptionPackage;
+package exceptionPackage.gymMember;
 
-public class InvalidCapacityException extends Exception {
+public class DeleteGymMemberException extends Exception {
     private int wrongValue;
 
-    public InvalidCapacityException(int wrongValue, String message) {
+    public DeleteGymMemberException(int wrongValue, String message) {
         super(message);
         this.wrongValue = wrongValue;
     }

@@ -8,7 +8,7 @@ public class TestConnection {
     public static void main(String[] args) {
 
         try {
-            Connection connection = DatabaseConnection.getInstance();
+            Connection connection = SingletonConnection.getInstance();
             System.out.println("Connexion réussie à la base de données !");
 
         } catch (SQLException e) {

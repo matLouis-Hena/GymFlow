@@ -42,7 +42,7 @@ public class PersonDAOImpl implements PersonDAO {
     private final Connection connection;
 
     public PersonDAOImpl() throws SQLException {
-        connection = DatabaseConnection.getInstance();
+        connection = SingletonConnection.getInstance();
     }
 
     @Override
