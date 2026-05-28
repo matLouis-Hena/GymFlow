@@ -17,7 +17,7 @@ public class Test {
                     "Bob",
                     "Martin",
                     LocalDate.of(1990, 7, 20),
-                    Gender.Male,
+                    Gender.MALE,
                     "emailsansarobase",   //  email invalide
                     "+32498000000",
                     5,
