@@ -1,6 +1,7 @@
 package modelPackage;
 
-import exceptionPackage.*;
+import exceptionPackage.validation.InvalidCapacityException;
+import exceptionPackage.validation.InvalidNameException;
 
 public class Room {
     private int id;

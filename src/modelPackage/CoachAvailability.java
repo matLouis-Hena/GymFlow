@@ -2,7 +2,9 @@ package modelPackage;
 
 import java.sql.Time;
 import java.time.LocalDate;
-import exceptionPackage.*;
+
+import exceptionPackage.validation.InvalidDateException;
+import exceptionPackage.validation.InvalidTimeException;
 
 public class CoachAvailability {
     private int id;

@@ -1,14 +1,14 @@
 package dataAccessPackage.personDataAccess;
 
 import dataAccessPackage.SingletonConnection;
-import exceptionPackage.InvalidEmailException;
-import exceptionPackage.InvalidFirstNameException;
-import exceptionPackage.InvalidGenderException;
-import exceptionPackage.InvalidLastNameException;
-import exceptionPackage.InvalidLockerNumberException;
-import exceptionPackage.InvalidPasswordException;
-import exceptionPackage.InvalidPhoneException;
-import exceptionPackage.InvalidUsernameException;
+import exceptionPackage.validation.InvalidEmailException;
+import exceptionPackage.validation.InvalidFirstNameException;
+import exceptionPackage.validation.InvalidGenderException;
+import exceptionPackage.validation.InvalidLastNameException;
+import exceptionPackage.validation.InvalidLockerNumberException;
+import exceptionPackage.validation.InvalidPasswordException;
+import exceptionPackage.validation.InvalidPhoneException;
+import exceptionPackage.validation.InvalidUsernameException;
 import exceptionPackage.person.AddPersonException;
 import exceptionPackage.person.DeletePersonException;
 import exceptionPackage.person.ReadPersonException;

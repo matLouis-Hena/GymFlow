@@ -45,7 +45,7 @@ public class GymMemberController {
         }
 
         try {
-            gymMemberManager.deleteMember(member.getId());
+            gymMemberManager.deleteMemberWithDependencies(member.getId());
             mainView.showInformationMessage("Membre supprimé avec succès.");
             showMembers();
         } catch (Exception exception) {

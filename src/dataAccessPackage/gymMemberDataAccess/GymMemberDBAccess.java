@@ -1,8 +1,8 @@
 package dataAccessPackage.gymMemberDataAccess;
 
 import dataAccessPackage.SingletonConnection;
-import exceptionPackage.*;
 import exceptionPackage.gymMember.*;
+import exceptionPackage.validation.*;
 import modelPackage.Gender;
 import modelPackage.GymMember;
 import modelPackage.Subscription;

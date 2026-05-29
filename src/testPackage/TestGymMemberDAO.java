@@ -18,8 +18,6 @@ public class TestGymMemberDAO {
         int insertedMemberId = -1;
 
         try {
-            String unique = String.valueOf(System.currentTimeMillis());
-
             Subscription subscription = new Subscription(
                     0,
                     SubscriptionType.BASIC,
@@ -32,10 +30,10 @@ public class TestGymMemberDAO {
                     "Gym",
                     LocalDate.of(2000, 1, 1),
                     Gender.MALE,
-                    "matgym" + unique + "@test.com",
+                    "matgyms@test.com",
                     null,
                     null,
-                    "matgym" + unique,
+                    "matgyms",
                     "password123",
                     true,
                     72.5,

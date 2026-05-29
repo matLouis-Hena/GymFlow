@@ -1,0 +1,25 @@
+package dataAccessPackage.coachAvailabilityDataAccess;
+
+import exceptionPackage.coachAvailability.ReadCoachAvailabilityException;
+import exceptionPackage.coachAvailability.UpdateCoachAvailabilityException;
+import modelPackage.CoachAvailability;
+
+import java.time.LocalDate;
+import java.util.List;
+
+public interface ICoachAvailabilityDA {
+
+    List<CoachAvailability> getAll() throws ReadCoachAvailabilityException;
+
+    CoachAvailability getById(int id) throws ReadCoachAvailabilityException;
+
+    List<CoachAvailability> getAvailableBySpecialityAndDateRange(
+            String specialityName,
+            LocalDate startDate,
+            LocalDate endDate
+    ) throws ReadCoachAvailabilityException;
+
+    void markAsBooked(int id) throws UpdateCoachAvailabilityException;
+
+    void markAsAvailable(int id) throws UpdateCoachAvailabilityException;
+}

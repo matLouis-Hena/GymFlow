@@ -1,6 +1,7 @@
 package modelPackage;
 
-import exceptionPackage.*;
+import exceptionPackage.validation.*;
+
 import java.time.LocalDate;
 
 public class Person {
