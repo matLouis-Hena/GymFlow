@@ -78,13 +78,10 @@ public class GymMemberController {
             mainView.showInformationMessage("Membre ajoute avec succes.");
             showMembers();
         } catch (
-                AddGymMemberException |
-                DuplicateGymMemberException |
-                ReadGymMemberException exception
+                AddGymMemberException | DuplicateGymMemberException | ReadGymMemberException |
+                AddSponsorshipException exception
         ) {
             mainView.showErrorMessage(exception.getMessage());
-        } catch (AddSponsorshipException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -101,13 +98,10 @@ public class GymMemberController {
             mainView.setConnectedUserRole(UserRole.MEMBER_WITH_SUBSCRIPTION);
             mainView.showWelcomeMessage();
         } catch (
-                AddGymMemberException |
-                DuplicateGymMemberException |
-                ReadGymMemberException exception
+                AddGymMemberException | DuplicateGymMemberException | ReadGymMemberException |
+                AddSponsorshipException exception
         ) {
             mainView.showErrorMessage(exception.getMessage());
-        } catch (AddSponsorshipException e) {
-            throw new RuntimeException(e);
         }
     }
 

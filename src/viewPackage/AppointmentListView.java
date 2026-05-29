@@ -67,9 +67,19 @@ public class AppointmentListView {
                 new SimpleStringProperty(String.valueOf(cellData.getValue().getAvailability().getStartTime()))
         );
 
+        TableColumn<Appointment, String> endColumn = new TableColumn<>("Fin");
+        endColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(String.valueOf(cellData.getValue().getAvailability().getEndTime()))
+        );
+
         TableColumn<Appointment, String> roomColumn = new TableColumn<>("Salle");
         roomColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(getRoomName(cellData.getValue()))
+        );
+
+        TableColumn<Appointment, String> objectiveColumn = new TableColumn<>("Objectif");
+        objectiveColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(getObjective(cellData.getValue()))
         );
 
         TableColumn<Appointment, String> statusColumn = new TableColumn<>("Statut");
@@ -77,13 +87,21 @@ public class AppointmentListView {
                 new SimpleStringProperty(String.valueOf(cellData.getValue().getStatus()))
         );
 
+        TableColumn<Appointment, String> cancellationReasonColumn = new TableColumn<>("Motif annulation");
+        cancellationReasonColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(getCancellationReason(cellData.getValue()))
+        );
+
         appointmentTable.getColumns().add(idColumn);
         appointmentTable.getColumns().add(memberColumn);
         appointmentTable.getColumns().add(coachColumn);
         appointmentTable.getColumns().add(dateColumn);
         appointmentTable.getColumns().add(startColumn);
+        appointmentTable.getColumns().add(endColumn);
         appointmentTable.getColumns().add(roomColumn);
+        appointmentTable.getColumns().add(objectiveColumn);
         appointmentTable.getColumns().add(statusColumn);
+        appointmentTable.getColumns().add(cancellationReasonColumn);
     }
 
     private void createView(List<Appointment> appointments) {
@@ -111,5 +129,21 @@ public class AppointmentListView {
         }
 
         return appointment.getRoom().getName();
+    }
+
+    private String getObjective(Appointment appointment) {
+        if (appointment.getObjective() == null) {
+            return "";
+        }
+
+        return appointment.getObjective();
+    }
+
+    private String getCancellationReason(Appointment appointment) {
+        if (appointment.getCancellationReason() == null) {
+            return "";
+        }
+
+        return appointment.getCancellationReason();
     }
 }

@@ -96,7 +96,19 @@ public class GymMemberFormView {
         String phone = getOptionalText(phoneField);
         Integer lockerNumber = getOptionalInteger(lockerNumberField, "Le numero de casier doit etre un nombre.");
         String username = getRequiredText(usernameField, "Le nom d'utilisateur est obligatoire.");
-        String password = getRequiredText(passwordField, "Le mot de passe est obligatoire.");
+
+        String password;
+        if (memberToUpdate != null) {
+            String enteredPassword = passwordField.getText();
+            if (enteredPassword == null || enteredPassword.isBlank()) {
+                password = memberToUpdate.getPassword();
+            } else {
+                password = enteredPassword;
+            }
+        } else {
+            password = getRequiredText(passwordField, "Le mot de passe est obligatoire.");
+        }
+
         boolean isActive = true;
         Double weight = getRequiredDouble(weightField, "Le poids doit etre un nombre.");
         Integer height = getRequiredInteger(heightField, "La taille doit etre un nombre.");
@@ -243,7 +255,8 @@ public class GymMemberFormView {
         setNullableText(phoneField, memberToUpdate.getPhone());
         setNullableText(lockerNumberField, memberToUpdate.getLockerNumber());
         usernameField.setText(memberToUpdate.getUsername());
-        passwordField.setText(memberToUpdate.getPassword());
+        passwordField.clear();
+        passwordField.setPromptText("Laisser vide pour garder le mot de passe actuel");
         weightField.setText(String.valueOf(memberToUpdate.getWeight()));
         heightField.setText(String.valueOf(memberToUpdate.getHeight()));
 

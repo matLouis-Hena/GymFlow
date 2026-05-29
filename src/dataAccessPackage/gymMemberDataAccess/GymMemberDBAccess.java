@@ -622,11 +622,6 @@ public class GymMemberDBAccess implements IGymMemberDA {
                 InvalidDurationException |
                 IllegalArgumentException exception
         ) {
-
-            System.out.println("Erreur creation membre id " + id);
-            System.out.println("Type erreur : " + exception.getClass().getSimpleName());
-            System.out.println("Message : " + exception.getMessage());
-
             throw new ReadGymMemberException(
                     String.valueOf(id),
                     "Erreur lors de la création du membre à partir des données récupérées."

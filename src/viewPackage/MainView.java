@@ -403,7 +403,15 @@ public class MainView {
         appointmentListView = new AppointmentListView(appointments);
 
         appointmentListView.getRefreshButton().setOnAction(event -> {
-            if (appointmentController != null) {
+            if (appointmentController == null || connectedPerson == null) {
+                return;
+            }
+
+            if (connectedUserRole == UserRole.MEMBER_WITH_SUBSCRIPTION) {
+                appointmentController.showAppointmentsForMember(connectedPerson.getId());
+            } else if (connectedUserRole == UserRole.COACH) {
+                appointmentController.showAppointmentsForCoach(connectedPerson.getId());
+            } else if (connectedUserRole == UserRole.ADMIN) {
                 appointmentController.showAppointmentList();
             }
         });
