@@ -1,17 +1,12 @@
 package testPackage;
 
 import businessPackage.AppointmentManager;
-import dataAccessPackage.coachAvailabilityDataAccess.CoachAvailabilityDBAccess;
-import dataAccessPackage.coachAvailabilityDataAccess.ICoachAvailabilityDA;
-import dataAccessPackage.gymMemberDataAccess.GymMemberDBAccess;
-import dataAccessPackage.gymMemberDataAccess.IGymMemberDA;
-import dataAccessPackage.roomDataAccess.IRoomDA;
-import dataAccessPackage.roomDataAccess.RoomDBAccess;
-import modelPackage.Appointment;
-import modelPackage.CoachAvailability;
-import modelPackage.GymMember;
-import modelPackage.Room;
+import dataAccessPackage.coachAvailabilityDataAccess.*;
+import dataAccessPackage.gymMemberDataAccess.*;
+import dataAccessPackage.roomDataAccess.*;
+import modelPackage.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class TestAppointmentManager {
@@ -26,8 +21,17 @@ public class TestAppointmentManager {
         int insertedAppointmentId = -1;
 
         try {
+            String specialityName = "Musculation";
+
             List<GymMember> members = gymMemberDataAccess.getAll();
-            List<CoachAvailability> availabilities = coachAvailabilityDataAccess.getAll();
+
+            List<CoachAvailability> availabilities =
+                    coachAvailabilityDataAccess.getAvailableBySpecialityAndDateRange(
+                            specialityName,
+                            LocalDate.now().minusDays(1),
+                            LocalDate.now().plusMonths(3)
+                    );
+
             List<Room> rooms = roomDataAccess.getAll();
 
             if (members.isEmpty()) {
@@ -36,7 +40,7 @@ public class TestAppointmentManager {
             }
 
             if (availabilities.isEmpty()) {
-                System.out.println("Aucune disponibilité disponible pour tester AppointmentManager.");
+                System.out.println("Aucune disponibilité disponible pour la spécialité " + specialityName + ".");
                 return;
             }
 
@@ -52,6 +56,7 @@ public class TestAppointmentManager {
             insertedAppointmentId = appointmentManager.bookAppointment(
                     member.getId(),
                     availability.getId(),
+                    specialityName,
                     room.getId(),
                     "Objectif manager : prise de masse"
             );

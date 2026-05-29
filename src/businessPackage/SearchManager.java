@@ -1,8 +1,7 @@
 package businessPackage;
 
-import dataAccessPackage.searchDataAccess.ISearchDA;
-import dataAccessPackage.searchDataAccess.SearchDBAccess;
-import exceptionPackage.search.SearchException;
+import dataAccessPackage.searchDataAccess.*;
+import exceptionPackage.search.*;
 import modelPackage.searchResult.*;
 
 import java.time.LocalDate;
@@ -35,11 +34,52 @@ public class SearchManager {
         );
     }
 
+    public List<SponsoredMemberSearchResult> searchSponsoredMembersBySponsorId(
+            int sponsorId
+    ) throws SearchException {
+        validateSponsorId(sponsorId);
+
+        return searchDataAccess.searchSponsoredMembersBySponsorId(sponsorId);
+    }
+
+    public List<AvailableCoachSearchResult> searchAvailableCoachesBySpecialityAndDateRange(
+            String specialityName,
+            LocalDate startDate,
+            LocalDate endDate
+    ) throws SearchException {
+        validateSpecialityName(specialityName);
+        validateDateRange(startDate, endDate);
+
+        return searchDataAccess.searchAvailableCoachesBySpecialityAndDateRange(
+                specialityName,
+                startDate,
+                endDate
+        );
+    }
+
     private void validateMemberId(int memberId) throws SearchException {
         if (memberId <= 0) {
             throw new SearchException(
                     String.valueOf(memberId),
                     "L'identifiant du membre doit être supérieur à 0."
+            );
+        }
+    }
+
+    private void validateSponsorId(int sponsorId) throws SearchException {
+        if (sponsorId <= 0) {
+            throw new SearchException(
+                    String.valueOf(sponsorId),
+                    "L'identifiant du parrain doit être supérieur à 0."
+            );
+        }
+    }
+
+    private void validateSpecialityName(String specialityName) throws SearchException {
+        if (specialityName == null || specialityName.isBlank()) {
+            throw new SearchException(
+                    "specialityName",
+                    "Le nom de la spécialité est obligatoire."
             );
         }
     }
@@ -65,42 +105,5 @@ public class SearchManager {
                     "La date de fin ne peut pas être avant la date de début."
             );
         }
-    }
-
-    public List<AvailableCoachSearchResult> searchAvailableCoachesBySpecialityAndDateRange(
-            String specialityName, LocalDate startDate, LocalDate endDate
-            ) throws SearchException {
-            validateSpecialityName(specialityName);
-            validateDateRange(startDate, endDate);
-
-        return searchDataAccess.searchAvailableCoachesBySpecialityAndDateRange(
-                specialityName,
-                startDate,
-                endDate
-        );
-    }
-
-    private void validateSpecialityName(String specialityName) throws SearchException {
-        if (specialityName == null || specialityName.isBlank()) {
-            throw new SearchException(
-                    "specialityName",
-                    "Le nom de la spécialité est obligatoire."
-            );
-        }
-    }
-
-    public List<PaymentSearchResult> searchPaymentsByMemberAndDateRange(
-            int memberId,
-            LocalDate startDate,
-            LocalDate endDate
-    ) throws SearchException {
-        validateMemberId(memberId);
-        validateDateRange(startDate, endDate);
-
-        return searchDataAccess.searchPaymentsByMemberAndDateRange(
-                memberId,
-                startDate,
-                endDate
-        );
     }
 }

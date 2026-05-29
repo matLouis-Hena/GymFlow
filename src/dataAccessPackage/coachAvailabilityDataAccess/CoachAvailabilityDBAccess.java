@@ -282,4 +282,41 @@ public class CoachAvailabilityDBAccess implements ICoachAvailabilityDA {
     private Connection getConnection() throws SQLException {
         return SingletonConnection.getInstance();
     }
+
+    @Override
+    public boolean isCoachQualifiedForSpeciality(
+            int availabilityId,
+            String specialityName
+    ) throws ReadCoachAvailabilityException {
+        try {
+            connection = getConnection();
+
+            try (PreparedStatement statement = connection.prepareStatement(IS_COACH_QUALIFIED_FOR_SPECIALITY_SQL)) {
+                statement.setInt(1, availabilityId);
+                statement.setString(2, specialityName);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return resultSet.getInt("qualification_count") > 0;
+                    }
+
+                    return false;
+                }
+            }
+
+        } catch (SQLException exception) {
+            throw new ReadCoachAvailabilityException(
+                    String.valueOf(availabilityId),
+                    "Erreur lors de la vérification de la qualification du coach."
+            );
+        }
+    }
+
+    private static final String IS_COACH_QUALIFIED_FOR_SPECIALITY_SQL = """
+        SELECT COUNT(*) AS qualification_count
+        FROM coach_availability ca
+        INNER JOIN qualification q ON ca.person_id = q.coach_id
+        WHERE ca.id = ?
+          AND q.speciality_name = ?
+        """;
 }

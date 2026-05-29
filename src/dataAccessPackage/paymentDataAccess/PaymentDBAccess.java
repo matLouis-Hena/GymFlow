@@ -2,7 +2,6 @@ package dataAccessPackage.paymentDataAccess;
 
 import dataAccessPackage.SingletonConnection;
 import dataAccessPackage.gymMemberDataAccess.*;
-import exceptionPackage.*;
 import exceptionPackage.gymMember.ReadGymMemberException;
 import exceptionPackage.payment.*;
 import modelPackage.GymMember;

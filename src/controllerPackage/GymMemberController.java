@@ -1,11 +1,12 @@
 package controllerPackage;
 
 import businessPackage.GymMemberManager;
-import exceptionPackage.gymMember.AddGymMemberException;
-import exceptionPackage.gymMember.DeleteGymMemberException;
-import exceptionPackage.gymMember.DuplicateGymMemberException;
-import exceptionPackage.gymMember.ReadGymMemberException;
-import exceptionPackage.gymMember.UpdateGymMemberException;
+import exceptionPackage.gymMember.*;
+import exceptionPackage.appointment.*;
+import exceptionPackage.coachAvailability.*;
+import exceptionPackage.gymMember.*;
+import exceptionPackage.payment.*;
+import exceptionPackage.sponsorship.*;
 import modelPackage.GymMember;
 import viewPackage.MainView;
 
@@ -93,9 +94,19 @@ public class GymMemberController {
 
         try {
             gymMemberManager.deleteMemberWithDependencies(member.getId());
+
             mainView.showInformationMessage("Membre supprimé avec succès.");
             showMembers();
-        } catch (DeleteGymMemberException exception) {
+
+        } catch (
+                DeleteGymMemberException |
+                ReadAppointmentException |
+                DeleteAppointmentException |
+                UpdateCoachAvailabilityException |
+                AppointmentBusinessException |
+                DeletePaymentException |
+                DeleteSponsorshipException exception
+        ) {
             mainView.showErrorMessage(exception.getMessage());
         }
     }

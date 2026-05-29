@@ -9,7 +9,7 @@ import modelPackage.SubscriptionType;
 import java.time.LocalDate;
 import java.util.List;
 
-public class TestGymMemberService {
+public class TestGymMemberManager {
 
     public static void main(String[] args) {
         GymMemberManager manager = new GymMemberManager();

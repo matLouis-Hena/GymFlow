@@ -1,6 +1,6 @@
 package dataAccessPackage.searchDataAccess;
 
-import exceptionPackage.search.SearchException;
+import exceptionPackage.search.*;
 import modelPackage.searchResult.*;
 
 import java.time.LocalDate;
@@ -14,14 +14,12 @@ public interface ISearchDA {
             LocalDate endDate
     ) throws SearchException;
 
-    List<AvailableCoachSearchResult> searchAvailableCoachesBySpecialityAndDateRange(
-            String specialityName,
-            LocalDate startDate,
-            LocalDate endDate
+    List<SponsoredMemberSearchResult> searchSponsoredMembersBySponsorId(
+            int sponsorId
     ) throws SearchException;
 
-    List<PaymentSearchResult> searchPaymentsByMemberAndDateRange(
-            int memberId,
+    List<AvailableCoachSearchResult> searchAvailableCoachesBySpecialityAndDateRange(
+            String specialityName,
             LocalDate startDate,
             LocalDate endDate
     ) throws SearchException;
