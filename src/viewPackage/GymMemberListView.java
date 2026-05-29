@@ -4,6 +4,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,6 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import modelPackage.GymMember;
 
@@ -37,6 +39,7 @@ public class GymMemberListView {
 
         memberTable.setItems(FXCollections.observableArrayList(members));
         memberTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        memberTable.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
         Label titleLabel = new Label("Liste des membres");
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
@@ -45,6 +48,8 @@ public class GymMemberListView {
 
         VBox container = new VBox(15, titleLabel, memberTable, buttonBox);
         container.setPadding(new Insets(20));
+        container.setAlignment(Pos.TOP_CENTER);
+        VBox.setVgrow(memberTable, Priority.ALWAYS);
 
         root.setCenter(container);
     }

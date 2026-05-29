@@ -4,6 +4,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,6 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import modelPackage.Person;
 
@@ -31,6 +33,7 @@ public class PersonListView {
 
         personTable.setItems(FXCollections.observableArrayList(persons));
         personTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        personTable.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
         Label titleLabel = new Label("Liste des comptes");
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
@@ -39,6 +42,8 @@ public class PersonListView {
 
         VBox container = new VBox(15, titleLabel, personTable, buttonBox);
         container.setPadding(new Insets(20));
+        container.setAlignment(Pos.TOP_CENTER);
+        VBox.setVgrow(personTable, Priority.ALWAYS);
 
         root.setCenter(container);
     }

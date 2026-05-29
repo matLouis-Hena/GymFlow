@@ -1,6 +1,7 @@
 package viewPackage;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -135,6 +136,7 @@ public class ConnectedPersonGymMemberFormView {
         formGrid.setPadding(new Insets(20));
         formGrid.setHgap(15);
         formGrid.setVgap(10);
+        formGrid.setAlignment(Pos.CENTER);
 
         formGrid.add(accountLabel, 0, 0, 2, 1);
         formGrid.add(new Label("Numero de casier"), 0, 1);
@@ -157,6 +159,7 @@ public class ConnectedPersonGymMemberFormView {
         container.setPadding(new Insets(20));
         container.setTop(titleLabel);
         container.setCenter(formGrid);
+        BorderPane.setAlignment(titleLabel, Pos.CENTER);
 
         root.setCenter(container);
     }

@@ -1,15 +1,21 @@
 package viewPackage;
 
+import java.io.InputStream;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class LoginView {
@@ -51,6 +57,9 @@ public class LoginView {
     }
 
     private void createForm() {
+        Node logoView = createLogoView();
+        logoView.setTranslateY(-170);
+
         Label titleLabel = new Label("Connexion");
         titleLabel.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;");
 
@@ -71,7 +80,29 @@ public class LoginView {
         container.setPadding(new Insets(30));
         container.setAlignment(Pos.CENTER);
 
-        root.setCenter(container);
+        StackPane centerPane = new StackPane();
+        centerPane.getChildren().add(logoView);
+        centerPane.getChildren().add(container);
+
+        StackPane.setAlignment(logoView, Pos.CENTER);
+        StackPane.setAlignment(container, Pos.CENTER);
+
+        root.setCenter(centerPane);
+    }
+
+    private Node createLogoView() {
+        InputStream logoStream = getClass().getResourceAsStream("/images/logo_salle.png");
+
+        if (logoStream == null) {
+            return new Label("");
+        }
+
+        ImageView logoView = new ImageView(new Image(logoStream));
+        logoView.setFitWidth(320);
+        logoView.setPreserveRatio(true);
+        logoView.setSmooth(true);
+
+        return logoView;
     }
 
     private String getRequiredText(TextField textField, String message) {
