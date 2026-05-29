@@ -1,6 +1,7 @@
 package viewPackage;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -170,6 +171,7 @@ public class GymMemberFormView {
         formGrid.setPadding(new Insets(20));
         formGrid.setHgap(15);
         formGrid.setVgap(10);
+        formGrid.setAlignment(Pos.CENTER);
 
         formGrid.add(new Label("Prenom *"), 0, 0);
         formGrid.add(firstNameField, 1, 0);
@@ -207,6 +209,7 @@ public class GymMemberFormView {
         container.setPadding(new Insets(20));
         container.setTop(titleLabel);
         container.setCenter(formGrid);
+        BorderPane.setAlignment(titleLabel, Pos.CENTER);
 
         root.setCenter(container);
     }
