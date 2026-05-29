@@ -226,7 +226,7 @@ Type(longueur)	Obligatoire	ID	FK	Table référencée
 int	X	X	X	person
 
 Nom de colonne	Définition de la colonne
-has_degree	Indique si le coach a un diplôme (0 = Non et 1 = Oui).
+hasDegree	Indique si le coach a un diplôme (0 = Non et 1 = Oui).
 Type(longueur)	Obligatoire	ID	FK	Table référencée
 bit	X
 
@@ -571,7 +571,7 @@ Nom de colonne provenant de la table 1	first_name
 Nom de colonne provenant de la table 1	last_name
 Nom de colonne provenant de la table 1
 Nom de la table 2 	coach
-Nom de colonne provenant de la table 2	has_degree
+Nom de colonne provenant de la table 2	hasDegree
 Nom de colonne provenant de la table 2
 Nom de colonne provenant de la table 2
 Nom de la table 3 	coach_availibility

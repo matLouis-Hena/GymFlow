@@ -7,7 +7,7 @@ public class Admin extends Person {
     private AccessLevel accessLevel;
 
     public Admin(int id, String firstName, String lastName, LocalDate birthDate,
-                 char gender, String email, String phone, Integer lockerNumber,
+                 Gender gender, String email, String phone, Integer lockerNumber,
                  String username, String password,
                  AccessLevel accessLevel)
             throws InvalidFirstNameException, InvalidLastNameException,
@@ -20,13 +20,14 @@ public class Admin extends Person {
         setAccessLevel(accessLevel);
     }
 
+    public AccessLevel getAccessLevel() {
+        return accessLevel;
+    }
+
     public void setAccessLevel(AccessLevel accessLevel) {
         if (accessLevel == null) {
-            String message = "Le niveau d'accès ne peut pas être null";
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException("Le niveau d'accès ne peut pas être null");
         }
         this.accessLevel = accessLevel;
     }
-
-    public AccessLevel getAccessLevel() { return accessLevel; }
 }

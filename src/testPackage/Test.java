@@ -1,15 +1,18 @@
-package modelPackage;
+package testPackage;
 
 import exceptionPackage.*;
+import modelPackage.Gender;
+import modelPackage.Person;
+
 import java.time.LocalDate;
 
 public class Test {
 
     public static void main(String[] args) {
 
-        // ══════════════════════════════════════════
+        //
         //  TEST 2 — Person avec email invalide
-        // ══════════════════════════════════════════
+        //
         System.out.println("\n=== TEST 2 : Person avec email invalide ===");
         try {
             Person bob = new Person(
@@ -17,8 +20,8 @@ public class Test {
                     "Bob",
                     "Martin",
                     LocalDate.of(1990, 7, 20),
-                    'm',
-                    "emailsansarobase",   // ❌ email invalide
+                    Gender.MALE,
+                    "emailsansarobase",   //  email invalide
                     "+32498000000",
                     5,
                     "bob90",

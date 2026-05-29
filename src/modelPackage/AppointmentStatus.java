@@ -3,8 +3,10 @@ package modelPackage;
 public enum AppointmentStatus {
     PENDING("En attente", "Le rendez-vous est en attente de confirmation"),
     CONFIRMED("Confirmé", "Le rendez-vous est confirmé"),
-    DONE("Finit", "Le rendez-vous a été effectué"),
-    CANCELLED("Annulé", "Le rendez-vous a été annulé");
+    DONE("Fini", "Le rendez-vous a été effectué"),
+    CANCELLED_BY_COACH("Annulé", "Le rendez-vous a été annulé par le coach"),
+    CANCELLED_BY_MEMBER("Annulé", "Le rendez-vous a été annulé par le membre");
+
 
     private final String displayName;
     private final String description;
@@ -12,6 +14,13 @@ public enum AppointmentStatus {
     AppointmentStatus(String displayName, String description) {
         this.displayName = displayName;
         this.description = description;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+    public String getDescription() {
+        return description;
     }
 
     public static AppointmentStatus fromString(String name) {

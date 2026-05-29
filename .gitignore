@@ -1,7 +1,7 @@
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
-!**/src/test/**/out/
+!**/src/test/**/out
 
 ### Eclipse ###
 .apt_generated
@@ -27,3 +27,6 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### DB ###
+src/db.properties

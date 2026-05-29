@@ -1,7 +1,6 @@
 package modelPackage;
 
-import exceptionPackage.InvalidDurationException;
-import exceptionPackage.InvalidPriceException;
+import exceptionPackage.*;
 
 public class Subscription {
     private int id;
@@ -15,6 +14,22 @@ public class Subscription {
         this.tier = tier;
         setPrice(price);
         setDurationMonths(durationMonths);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getTier() {
+        return tier;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getDurationMonths() {
+        return durationMonths;
     }
 
     public void setPrice(double price) throws InvalidPriceException {
