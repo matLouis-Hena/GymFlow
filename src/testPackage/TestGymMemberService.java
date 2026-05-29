@@ -4,6 +4,7 @@ import businessPackage.GymMemberManager;
 import modelPackage.Gender;
 import modelPackage.GymMember;
 import modelPackage.Subscription;
+import modelPackage.SubscriptionType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,14 +12,15 @@ import java.util.List;
 public class TestGymMemberService {
 
     public static void main(String[] args) {
-        GymMemberManager service = new GymMemberManager();
+        GymMemberManager manager = new GymMemberManager();
         int insertedMemberId = -1;
 
         try {
+            String unique = String.valueOf(System.currentTimeMillis());
+
             Subscription subscription = new Subscription(
-                    1,
-                    1,
-                    29.99,
+                    0,
+                    SubscriptionType.BASIC,
                     1
             );
 
@@ -28,10 +30,10 @@ public class TestGymMemberService {
                     "Gym",
                     LocalDate.of(2000, 1, 1),
                     Gender.MALE,
-                    "matgym@test.com",
+                    "matgym" + unique + "@test.com",
                     null,
                     null,
-                    "matgym",
+                    "matgym" + unique,
                     "password123",
                     true,
                     72.5,
@@ -39,16 +41,11 @@ public class TestGymMemberService {
                     subscription
             );
 
-            service.registerMember(member);
+            manager.registerMember(member);
             System.out.println("Membre inséré");
 
-            List<GymMember> members = service.getAllMembers();
-
-            GymMember insertedMember = findMemberByUsername(
-                    members,
-                    member.getUsername()
-            );
-
+            List<GymMember> members = manager.getAllMembers();
+            GymMember insertedMember = findMemberByUsername(members, member.getUsername());
             insertedMemberId = insertedMember.getId();
 
             System.out.println(
@@ -60,7 +57,7 @@ public class TestGymMemberService {
                             + "kg"
             );
 
-            GymMember retrievedMember = service.getMemberById(insertedMemberId);
+            GymMember retrievedMember = manager.getMemberById(insertedMemberId);
 
             System.out.println(
                     "Membre récupéré : "
@@ -69,26 +66,10 @@ public class TestGymMemberService {
                             + retrievedMember.getLastName()
             );
 
-            GymMember updatedMember = new GymMember(
-                    insertedMemberId,
-                    retrievedMember.getFirstName(),
-                    retrievedMember.getLastName(),
-                    retrievedMember.getBirthDate(),
-                    retrievedMember.getGender(),
-                    retrievedMember.getEmail(),
-                    retrievedMember.getPhone(),
-                    retrievedMember.getLockerNumber(),
-                    retrievedMember.getUsername(),
-                    retrievedMember.getPassword(),
-                    retrievedMember.getIsActive(),
-                    80.0,
-                    retrievedMember.getHeight(),
-                    retrievedMember.getEnrollment()
-            );
+            retrievedMember.setWeight(80.0);
+            manager.updateMember(retrievedMember);
 
-            service.updateMember(updatedMember);
-
-            GymMember memberAfterUpdate = service.getMemberById(insertedMemberId);
+            GymMember memberAfterUpdate = manager.getMemberById(insertedMemberId);
 
             System.out.println(
                     "Après update : "
@@ -96,16 +77,14 @@ public class TestGymMemberService {
                             + "kg"
             );
 
-            //service.deleteMember(insertedMemberId);
-            //insertedMemberId = -1;
+            manager.deleteMember(insertedMemberId);
+            insertedMemberId = -1;
 
-            //System.out.println("Membre supprimé");
+            System.out.println("Membre supprimé");
 
         } catch (Exception exception) {
             System.out.println("Erreur pendant le test : " + exception.getMessage());
-            exception.printStackTrace();
-
-            cleanInsertedMember(service, insertedMemberId);
+            cleanInsertedMember(manager, insertedMemberId);
         }
     }
 
@@ -119,16 +98,16 @@ public class TestGymMemberService {
         throw new IllegalStateException("Le membre inséré n'a pas été retrouvé.");
     }
 
-    private static void cleanInsertedMember(GymMemberManager service, int insertedMemberId) {
+    private static void cleanInsertedMember(GymMemberManager manager, int insertedMemberId) {
         if (insertedMemberId <= 0) {
             return;
         }
 
         try {
-            service.deleteMember(insertedMemberId);
+            manager.deleteMember(insertedMemberId);
             System.out.println("Nettoyage : membre supprimé après erreur.");
-        } catch (Exception cleanupException) {
-            System.out.println("Nettoyage impossible : " + cleanupException.getMessage());
+        } catch (Exception exception) {
+            System.out.println("Nettoyage impossible : " + exception.getMessage());
         }
     }
 }

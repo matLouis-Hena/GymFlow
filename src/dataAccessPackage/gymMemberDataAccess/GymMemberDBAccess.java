@@ -3,19 +3,12 @@ package dataAccessPackage.gymMemberDataAccess;
 import dataAccessPackage.SingletonConnection;
 import exceptionPackage.*;
 import exceptionPackage.gymMember.*;
-
 import modelPackage.Gender;
 import modelPackage.GymMember;
 import modelPackage.Subscription;
+import modelPackage.SubscriptionType;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.Statement;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +26,11 @@ public class GymMemberDBAccess implements IGymMemberDA {
                         "(first_name, last_name, birth_date, gender, email, phone, locker_number, username, password) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+        String insertSubscriptionSql =
+                "INSERT INTO subscription " +
+                        "(type, price, duration_months) " +
+                        "VALUES (?, ?, ?)";
+
         String insertGymMemberSql =
                 "INSERT INTO gym_member " +
                         "(person_id, is_active, weight, height, enrollment) " +
@@ -46,10 +44,11 @@ public class GymMemberDBAccess implements IGymMemberDA {
             connection.setAutoCommit(false);
 
             validateMemberBeforeInsert(member);
-            checkEmailAndUsernameAvailability(member);
+            checkEmailAndUsernameAvailabilityForInsert(member);
 
             int personId = insertPerson(member, insertPersonSql);
-            insertGymMember(member, personId, insertGymMemberSql);
+            int subscriptionId = insertSubscription(member.getEnrollment(), insertSubscriptionSql);
+            insertGymMember(member, personId, subscriptionId, insertGymMemberSql);
 
             connection.commit();
 
@@ -89,7 +88,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
                 "SELECT p.id, p.first_name, p.last_name, p.birth_date, p.gender, " +
                         "       p.email, p.phone, p.locker_number, p.username, p.password, " +
                         "       gm.is_active, gm.weight, gm.height, " +
-                        "       s.id AS subscription_id, s.tier AS subscription_tier, " +
+                        "       s.id AS subscription_id, s.type AS subscription_type, " +
                         "       s.price AS subscription_price, s.duration_months AS subscription_duration_months " +
                         "FROM person p " +
                         "INNER JOIN gym_member gm ON p.id = gm.person_id " +
@@ -126,7 +125,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
                 "SELECT p.id, p.first_name, p.last_name, p.birth_date, p.gender, " +
                         "       p.email, p.phone, p.locker_number, p.username, p.password, " +
                         "       gm.is_active, gm.weight, gm.height, " +
-                        "       s.id AS subscription_id, s.tier AS subscription_tier, " +
+                        "       s.id AS subscription_id, s.type AS subscription_type, " +
                         "       s.price AS subscription_price, s.duration_months AS subscription_duration_months " +
                         "FROM person p " +
                         "INNER JOIN gym_member gm ON p.id = gm.person_id " +
@@ -164,6 +163,11 @@ public class GymMemberDBAccess implements IGymMemberDA {
                         "    email = ?, phone = ?, locker_number = ?, username = ?, password = ? " +
                         "WHERE id = ?";
 
+        String updateSubscriptionSql =
+                "UPDATE subscription " +
+                        "SET type = ?, price = ?, duration_months = ? " +
+                        "WHERE id = ?";
+
         String updateGymMemberSql =
                 "UPDATE gym_member " +
                         "SET is_active = ?, weight = ?, height = ?, enrollment = ? " +
@@ -176,7 +180,10 @@ public class GymMemberDBAccess implements IGymMemberDA {
             previousAutoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
 
+            checkEmailAndUsernameAvailabilityForUpdate(member);
+
             updatePerson(member, updatePersonSql);
+            updateSubscription(member.getEnrollment(), updateSubscriptionSql);
             updateGymMember(member, updateGymMemberSql);
 
             connection.commit();
@@ -202,7 +209,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
                     "Erreur lors de la modification du membre."
             );
 
-        } catch (UpdateGymMemberException exception) {
+        } catch (UpdateGymMemberException | DuplicateGymMemberException exception) {
             rollback();
             throw exception;
 
@@ -228,8 +235,11 @@ public class GymMemberDBAccess implements IGymMemberDA {
             previousAutoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
 
+            int subscriptionId = getSubscriptionIdByMemberId(id);
+
             deleteGymMember(id, deleteGymMemberSql);
             deletePerson(id, deletePersonSql);
+            deleteSubscription(subscriptionId);
 
             connection.commit();
 
@@ -283,20 +293,50 @@ public class GymMemberDBAccess implements IGymMemberDA {
         }
     }
 
-    private void insertGymMember(GymMember member, int personId, String sql) throws SQLException, AddGymMemberException {
-        if (member.getEnrollment() == null) {
+    private int insertSubscription(Subscription subscription, String sql)
+            throws SQLException, AddGymMemberException {
+        if (subscription == null) {
             throw new AddGymMemberException(
                     "enrollment",
                     "L'abonnement du membre est obligatoire."
             );
         }
 
+        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, subscription.getType().getDatabaseValue());
+            statement.setDouble(2, subscription.getPrice());
+            statement.setInt(3, subscription.getDurationMonths());
+
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new AddGymMemberException(
+                        "subscription",
+                        "Aucun abonnement n'a été ajouté."
+                );
+            }
+
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (!generatedKeys.next()) {
+                    throw new AddGymMemberException(
+                            "subscription_id",
+                            "Impossible de récupérer l'identifiant de l'abonnement créé."
+                    );
+                }
+
+                return generatedKeys.getInt(1);
+            }
+        }
+    }
+
+    private void insertGymMember(GymMember member, int personId, int subscriptionId, String sql)
+            throws SQLException, AddGymMemberException {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, personId);
             statement.setBoolean(2, member.getIsActive());
             statement.setDouble(3, member.getWeight());
             statement.setInt(4, member.getHeight());
-            statement.setInt(5, member.getEnrollment().getId());
+            statement.setInt(5, subscriptionId);
 
             int affectedRows = statement.executeUpdate();
 
@@ -328,6 +368,39 @@ public class GymMemberDBAccess implements IGymMemberDA {
                 throw new UpdateGymMemberException(
                         String.valueOf(member.getId()),
                         "Aucune personne n'a été modifiée."
+                );
+            }
+        }
+    }
+
+    private void updateSubscription(Subscription subscription, String sql)
+            throws SQLException, UpdateGymMemberException {
+        if (subscription == null) {
+            throw new UpdateGymMemberException(
+                    "enrollment",
+                    "L'abonnement du membre est obligatoire."
+            );
+        }
+
+        if (subscription.getId() <= 0) {
+            throw new UpdateGymMemberException(
+                    String.valueOf(subscription.getId()),
+                    "L'identifiant de l'abonnement est invalide."
+            );
+        }
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, subscription.getType().getDatabaseValue());
+            statement.setDouble(2, subscription.getPrice());
+            statement.setInt(3, subscription.getDurationMonths());
+            statement.setInt(4, subscription.getId());
+
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new UpdateGymMemberException(
+                        String.valueOf(subscription.getId()),
+                        "Aucun abonnement n'a été modifié."
                 );
             }
         }
@@ -389,13 +462,56 @@ public class GymMemberDBAccess implements IGymMemberDA {
         }
     }
 
+    private void deleteSubscription(int subscriptionId)
+            throws SQLException, DeleteGymMemberException {
+        String sql =
+                "DELETE FROM subscription " +
+                        "WHERE id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, subscriptionId);
+
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new DeleteGymMemberException(
+                        String.valueOf(subscriptionId),
+                        "Aucun abonnement n'a été supprimé."
+                );
+            }
+        }
+    }
+
+    private int getSubscriptionIdByMemberId(int memberId)
+            throws SQLException, DeleteGymMemberException {
+        String sql =
+                "SELECT enrollment " +
+                        "FROM gym_member " +
+                        "WHERE person_id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, memberId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("enrollment");
+                }
+
+                throw new DeleteGymMemberException(
+                        String.valueOf(memberId),
+                        "Aucun abonnement lié au membre n'a été trouvé."
+                );
+            }
+        }
+    }
+
     private GymMember mapResultSetToGymMember(ResultSet resultSet) throws SQLException, ReadGymMemberException {
         int id = resultSet.getInt("id");
 
         try {
             Subscription enrollment = new Subscription(
                     resultSet.getInt("subscription_id"),
-                    resultSet.getInt("subscription_tier"),
+                    SubscriptionType.fromDatabaseValue(resultSet.getString("subscription_type")),
                     resultSet.getDouble("subscription_price"),
                     resultSet.getInt("subscription_duration_months")
             );
@@ -436,6 +552,91 @@ public class GymMemberDBAccess implements IGymMemberDA {
                     String.valueOf(id),
                     "Erreur lors de la création du membre à partir des données récupérées."
             );
+        }
+    }
+
+    private void validateMemberBeforeInsert(GymMember member) throws AddGymMemberException {
+        if (member.getEnrollment() == null) {
+            throw new AddGymMemberException(
+                    "enrollment",
+                    "L'abonnement du membre est obligatoire."
+            );
+        }
+
+        if (member.getEnrollment().getDurationMonths() <= 0) {
+            throw new AddGymMemberException(
+                    "durationMonths",
+                    "La durée de l'abonnement doit être supérieure à 0."
+            );
+        }
+    }
+
+    private void checkEmailAndUsernameAvailabilityForInsert(GymMember member)
+            throws SQLException, DuplicateGymMemberException {
+        String sql =
+                "SELECT email, username " +
+                        "FROM person " +
+                        "WHERE email = ? OR username = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, member.getEmail());
+            statement.setString(2, member.getUsername());
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    String existingEmail = resultSet.getString("email");
+                    String existingUsername = resultSet.getString("username");
+
+                    if (existingEmail != null && existingEmail.equals(member.getEmail())) {
+                        throw new DuplicateGymMemberException(
+                                "email",
+                                "Cette adresse email est déjà utilisée."
+                        );
+                    }
+
+                    if (existingUsername != null && existingUsername.equals(member.getUsername())) {
+                        throw new DuplicateGymMemberException(
+                                "username",
+                                "Ce nom d'utilisateur est déjà utilisé."
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkEmailAndUsernameAvailabilityForUpdate(GymMember member)
+            throws SQLException, DuplicateGymMemberException {
+        String sql =
+                "SELECT email, username " +
+                        "FROM person " +
+                        "WHERE (email = ? OR username = ?) AND id <> ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, member.getEmail());
+            statement.setString(2, member.getUsername());
+            statement.setInt(3, member.getId());
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    String existingEmail = resultSet.getString("email");
+                    String existingUsername = resultSet.getString("username");
+
+                    if (existingEmail != null && existingEmail.equals(member.getEmail())) {
+                        throw new DuplicateGymMemberException(
+                                "email",
+                                "Cette adresse email est déjà utilisée."
+                        );
+                    }
+
+                    if (existingUsername != null && existingUsername.equals(member.getUsername())) {
+                        throw new DuplicateGymMemberException(
+                                "username",
+                                "Ce nom d'utilisateur est déjà utilisé."
+                        );
+                    }
+                }
+            }
         }
     }
 
@@ -519,56 +720,5 @@ public class GymMemberDBAccess implements IGymMemberDA {
         }
 
         return null;
-    }
-
-    private void validateMemberBeforeInsert(GymMember member) throws AddGymMemberException {
-        if (member.getEnrollment() == null) {
-            throw new AddGymMemberException(
-                    "enrollment",
-                    "L'abonnement du membre est obligatoire."
-            );
-        }
-
-        if (member.getEnrollment().getId() <= 0) {
-            throw new AddGymMemberException(
-                    "enrollment",
-                    "L'abonnement sélectionné est invalide."
-            );
-        }
-    }
-
-    private void checkEmailAndUsernameAvailability(GymMember member)
-            throws SQLException, DuplicateGymMemberException {
-        String sql = """
-            SELECT email, username
-            FROM person
-            WHERE email = ? OR username = ?
-            """;
-
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, member.getEmail());
-            statement.setString(2, member.getUsername());
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    String existingEmail = resultSet.getString("email");
-                    String existingUsername = resultSet.getString("username");
-
-                    if (existingEmail != null && existingEmail.equals(member.getEmail())) {
-                        throw new DuplicateGymMemberException(
-                                "email",
-                                "Cette adresse email est déjà utilisée."
-                        );
-                    }
-
-                    if (existingUsername != null && existingUsername.equals(member.getUsername())) {
-                        throw new DuplicateGymMemberException(
-                                "username",
-                                "Ce nom d'utilisateur est déjà utilisé."
-                        );
-                    }
-                }
-            }
-        }
     }
 }

@@ -1,11 +1,12 @@
 package testPackage;
 
-import dataAccessPackage.gymMemberDataAccess.IGymMemberDA;
 import dataAccessPackage.gymMemberDataAccess.GymMemberDBAccess;
+import dataAccessPackage.gymMemberDataAccess.IGymMemberDA;
 import exceptionPackage.gymMember.DeleteGymMemberException;
 import modelPackage.Gender;
 import modelPackage.GymMember;
 import modelPackage.Subscription;
+import modelPackage.SubscriptionType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,14 +14,15 @@ import java.util.List;
 public class TestGymMemberDAO {
 
     public static void main(String[] args) {
-        IGymMemberDA dao = new GymMemberDBAccess();
+        IGymMemberDA dataAccess = new GymMemberDBAccess();
         int insertedMemberId = -1;
 
         try {
+            String unique = String.valueOf(System.currentTimeMillis());
+
             Subscription subscription = new Subscription(
-                    1,
-                    1,
-                    29.99,
+                    0,
+                    SubscriptionType.BASIC,
                     1
             );
 
@@ -30,10 +32,10 @@ public class TestGymMemberDAO {
                     "Gym",
                     LocalDate.of(2000, 1, 1),
                     Gender.MALE,
-                    "matgym@tests.com",
+                    "matgym" + unique + "@test.com",
                     null,
                     null,
-                    "matgyms",
+                    "matgym" + unique,
                     "password123",
                     true,
                     72.5,
@@ -41,10 +43,10 @@ public class TestGymMemberDAO {
                     subscription
             );
 
-            dao.insert(member);
+            dataAccess.insert(member);
             System.out.println("Membre inséré");
 
-            List<GymMember> members = dao.getAll();
+            List<GymMember> members = dataAccess.getAll();
             GymMember insertedMember = findMemberByUsername(members, member.getUsername());
             insertedMemberId = insertedMember.getId();
 
@@ -57,27 +59,29 @@ public class TestGymMemberDAO {
                             + "kg"
             );
 
-            GymMember retrievedMember = dao.getById(insertedMemberId);
+            GymMember retrievedMember = dataAccess.getById(insertedMemberId);
+
+            System.out.println(
+                    "Membre récupéré : "
+                            + retrievedMember.getFirstName()
+                            + " "
+                            + retrievedMember.getLastName()
+            );
 
             retrievedMember.setWeight(60.0);
-            dao.update(retrievedMember);
+            dataAccess.update(retrievedMember);
 
-            GymMember updatedMember = dao.getById(insertedMemberId);
+            GymMember updatedMember = dataAccess.getById(insertedMemberId);
 
             System.out.println(
                     "Membre mis à jour : "
                             + updatedMember.getWeight()
                             + "kg"
             );
-//
-            //dao.delete(insertedMemberId);
-            //insertedMemberId = -1;
-//
-            //System.out.println("Membre supprimé");
 
         } catch (Exception exception) {
             System.out.println("Erreur pendant le test DAO : " + exception.getMessage());
-            cleanInsertedMember(dao, insertedMemberId);
+            cleanInsertedMember(dataAccess, insertedMemberId);
         }
     }
 
@@ -91,13 +95,13 @@ public class TestGymMemberDAO {
         throw new IllegalStateException("Le membre inséré n'a pas été retrouvé.");
     }
 
-    private static void cleanInsertedMember(IGymMemberDA dao, int insertedMemberId) {
+    private static void cleanInsertedMember(IGymMemberDA dataAccess, int insertedMemberId) {
         if (insertedMemberId <= 0) {
             return;
         }
 
         try {
-            dao.delete(insertedMemberId);
+            dataAccess.delete(insertedMemberId);
             System.out.println("Nettoyage : membre supprimé après erreur.");
         } catch (DeleteGymMemberException exception) {
             System.out.println("Nettoyage impossible : " + exception.getMessage());
