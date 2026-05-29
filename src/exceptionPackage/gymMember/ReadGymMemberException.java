@@ -1,14 +1,14 @@
 package exceptionPackage.gymMember;
 
 public class ReadGymMemberException extends Exception {
-    private int wrongValue;
+    private String wrongValue;
 
-    public ReadGymMemberException(int wrongValue, String message) {
+    public ReadGymMemberException(String wrongValue, String message) {
         super(message);
         this.wrongValue = wrongValue;
     }
 
-    public int getWrongValue() {
+    public String getWrongValue() {
         return wrongValue;
     }
 }

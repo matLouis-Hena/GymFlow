@@ -1,21 +1,9 @@
-package dataAccessPackage;
+package dataAccessPackage.gymMemberDataAccess;
 
-import exceptionPackage.gymMember.AddGymMemberException;
-import exceptionPackage.gymMember.DeleteGymMemberException;
-import exceptionPackage.InvalidDurationException;
-import exceptionPackage.InvalidEmailException;
-import exceptionPackage.InvalidFirstNameException;
-import exceptionPackage.InvalidGenderException;
-import exceptionPackage.InvalidHeightException;
-import exceptionPackage.InvalidLastNameException;
-import exceptionPackage.InvalidLockerNumberException;
-import exceptionPackage.InvalidPasswordException;
-import exceptionPackage.InvalidPhoneException;
-import exceptionPackage.InvalidPriceException;
-import exceptionPackage.InvalidUsernameException;
-import exceptionPackage.InvalidWeightException;
-import exceptionPackage.gymMember.ReadGymMemberException;
-import exceptionPackage.gymMember.UpdateGymMemberException;
+import dataAccessPackage.SingletonConnection;
+import exceptionPackage.*;
+import exceptionPackage.gymMember.*;
+
 import modelPackage.Gender;
 import modelPackage.GymMember;
 import modelPackage.Subscription;
@@ -25,20 +13,21 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GymMemberDAOImpl implements GymMemberDAO {
+public class GymMemberDBAccess implements IGymMemberDA {
 
     private Connection connection;
 
-    public GymMemberDAOImpl() {
+    public GymMemberDBAccess() {
     }
 
     @Override
-    public void insert(GymMember member) throws AddGymMemberException {
+    public void insert(GymMember member) throws AddGymMemberException, DuplicateGymMemberException {
         String insertPersonSql =
                 "INSERT INTO person " +
                         "(first_name, last_name, birth_date, gender, email, phone, locker_number, username, password) " +
@@ -56,17 +45,39 @@ public class GymMemberDAOImpl implements GymMemberDAO {
             previousAutoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
 
+            validateMemberBeforeInsert(member);
+            checkEmailAndUsernameAvailability(member);
+
             int personId = insertPerson(member, insertPersonSql);
             insertGymMember(member, personId, insertGymMemberSql);
 
             connection.commit();
 
+        } catch (SQLIntegrityConstraintViolationException exception) {
+            rollback();
+
+            DuplicateGymMemberException duplicateException = buildDuplicateGymMemberException(exception);
+
+            if (duplicateException != null) {
+                throw duplicateException;
+            }
+
+            throw new AddGymMemberException(
+                    "database",
+                    "Erreur d'intégrité lors de l'ajout du membre."
+            );
+
         } catch (SQLException exception) {
             rollback();
-            throw new AddGymMemberException("database", "Erreur lors de l'ajout du membre.");
-        } catch (AddGymMemberException exception) {
+            throw new AddGymMemberException(
+                    "database",
+                    "Erreur lors de l'ajout du membre."
+            );
+
+        } catch (AddGymMemberException | DuplicateGymMemberException exception) {
             rollback();
             throw exception;
+
         } finally {
             restoreAutoCommit(previousAutoCommit);
         }
@@ -102,7 +113,10 @@ public class GymMemberDAOImpl implements GymMemberDAO {
             return members;
 
         } catch (SQLException exception) {
-            throw new ReadGymMemberException(0, "Erreur lors de la récupération des membres.");
+            throw new ReadGymMemberException(
+                    "database",
+                    "Erreur lors de la récupération des membres."
+            );
         }
     }
 
@@ -135,12 +149,15 @@ public class GymMemberDAOImpl implements GymMemberDAO {
             }
 
         } catch (SQLException exception) {
-            throw new ReadGymMemberException(id, "Erreur lors de la récupération du membre.");
+            throw new ReadGymMemberException(
+                    String.valueOf(id),
+                    "Erreur lors de la récupération du membre."
+            );
         }
     }
 
     @Override
-    public void update(GymMember member) throws UpdateGymMemberException {
+    public void update(GymMember member) throws UpdateGymMemberException, DuplicateGymMemberException {
         String updatePersonSql =
                 "UPDATE person " +
                         "SET first_name = ?, last_name = ?, birth_date = ?, gender = ?, " +
@@ -164,12 +181,31 @@ public class GymMemberDAOImpl implements GymMemberDAO {
 
             connection.commit();
 
+        } catch (SQLIntegrityConstraintViolationException exception) {
+            rollback();
+
+            DuplicateGymMemberException duplicateException = buildDuplicateGymMemberException(exception);
+
+            if (duplicateException != null) {
+                throw duplicateException;
+            }
+
+            throw new UpdateGymMemberException(
+                    "database",
+                    "Erreur d'intégrité lors de la modification du membre."
+            );
+
         } catch (SQLException exception) {
             rollback();
-            throw new UpdateGymMemberException(member.getId(), "Erreur lors de la modification du membre.");
+            throw new UpdateGymMemberException(
+                    "database",
+                    "Erreur lors de la modification du membre."
+            );
+
         } catch (UpdateGymMemberException exception) {
             rollback();
             throw exception;
+
         } finally {
             restoreAutoCommit(previousAutoCommit);
         }
@@ -199,10 +235,15 @@ public class GymMemberDAOImpl implements GymMemberDAO {
 
         } catch (SQLException exception) {
             rollback();
-            throw new DeleteGymMemberException(id, "Erreur lors de la suppression du membre.");
+            throw new DeleteGymMemberException(
+                    String.valueOf(id),
+                    "Erreur lors de la suppression du membre."
+            );
+
         } catch (DeleteGymMemberException exception) {
             rollback();
             throw exception;
+
         } finally {
             restoreAutoCommit(previousAutoCommit);
         }
@@ -223,12 +264,18 @@ public class GymMemberDAOImpl implements GymMemberDAO {
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
-                throw new AddGymMemberException("person", "Aucune personne n'a été ajoutée.");
+                throw new AddGymMemberException(
+                        "person",
+                        "Aucune personne n'a été ajoutée."
+                );
             }
 
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (!generatedKeys.next()) {
-                    throw new AddGymMemberException("person_id", "Impossible de récupérer l'identifiant de la personne créée.");
+                    throw new AddGymMemberException(
+                            "person_id",
+                            "Impossible de récupérer l'identifiant de la personne créée."
+                    );
                 }
 
                 return generatedKeys.getInt(1);
@@ -238,7 +285,10 @@ public class GymMemberDAOImpl implements GymMemberDAO {
 
     private void insertGymMember(GymMember member, int personId, String sql) throws SQLException, AddGymMemberException {
         if (member.getEnrollment() == null) {
-            throw new AddGymMemberException("enrollment", "L'abonnement du membre est obligatoire.");
+            throw new AddGymMemberException(
+                    "enrollment",
+                    "L'abonnement du membre est obligatoire."
+            );
         }
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -251,7 +301,10 @@ public class GymMemberDAOImpl implements GymMemberDAO {
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
-                throw new AddGymMemberException("gym_member", "Aucun membre n'a été ajouté.");
+                throw new AddGymMemberException(
+                        "gym_member",
+                        "Aucun membre n'a été ajouté."
+                );
             }
         }
     }
@@ -272,14 +325,20 @@ public class GymMemberDAOImpl implements GymMemberDAO {
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
-                throw new UpdateGymMemberException(member.getId(), "Aucune personne n'a été modifiée.");
+                throw new UpdateGymMemberException(
+                        String.valueOf(member.getId()),
+                        "Aucune personne n'a été modifiée."
+                );
             }
         }
     }
 
     private void updateGymMember(GymMember member, String sql) throws SQLException, UpdateGymMemberException {
         if (member.getEnrollment() == null) {
-            throw new UpdateGymMemberException(member.getId(), "L'abonnement du membre est obligatoire.");
+            throw new UpdateGymMemberException(
+                    String.valueOf(member.getId()),
+                    "L'abonnement du membre est obligatoire."
+            );
         }
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -292,7 +351,10 @@ public class GymMemberDAOImpl implements GymMemberDAO {
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
-                throw new UpdateGymMemberException(member.getId(), "Aucun membre n'a été modifié.");
+                throw new UpdateGymMemberException(
+                        String.valueOf(member.getId()),
+                        "Aucun membre n'a été modifié."
+                );
             }
         }
     }
@@ -304,7 +366,10 @@ public class GymMemberDAOImpl implements GymMemberDAO {
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
-                throw new DeleteGymMemberException(id, "Aucun membre n'a été supprimé.");
+                throw new DeleteGymMemberException(
+                        String.valueOf(id),
+                        "Aucun membre n'a été supprimé."
+                );
             }
         }
     }
@@ -316,7 +381,10 @@ public class GymMemberDAOImpl implements GymMemberDAO {
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
-                throw new DeleteGymMemberException(id, "Aucune personne n'a été supprimée.");
+                throw new DeleteGymMemberException(
+                        String.valueOf(id),
+                        "Aucune personne n'a été supprimée."
+                );
             }
         }
     }
@@ -364,7 +432,10 @@ public class GymMemberDAOImpl implements GymMemberDAO {
                 InvalidDurationException |
                 IllegalArgumentException exception
         ) {
-            throw new ReadGymMemberException(id, "Erreur lors de la création du membre à partir des données récupérées.");
+            throw new ReadGymMemberException(
+                    String.valueOf(id),
+                    "Erreur lors de la création du membre à partir des données récupérées."
+            );
         }
     }
 
@@ -419,6 +490,85 @@ public class GymMemberDAOImpl implements GymMemberDAO {
             connection.setAutoCommit(previousAutoCommit);
         } catch (SQLException ignored) {
             // Aucun affichage dans la couche DataAccess.
+        }
+    }
+
+    private DuplicateGymMemberException buildDuplicateGymMemberException(
+            SQLIntegrityConstraintViolationException exception
+    ) {
+        String sqlMessage = exception.getMessage();
+
+        if (sqlMessage == null) {
+            return null;
+        }
+
+        String lowerMessage = sqlMessage.toLowerCase();
+
+        if (lowerMessage.contains("email")) {
+            return new DuplicateGymMemberException(
+                    "email",
+                    "Cette adresse email est déjà utilisée."
+            );
+        }
+
+        if (lowerMessage.contains("username")) {
+            return new DuplicateGymMemberException(
+                    "username",
+                    "Ce nom d'utilisateur est déjà utilisé."
+            );
+        }
+
+        return null;
+    }
+
+    private void validateMemberBeforeInsert(GymMember member) throws AddGymMemberException {
+        if (member.getEnrollment() == null) {
+            throw new AddGymMemberException(
+                    "enrollment",
+                    "L'abonnement du membre est obligatoire."
+            );
+        }
+
+        if (member.getEnrollment().getId() <= 0) {
+            throw new AddGymMemberException(
+                    "enrollment",
+                    "L'abonnement sélectionné est invalide."
+            );
+        }
+    }
+
+    private void checkEmailAndUsernameAvailability(GymMember member)
+            throws SQLException, DuplicateGymMemberException {
+        String sql = """
+            SELECT email, username
+            FROM person
+            WHERE email = ? OR username = ?
+            """;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, member.getEmail());
+            statement.setString(2, member.getUsername());
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    String existingEmail = resultSet.getString("email");
+                    String existingUsername = resultSet.getString("username");
+
+                    if (existingEmail != null && existingEmail.equals(member.getEmail())) {
+                        throw new DuplicateGymMemberException(
+                                "email",
+                                "Cette adresse email est déjà utilisée."
+                        );
+                    }
+
+                    if (existingUsername != null && existingUsername.equals(member.getUsername())) {
+                        throw new DuplicateGymMemberException(
+                                "username",
+                                "Ce nom d'utilisateur est déjà utilisé."
+                        );
+                    }
+                }
+            }
         }
     }
 }

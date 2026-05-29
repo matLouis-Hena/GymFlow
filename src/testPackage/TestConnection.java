@@ -1,4 +1,6 @@
-package dataAccessPackage;
+package testPackage;
+
+import dataAccessPackage.SingletonConnection;
 
 import java.sql.Connection;
 import java.sql.SQLException;

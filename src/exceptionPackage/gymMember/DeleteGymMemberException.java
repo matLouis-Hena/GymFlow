@@ -1,14 +1,14 @@
 package exceptionPackage.gymMember;
 
 public class DeleteGymMemberException extends Exception {
-    private int wrongValue;
+    private String wrongValue;
 
-    public DeleteGymMemberException(int wrongValue, String message) {
+    public DeleteGymMemberException(String wrongValue, String message) {
         super(message);
         this.wrongValue = wrongValue;
     }
 
-    public int getWrongValue() {
+    public String getWrongValue() {
         return wrongValue;
     }
 }

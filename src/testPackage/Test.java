@@ -1,6 +1,9 @@
-package modelPackage;
+package testPackage;
 
 import exceptionPackage.*;
+import modelPackage.Gender;
+import modelPackage.Person;
+
 import java.time.LocalDate;
 
 public class Test {

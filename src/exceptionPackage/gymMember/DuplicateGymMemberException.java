@@ -1,9 +1,9 @@
 package exceptionPackage.gymMember;
 
-public class UpdateGymMemberException extends Exception {
+public class DuplicateGymMemberException extends Exception {
     private String wrongValue;
 
-    public UpdateGymMemberException(String wrongValue, String message) {
+    public DuplicateGymMemberException(String wrongValue, String message) {
         super(message);
         this.wrongValue = wrongValue;
     }
