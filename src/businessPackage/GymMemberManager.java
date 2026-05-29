@@ -1,8 +1,11 @@
 package businessPackage;
 
-import dataAccessPackage.gymMemberDataAccess.GymMemberDBAccess;
-import dataAccessPackage.gymMemberDataAccess.IGymMemberDA;
+import dataAccessPackage.gymMemberDataAccess.*;
 import exceptionPackage.gymMember.*;
+import exceptionPackage.appointment.*;
+import exceptionPackage.coachAvailability.*;
+import exceptionPackage.payment.*;
+import exceptionPackage.sponsorship.*;
 import modelPackage.GymMember;
 
 import java.time.LocalDate;
@@ -11,13 +14,22 @@ import java.util.List;
 public class GymMemberManager {
 
     private final IGymMemberDA gymMemberDataAccess;
+    private final AppointmentManager appointmentManager;
+    private final PaymentManager paymentManager;
+    private final SponsorshipManager sponsorshipManager;
 
     public GymMemberManager() {
         this.gymMemberDataAccess = new GymMemberDBAccess();
+        this.appointmentManager = new AppointmentManager();
+        this.paymentManager = new PaymentManager();
+        this.sponsorshipManager = new SponsorshipManager();
     }
 
     public GymMemberManager(IGymMemberDA gymMemberDataAccess) {
         this.gymMemberDataAccess = gymMemberDataAccess;
+        this.appointmentManager = new AppointmentManager();
+        this.paymentManager = new PaymentManager();
+        this.sponsorshipManager = new SponsorshipManager();
     }
 
     public void registerMember(GymMember member)
@@ -67,6 +79,23 @@ public class GymMemberManager {
 
     public void deleteMember(int id) throws DeleteGymMemberException {
         validateIdForDelete(id);
+        gymMemberDataAccess.delete(id);
+    }
+
+    public void deleteMemberWithDependencies(int id)
+            throws DeleteGymMemberException,
+            ReadAppointmentException,
+            DeleteAppointmentException,
+            UpdateCoachAvailabilityException,
+            AppointmentBusinessException,
+            DeletePaymentException,
+            DeleteSponsorshipException {
+        validateIdForDelete(id);
+
+        appointmentManager.deleteAppointmentsByMemberId(id);
+        paymentManager.deletePaymentsByMemberId(id);
+        sponsorshipManager.deleteSponsorshipsByMemberId(id);
+
         gymMemberDataAccess.delete(id);
     }
 

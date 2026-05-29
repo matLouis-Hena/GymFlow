@@ -1,6 +1,7 @@
 package modelPackage;
 
-import exceptionPackage.*;
+import exceptionPackage.validation.InvalidDescriptionException;
+import exceptionPackage.validation.InvalidNameException;
 
 public class Speciality {
     private String name;

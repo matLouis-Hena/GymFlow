@@ -1,8 +1,9 @@
 package dataAccessPackage.subscriptionDataAccess;
 
 import dataAccessPackage.SingletonConnection;
-import exceptionPackage.*;
 import exceptionPackage.subscription.ReadSubscriptionException;
+import exceptionPackage.validation.InvalidDurationException;
+import exceptionPackage.validation.InvalidPriceException;
 import modelPackage.Subscription;
 import modelPackage.SubscriptionType;
 
