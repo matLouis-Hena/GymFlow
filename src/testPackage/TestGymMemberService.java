@@ -16,8 +16,6 @@ public class TestGymMemberService {
         int insertedMemberId = -1;
 
         try {
-            String unique = String.valueOf(System.currentTimeMillis());
-
             Subscription subscription = new Subscription(
                     0,
                     SubscriptionType.BASIC,
@@ -30,10 +28,10 @@ public class TestGymMemberService {
                     "Gym",
                     LocalDate.of(2000, 1, 1),
                     Gender.MALE,
-                    "matgym" + unique + "@test.com",
+                    "matgym@test.com",
                     null,
                     null,
-                    "matgym" + unique,
+                    "matgym",
                     "password123",
                     true,
                     72.5,
@@ -76,11 +74,6 @@ public class TestGymMemberService {
                             + memberAfterUpdate.getWeight()
                             + "kg"
             );
-
-            manager.deleteMember(insertedMemberId);
-            insertedMemberId = -1;
-
-            System.out.println("Membre supprimé");
 
         } catch (Exception exception) {
             System.out.println("Erreur pendant le test : " + exception.getMessage());
