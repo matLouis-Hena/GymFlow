@@ -1,28 +1,15 @@
 package dataAccessPackage.personDataAccess;
 
 import dataAccessPackage.SingletonConnection;
-import exceptionPackage.validation.InvalidEmailException;
-import exceptionPackage.validation.InvalidFirstNameException;
-import exceptionPackage.validation.InvalidGenderException;
-import exceptionPackage.validation.InvalidLastNameException;
-import exceptionPackage.validation.InvalidLockerNumberException;
-import exceptionPackage.validation.InvalidPasswordException;
-import exceptionPackage.validation.InvalidPhoneException;
-import exceptionPackage.validation.InvalidUsernameException;
 import exceptionPackage.person.AddPersonException;
 import exceptionPackage.person.DeletePersonException;
 import exceptionPackage.person.ReadPersonException;
 import exceptionPackage.person.UpdatePersonException;
+import exceptionPackage.validation.*;
 import modelPackage.Gender;
 import modelPackage.Person;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 

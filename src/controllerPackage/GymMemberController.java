@@ -1,12 +1,13 @@
 package controllerPackage;
 
 import businessPackage.GymMemberManager;
+import exceptionPackage.appointment.AppointmentBusinessException;
+import exceptionPackage.appointment.DeleteAppointmentException;
+import exceptionPackage.appointment.ReadAppointmentException;
+import exceptionPackage.coachAvailability.UpdateCoachAvailabilityException;
 import exceptionPackage.gymMember.*;
-import exceptionPackage.appointment.*;
-import exceptionPackage.coachAvailability.*;
-import exceptionPackage.gymMember.*;
-import exceptionPackage.payment.*;
-import exceptionPackage.sponsorship.*;
+import exceptionPackage.payment.DeletePaymentException;
+import exceptionPackage.sponsorship.DeleteSponsorshipException;
 import modelPackage.GymMember;
 import viewPackage.MainView;
 

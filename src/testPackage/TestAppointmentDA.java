@@ -8,11 +8,7 @@ import dataAccessPackage.gymMemberDataAccess.GymMemberDBAccess;
 import dataAccessPackage.gymMemberDataAccess.IGymMemberDA;
 import dataAccessPackage.roomDataAccess.IRoomDA;
 import dataAccessPackage.roomDataAccess.RoomDBAccess;
-import modelPackage.Appointment;
-import modelPackage.AppointmentStatus;
-import modelPackage.CoachAvailability;
-import modelPackage.GymMember;
-import modelPackage.Room;
+import modelPackage.*;
 
 import java.util.List;
 

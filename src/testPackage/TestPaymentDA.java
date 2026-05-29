@@ -1,7 +1,8 @@
 package testPackage;
 
 import businessPackage.PaymentManager;
-import dataAccessPackage.gymMemberDataAccess.*;
+import dataAccessPackage.gymMemberDataAccess.GymMemberDBAccess;
+import dataAccessPackage.gymMemberDataAccess.IGymMemberDA;
 import modelPackage.GymMember;
 import modelPackage.Payment;
 

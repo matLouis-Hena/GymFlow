@@ -1,7 +1,9 @@
 package businessPackage;
 
-import dataAccessPackage.paymentDataAccess.*;
-import exceptionPackage.payment.*;
+import dataAccessPackage.paymentDataAccess.IPaymentDA;
+import dataAccessPackage.paymentDataAccess.PaymentDBAccess;
+import exceptionPackage.payment.DeletePaymentException;
+import exceptionPackage.payment.ReadPaymentException;
 import modelPackage.Payment;
 
 import java.util.List;

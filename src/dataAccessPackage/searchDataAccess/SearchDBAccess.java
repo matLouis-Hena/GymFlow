@@ -1,9 +1,12 @@
 package dataAccessPackage.searchDataAccess;
 
-import dataAccessPackage.*;
-import exceptionPackage.search.*;
-import modelPackage.*;
-import modelPackage.searchResult.*;
+import dataAccessPackage.SingletonConnection;
+import exceptionPackage.search.SearchException;
+import modelPackage.AppointmentStatus;
+import modelPackage.SubscriptionType;
+import modelPackage.searchResult.AppointmentSearchResult;
+import modelPackage.searchResult.AvailableCoachSearchResult;
+import modelPackage.searchResult.SponsoredMemberSearchResult;
 
 import java.sql.*;
 import java.time.LocalDate;

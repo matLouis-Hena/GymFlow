@@ -1,10 +1,16 @@
 package testPackage;
 
 import businessPackage.AppointmentManager;
-import dataAccessPackage.coachAvailabilityDataAccess.*;
-import dataAccessPackage.gymMemberDataAccess.*;
-import dataAccessPackage.roomDataAccess.*;
-import modelPackage.*;
+import dataAccessPackage.coachAvailabilityDataAccess.CoachAvailabilityDBAccess;
+import dataAccessPackage.coachAvailabilityDataAccess.ICoachAvailabilityDA;
+import dataAccessPackage.gymMemberDataAccess.GymMemberDBAccess;
+import dataAccessPackage.gymMemberDataAccess.IGymMemberDA;
+import dataAccessPackage.roomDataAccess.IRoomDA;
+import dataAccessPackage.roomDataAccess.RoomDBAccess;
+import modelPackage.Appointment;
+import modelPackage.CoachAvailability;
+import modelPackage.GymMember;
+import modelPackage.Room;
 
 import java.time.LocalDate;
 import java.util.List;

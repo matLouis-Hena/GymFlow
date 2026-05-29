@@ -1,7 +1,8 @@
 package businessPackage;
 
-import dataAccessPackage.roomDataAccess.*;
-import exceptionPackage.room.*;
+import dataAccessPackage.roomDataAccess.IRoomDA;
+import dataAccessPackage.roomDataAccess.RoomDBAccess;
+import exceptionPackage.room.ReadRoomException;
 import modelPackage.Room;
 
 import java.util.List;

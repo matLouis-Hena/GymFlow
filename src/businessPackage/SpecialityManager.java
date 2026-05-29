@@ -1,7 +1,8 @@
 package businessPackage;
 
-import dataAccessPackage.specialityDataAccess.*;
-import exceptionPackage.speciality.*;
+import dataAccessPackage.specialityDataAccess.ISpecialityDA;
+import dataAccessPackage.specialityDataAccess.SpecialityDBAccess;
+import exceptionPackage.speciality.ReadSpecialityException;
 import modelPackage.Speciality;
 
 import java.util.List;

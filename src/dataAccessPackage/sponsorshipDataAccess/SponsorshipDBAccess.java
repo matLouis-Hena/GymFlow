@@ -1,9 +1,11 @@
 package dataAccessPackage.sponsorshipDataAccess;
 
 import dataAccessPackage.SingletonConnection;
-import dataAccessPackage.gymMemberDataAccess.*;
-import exceptionPackage.gymMember.*;
-import exceptionPackage.sponsorship.*;
+import dataAccessPackage.gymMemberDataAccess.GymMemberDBAccess;
+import dataAccessPackage.gymMemberDataAccess.IGymMemberDA;
+import exceptionPackage.gymMember.ReadGymMemberException;
+import exceptionPackage.sponsorship.DeleteSponsorshipException;
+import exceptionPackage.sponsorship.ReadSponsorshipException;
 import modelPackage.GymMember;
 import modelPackage.Sponsorship;
 

@@ -1,12 +1,18 @@
 package testPackage;
 
 import businessPackage.AppointmentManager;
-import dataAccessPackage.appointmentDataAccess.*;
-import dataAccessPackage.coachAvailabilityDataAccess.*;
-import dataAccessPackage.gymMemberDataAccess.*;
-import dataAccessPackage.roomDataAccess.*;
-import exceptionPackage.appointment.*;
-import modelPackage.*;
+import dataAccessPackage.appointmentDataAccess.AppointmentDBAccess;
+import dataAccessPackage.appointmentDataAccess.IAppointmentDA;
+import dataAccessPackage.coachAvailabilityDataAccess.CoachAvailabilityDBAccess;
+import dataAccessPackage.coachAvailabilityDataAccess.ICoachAvailabilityDA;
+import dataAccessPackage.gymMemberDataAccess.GymMemberDBAccess;
+import dataAccessPackage.gymMemberDataAccess.IGymMemberDA;
+import dataAccessPackage.roomDataAccess.IRoomDA;
+import dataAccessPackage.roomDataAccess.RoomDBAccess;
+import exceptionPackage.appointment.AppointmentBusinessException;
+import modelPackage.CoachAvailability;
+import modelPackage.GymMember;
+import modelPackage.Room;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -1,6 +1,7 @@
 package dataAccessPackage.coachAvailabilityDataAccess;
 
-import exceptionPackage.coachAvailability.*;
+import exceptionPackage.coachAvailability.ReadCoachAvailabilityException;
+import exceptionPackage.coachAvailability.UpdateCoachAvailabilityException;
 import modelPackage.CoachAvailability;
 
 import java.time.LocalDate;

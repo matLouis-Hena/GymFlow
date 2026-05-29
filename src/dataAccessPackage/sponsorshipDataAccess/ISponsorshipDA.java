@@ -1,6 +1,7 @@
 package dataAccessPackage.sponsorshipDataAccess;
 
-import exceptionPackage.sponsorship.*;
+import exceptionPackage.sponsorship.DeleteSponsorshipException;
+import exceptionPackage.sponsorship.ReadSponsorshipException;
 import modelPackage.Sponsorship;
 
 import java.util.List;

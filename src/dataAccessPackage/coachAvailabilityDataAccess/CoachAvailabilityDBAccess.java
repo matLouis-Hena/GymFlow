@@ -1,17 +1,14 @@
 package dataAccessPackage.coachAvailabilityDataAccess;
 
 import dataAccessPackage.SingletonConnection;
-import exceptionPackage.coachAvailability.*;
+import exceptionPackage.coachAvailability.ReadCoachAvailabilityException;
+import exceptionPackage.coachAvailability.UpdateCoachAvailabilityException;
 import exceptionPackage.validation.*;
 import modelPackage.Coach;
 import modelPackage.CoachAvailability;
 import modelPackage.Gender;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 

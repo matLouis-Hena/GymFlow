@@ -1,7 +1,9 @@
 package dataAccessPackage.searchDataAccess;
 
-import exceptionPackage.search.*;
-import modelPackage.searchResult.*;
+import exceptionPackage.search.SearchException;
+import modelPackage.searchResult.AppointmentSearchResult;
+import modelPackage.searchResult.AvailableCoachSearchResult;
+import modelPackage.searchResult.SponsoredMemberSearchResult;
 
 import java.time.LocalDate;
 import java.util.List;

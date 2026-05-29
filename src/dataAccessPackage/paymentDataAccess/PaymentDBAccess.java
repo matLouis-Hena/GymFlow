@@ -1,14 +1,15 @@
 package dataAccessPackage.paymentDataAccess;
 
 import dataAccessPackage.SingletonConnection;
-import dataAccessPackage.gymMemberDataAccess.*;
+import dataAccessPackage.gymMemberDataAccess.GymMemberDBAccess;
+import dataAccessPackage.gymMemberDataAccess.IGymMemberDA;
 import exceptionPackage.gymMember.ReadGymMemberException;
-import exceptionPackage.payment.*;
+import exceptionPackage.payment.DeletePaymentException;
+import exceptionPackage.payment.ReadPaymentException;
 import modelPackage.GymMember;
 import modelPackage.Payment;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

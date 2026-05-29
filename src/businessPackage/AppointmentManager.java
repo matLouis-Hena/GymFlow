@@ -1,13 +1,18 @@
 package businessPackage;
 
-import dataAccessPackage.appointmentDataAccess.*;
-import dataAccessPackage.coachAvailabilityDataAccess.*;
-import dataAccessPackage.gymMemberDataAccess.*;
-import dataAccessPackage.roomDataAccess.*;
+import dataAccessPackage.appointmentDataAccess.AppointmentDBAccess;
+import dataAccessPackage.appointmentDataAccess.IAppointmentDA;
+import dataAccessPackage.coachAvailabilityDataAccess.CoachAvailabilityDBAccess;
+import dataAccessPackage.coachAvailabilityDataAccess.ICoachAvailabilityDA;
+import dataAccessPackage.gymMemberDataAccess.GymMemberDBAccess;
+import dataAccessPackage.gymMemberDataAccess.IGymMemberDA;
+import dataAccessPackage.roomDataAccess.IRoomDA;
+import dataAccessPackage.roomDataAccess.RoomDBAccess;
 import exceptionPackage.appointment.*;
-import exceptionPackage.coachAvailability.*;
-import exceptionPackage.gymMember.*;
-import exceptionPackage.room.*;
+import exceptionPackage.coachAvailability.ReadCoachAvailabilityException;
+import exceptionPackage.coachAvailability.UpdateCoachAvailabilityException;
+import exceptionPackage.gymMember.ReadGymMemberException;
+import exceptionPackage.room.ReadRoomException;
 import modelPackage.*;
 
 import java.util.List;
