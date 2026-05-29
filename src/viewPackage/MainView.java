@@ -8,9 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import modelPackage.*;
-import modelPackage.searchResult.AppointmentSearchResult;
-import modelPackage.searchResult.AvailableCoachSearchResult;
-import modelPackage.searchResult.SponsoredMemberSearchResult;
+import modelPackage.searchResult.*;
 
 import java.util.List;
 
@@ -587,7 +585,15 @@ public class MainView {
             }
         });
 
+        MenuItem myAppointmentsItem = new MenuItem("Mes rendez-vous");
+        myAppointmentsItem.setOnAction(event -> {
+            if (appointmentController != null && connectedPerson != null) {
+                appointmentController.showAppointmentsForMember(connectedPerson.getId());
+            }
+        });
+
         appointmentMenu.getItems().add(bookAppointmentItem);
+        appointmentMenu.getItems().add(myAppointmentsItem);
 
         return appointmentMenu;
     }
@@ -632,7 +638,15 @@ public class MainView {
             }
         });
 
+        MenuItem myAppointmentsItem = new MenuItem("Mes rendez-vous");
+        myAppointmentsItem.setOnAction(event -> {
+            if (appointmentController != null && connectedPerson != null) {
+                appointmentController.showAppointmentsForCoach(connectedPerson.getId());
+            }
+        });
+
         coachMenu.getItems().add(myAvailabilitiesItem);
+        coachMenu.getItems().add(myAppointmentsItem);
 
         return coachMenu;
     }

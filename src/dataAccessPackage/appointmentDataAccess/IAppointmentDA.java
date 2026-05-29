@@ -19,6 +19,8 @@ public interface IAppointmentDA {
 
     List<Appointment> getByMemberId(int memberId) throws ReadAppointmentException;
 
+    List<Appointment> getByCoachId(int coachId) throws ReadAppointmentException;
+
     boolean existsForMemberOnDate(int memberId, LocalDate date) throws ReadAppointmentException;
 
     void updateStatus(int id, int status, String cancellationReason)

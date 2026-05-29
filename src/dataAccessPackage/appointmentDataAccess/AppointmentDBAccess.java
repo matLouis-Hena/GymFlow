@@ -202,6 +202,33 @@ public class AppointmentDBAccess implements IAppointmentDA {
     }
 
     @Override
+    public List<Appointment> getByCoachId(int coachId) throws ReadAppointmentException {
+        List<Appointment> appointments = new ArrayList<>();
+
+        try {
+            connection = getConnection();
+
+            try (PreparedStatement statement = connection.prepareStatement(SELECT_APPOINTMENTS_BY_COACH_ID_SQL)) {
+                statement.setInt(1, coachId);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        appointments.add(mapAppointment(resultSet));
+                    }
+                }
+            }
+
+            return appointments;
+
+        } catch (SQLException exception) {
+            throw new ReadAppointmentException(
+                    String.valueOf(coachId),
+                    "Erreur lors de la récupération des rendez-vous du coach."
+            );
+        }
+    }
+
+    @Override
     public boolean existsForMemberOnDate(int memberId, LocalDate date) throws ReadAppointmentException {
         try {
             connection = getConnection();
@@ -422,5 +449,19 @@ public class AppointmentDBAccess implements IAppointmentDA {
         SET status = ?,
             cancellation_reason = ?
         WHERE id = ?
+        """;
+
+    private static final String SELECT_APPOINTMENTS_BY_COACH_ID_SQL = """
+        SELECT a.id,
+               a.member_id,
+               a.availability_id,
+               a.objective,
+               a.room_id,
+               a.status,
+               a.cancellation_reason
+        FROM appointment a
+        INNER JOIN coach_availability ca ON a.availability_id = ca.id
+        WHERE ca.person_id = ?
+        ORDER BY ca.available_date, ca.start_time
         """;
 }

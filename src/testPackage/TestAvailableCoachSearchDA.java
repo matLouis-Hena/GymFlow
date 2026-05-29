@@ -15,10 +15,9 @@ public class TestAvailableCoachSearchDA {
             List<AvailableCoachSearchResult> results =
                     searchManager.searchAvailableCoachesBySpecialityAndDateRange(
                             "Musculation",
-                            LocalDate.now().minusDays(1),
-                            LocalDate.now().plusMonths(3)
+                            LocalDate.of(2024, 5, 30),
+                            LocalDate.of(2026, 6, 1)
                     );
-
             System.out.println("Créneaux disponibles trouvés : " + results.size());
 
             for (AvailableCoachSearchResult result : results) {

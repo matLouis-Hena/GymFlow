@@ -166,6 +166,13 @@ public class AppointmentManager {
         return appointmentDataAccess.getByMemberId(memberId);
     }
 
+    public List<Appointment> getAppointmentsByCoachId(int coachId)
+            throws ReadAppointmentException, AppointmentBusinessException {
+        validateId(coachId, "coachId", "L'identifiant du coach doit être supérieur à 0.");
+
+        return appointmentDataAccess.getByCoachId(coachId);
+    }
+
     public void confirmAppointment(int appointmentId)
             throws ReadAppointmentException,
             UpdateAppointmentException,

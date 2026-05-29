@@ -4,11 +4,8 @@ import businessPackage.AppointmentManager;
 import businessPackage.RoomManager;
 import businessPackage.SearchManager;
 import businessPackage.SpecialityManager;
-import exceptionPackage.appointment.AddAppointmentException;
-import exceptionPackage.appointment.AppointmentBusinessException;
-import exceptionPackage.appointment.ReadAppointmentException;
-import exceptionPackage.coachAvailability.ReadCoachAvailabilityException;
-import exceptionPackage.coachAvailability.UpdateCoachAvailabilityException;
+import exceptionPackage.appointment.*;
+import exceptionPackage.coachAvailability.*;
 import exceptionPackage.gymMember.ReadGymMemberException;
 import exceptionPackage.room.ReadRoomException;
 import exceptionPackage.search.SearchException;
@@ -17,6 +14,7 @@ import modelPackage.Appointment;
 import modelPackage.Room;
 import modelPackage.Speciality;
 import modelPackage.searchResult.AvailableCoachSearchResult;
+
 import viewPackage.MainView;
 
 import java.time.LocalDate;
@@ -59,6 +57,26 @@ public class AppointmentController {
             List<Appointment> appointments = appointmentManager.getAllAppointments();
             mainView.showAppointmentList(appointments);
         } catch (ReadAppointmentException exception) {
+            mainView.showErrorMessage(exception.getMessage());
+        }
+    }
+
+    public void showAppointmentsForMember(int memberId) {
+        try {
+            List<Appointment> appointments = appointmentManager.getAppointmentsByMemberId(memberId);
+            mainView.showAppointmentList(appointments);
+
+        } catch (Exception exception) {
+            mainView.showErrorMessage(exception.getMessage());
+        }
+    }
+
+    public void showAppointmentsForCoach(int coachId) {
+        try {
+            List<Appointment> appointments = appointmentManager.getAppointmentsByCoachId(coachId);
+            mainView.showAppointmentList(appointments);
+
+        } catch (Exception exception) {
             mainView.showErrorMessage(exception.getMessage());
         }
     }
