@@ -31,7 +31,12 @@ public class LoginView {
         usernameField = new TextField();
         passwordField = new PasswordField();
         loginButton = new Button("Se connecter");
-        createAccountButton = new Button("Creer un compte");
+        createAccountButton = new Button("Créer un compte");
+
+        usernameField.setPromptText("Nom d'utilisateur");
+        passwordField.setPromptText("Mot de passe");
+
+        loginButton.setDefaultButton(true);
 
         createForm();
     }
@@ -49,11 +54,31 @@ public class LoginView {
     }
 
     public String getUsername() {
-        return getRequiredText(usernameField, "Le nom d'utilisateur est obligatoire.");
+        return getRequiredTrimmedText(usernameField);
     }
 
     public String getPassword() {
-        return getRequiredText(passwordField, "Le mot de passe est obligatoire.");
+        return getRequiredPassword(passwordField);
+    }
+
+    private String getRequiredTrimmedText(TextField textField) {
+        String value = textField.getText();
+
+        if (value == null || value.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le nom d'utilisateur est obligatoire.");
+        }
+
+        return value.trim();
+    }
+
+    private String getRequiredPassword(PasswordField passwordField) {
+        String value = passwordField.getText();
+
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException("Le mot de passe est obligatoire.");
+        }
+
+        return value;
     }
 
     private void createForm() {
@@ -103,15 +128,5 @@ public class LoginView {
         logoView.setSmooth(true);
 
         return logoView;
-    }
-
-    private String getRequiredText(TextField textField, String message) {
-        String value = textField.getText();
-
-        if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException(message);
-        }
-
-        return value.trim();
     }
 }

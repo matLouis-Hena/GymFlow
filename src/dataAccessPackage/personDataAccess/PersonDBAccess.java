@@ -8,6 +8,7 @@ import exceptionPackage.person.UpdatePersonException;
 import exceptionPackage.validation.*;
 import modelPackage.Gender;
 import modelPackage.Person;
+import securityPackage.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -203,7 +204,7 @@ public class PersonDBAccess implements IPersonDA {
         }
 
         statement.setString(8, person.getUsername());
-        statement.setString(9, person.getPassword());
+        statement.setString(9, PasswordUtil.hashIfNeeded(person.getPassword()));
     }
 
     private Person mapPerson(ResultSet resultSet) throws SQLException, ReadPersonException {

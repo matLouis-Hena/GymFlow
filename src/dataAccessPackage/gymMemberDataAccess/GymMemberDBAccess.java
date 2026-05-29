@@ -7,6 +7,7 @@ import modelPackage.Gender;
 import modelPackage.GymMember;
 import modelPackage.Subscription;
 import modelPackage.SubscriptionType;
+import securityPackage.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -326,7 +327,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
             setNullableString(statement, 6, member.getPhone());
             setNullableInteger(statement, 7, member.getLockerNumber(), Types.SMALLINT);
             statement.setString(8, member.getUsername());
-            statement.setString(9, member.getPassword());
+            statement.setString(9, PasswordUtil.hashIfNeeded(member.getPassword()));
 
             int affectedRows = statement.executeUpdate();
 
@@ -416,7 +417,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
             setNullableString(statement, 6, member.getPhone());
             setNullableInteger(statement, 7, member.getLockerNumber(), Types.SMALLINT);
             statement.setString(8, member.getUsername());
-            statement.setString(9, member.getPassword());
+            statement.setString(9, PasswordUtil.hashIfNeeded(member.getPassword()));
             statement.setInt(10, member.getId());
 
             int affectedRows = statement.executeUpdate();
