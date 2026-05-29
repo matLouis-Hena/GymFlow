@@ -83,6 +83,63 @@ public class GymMemberDBAccess implements IGymMemberDA {
     }
 
     @Override
+    public void insertForExistingPerson(GymMember member) throws AddGymMemberException, DuplicateGymMemberException {
+        String updateLockerSql =
+                "UPDATE person " +
+                        "SET locker_number = ? " +
+                        "WHERE id = ?";
+
+        String insertSubscriptionSql =
+                "INSERT INTO subscription " +
+                        "(type, price, duration_months) " +
+                        "VALUES (?, ?, ?)";
+
+        String insertGymMemberSql =
+                "INSERT INTO gym_member " +
+                        "(person_id, is_active, weight, height, enrollment) " +
+                        "VALUES (?, ?, ?, ?, ?)";
+
+        boolean previousAutoCommit = true;
+
+        try {
+            connection = getConnection();
+            previousAutoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+
+            validateMemberBeforeInsert(member);
+            checkPersonExists(member.getId());
+            checkPersonIsNotAlreadyMember(member.getId());
+            updateLockerNumber(member, updateLockerSql);
+
+            int subscriptionId = insertSubscription(member.getEnrollment(), insertSubscriptionSql);
+            insertGymMember(member, member.getId(), subscriptionId, insertGymMemberSql);
+
+            connection.commit();
+
+        } catch (SQLIntegrityConstraintViolationException exception) {
+            rollback();
+            throw new DuplicateGymMemberException(
+                    "person_id",
+                    "Ce compte est deja inscrit comme membre."
+            );
+
+        } catch (SQLException exception) {
+            rollback();
+            throw new AddGymMemberException(
+                    "database",
+                    "Erreur lors de l'inscription du compte existant."
+            );
+
+        } catch (AddGymMemberException | DuplicateGymMemberException exception) {
+            rollback();
+            throw exception;
+
+        } finally {
+            restoreAutoCommit(previousAutoCommit);
+        }
+    }
+
+    @Override
     public List<GymMember> getAll() throws ReadGymMemberException {
         String sql =
                 "SELECT p.id, p.first_name, p.last_name, p.birth_date, p.gender, " +
@@ -373,6 +430,22 @@ public class GymMemberDBAccess implements IGymMemberDA {
         }
     }
 
+    private void updateLockerNumber(GymMember member, String sql) throws SQLException, AddGymMemberException {
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            setNullableInteger(statement, 1, member.getLockerNumber(), Types.SMALLINT);
+            statement.setInt(2, member.getId());
+
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new AddGymMemberException(
+                        String.valueOf(member.getId()),
+                        "Aucun compte n'a ete trouve pour ce membre."
+                );
+            }
+        }
+    }
+
     private void updateSubscription(Subscription subscription, String sql)
             throws SQLException, UpdateGymMemberException {
         if (subscription == null) {
@@ -548,6 +621,11 @@ public class GymMemberDBAccess implements IGymMemberDA {
                 InvalidDurationException |
                 IllegalArgumentException exception
         ) {
+
+            System.out.println("Erreur creation membre id " + id);
+            System.out.println("Type erreur : " + exception.getClass().getSimpleName());
+            System.out.println("Message : " + exception.getMessage());
+
             throw new ReadGymMemberException(
                     String.valueOf(id),
                     "Erreur lors de la création du membre à partir des données récupérées."
@@ -600,6 +678,47 @@ public class GymMemberDBAccess implements IGymMemberDA {
                                 "Ce nom d'utilisateur est déjà utilisé."
                         );
                     }
+                }
+            }
+        }
+    }
+
+    private void checkPersonExists(int personId) throws SQLException, AddGymMemberException {
+        String sql =
+                "SELECT id " +
+                        "FROM person " +
+                        "WHERE id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, personId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    throw new AddGymMemberException(
+                            String.valueOf(personId),
+                            "Le compte selectionne n'existe pas."
+                    );
+                }
+            }
+        }
+    }
+
+    private void checkPersonIsNotAlreadyMember(int personId)
+            throws SQLException, DuplicateGymMemberException {
+        String sql =
+                "SELECT person_id " +
+                        "FROM gym_member " +
+                        "WHERE person_id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, personId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    throw new DuplicateGymMemberException(
+                            String.valueOf(personId),
+                            "Ce compte est deja inscrit comme membre."
+                    );
                 }
             }
         }

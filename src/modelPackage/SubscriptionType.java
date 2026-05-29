@@ -1,9 +1,9 @@
 package modelPackage;
 
 public enum SubscriptionType {
-    BASIC("BASIC", "Basic", 29.99),
+    BASIC("BASIC", "Basic", 15.99),
     STANDARD("STANDARD", "Standard", 24.99),
-    PREMIUM("PREMIUM", "Premium", 19.99);
+    PREMIUM("PREMIUM", "Premium", 39.99);
 
     private final String databaseValue;
     private final String displayValue;

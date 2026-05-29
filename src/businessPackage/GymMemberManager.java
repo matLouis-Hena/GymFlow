@@ -38,6 +38,20 @@ public class GymMemberManager {
         gymMemberDataAccess.insert(member);
     }
 
+    public void registerExistingPersonAsMember(GymMember member)
+            throws AddGymMemberException, DuplicateGymMemberException {
+        validateMemberForAdd(member);
+
+        if (member.getId() <= 0) {
+            throw new AddGymMemberException(
+                    String.valueOf(member.getId()),
+                    "L'identifiant du compte est invalide."
+            );
+        }
+
+        gymMemberDataAccess.insertForExistingPerson(member);
+    }
+
     public List<GymMember> getAllMembers() throws ReadGymMemberException {
         return gymMemberDataAccess.getAll();
     }

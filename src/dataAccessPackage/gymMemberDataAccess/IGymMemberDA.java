@@ -9,6 +9,8 @@ public interface IGymMemberDA {
 
     void insert(GymMember member) throws AddGymMemberException, DuplicateGymMemberException;
 
+    void insertForExistingPerson(GymMember member) throws AddGymMemberException, DuplicateGymMemberException;
+
     List<GymMember> getAll() throws ReadGymMemberException;
 
     GymMember getById(int id) throws ReadGymMemberException;
