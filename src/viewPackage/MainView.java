@@ -1,6 +1,7 @@
 package viewPackage;
 
 import controllerPackage.AppointmentController;
+import controllerPackage.CoachAvailabilityController;
 import controllerPackage.GymMemberController;
 import controllerPackage.PersonController;
 import controllerPackage.SearchController;
@@ -15,9 +16,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import modelPackage.GymMember;
+import modelPackage.CoachAvailability;
 import modelPackage.Person;
 import modelPackage.Room;
 import modelPackage.Speciality;
+import modelPackage.UserRole;
 import modelPackage.searchResult.AppointmentSearchResult;
 import modelPackage.searchResult.AvailableCoachSearchResult;
 import modelPackage.searchResult.SponsoredMemberSearchResult;
@@ -31,11 +34,16 @@ public class MainView {
     private PersonController personController;
     private SearchController searchController;
     private AppointmentController appointmentController;
+    private CoachAvailabilityController coachAvailabilityController;
     private Person connectedPerson;
+    private UserRole connectedUserRole;
     private AppointmentSearchView appointmentSearchView;
     private SponsoredMemberSearchView sponsoredMemberSearchView;
     private AvailableCoachSearchView availableCoachSearchView;
     private AppointmentBookingView appointmentBookingView;
+    private AppointmentListView appointmentListView;
+    private MemberAccountView memberAccountView;
+    private CoachAvailabilityManagementView coachAvailabilityManagementView;
     private Label infoBannerLabel;
     private InfoBannerThread infoBannerThread;
 
@@ -65,20 +73,31 @@ public class MainView {
         this.appointmentController = appointmentController;
     }
 
+    public void setCoachAvailabilityController(CoachAvailabilityController coachAvailabilityController) {
+        this.coachAvailabilityController = coachAvailabilityController;
+    }
+
     public Person getConnectedPerson() {
         return connectedPerson;
     }
 
-    public void login(Person person) {
+    public void login(Person person, UserRole userRole) {
         connectedPerson = person;
+        connectedUserRole = userRole;
         root.setTop(createMenuBar());
         showWelcomeMessage();
     }
 
     public void logout() {
         connectedPerson = null;
+        connectedUserRole = null;
         root.setTop(null);
         showLoginForm();
+    }
+
+    public void setConnectedUserRole(UserRole userRole) {
+        connectedUserRole = userRole;
+        root.setTop(createMenuBar());
     }
 
     public void showLoginForm() {
@@ -159,7 +178,9 @@ public class MainView {
         GymMemberListView gymMemberListView = new GymMemberListView(members);
 
         gymMemberListView.getAddButton().setOnAction(event -> {
-            if (gymMemberController != null) {
+            if (connectedUserRole == UserRole.ADMIN) {
+                showGymMemberForm(null);
+            } else if (gymMemberController != null) {
                 gymMemberController.showConnectedPersonRegistrationForm();
             }
         });
@@ -200,7 +221,10 @@ public class MainView {
                 GymMember member = gymMemberFormView.createGymMember();
 
                 if (gymMemberController != null) {
-                    gymMemberController.addExistingAccountMember(member);
+                    gymMemberController.addExistingAccountMember(
+                            member,
+                            gymMemberFormView.getSponsorUsername()
+                    );
                 }
             } catch (Exception exception) {
                 showErrorMessage(exception.getMessage());
@@ -223,7 +247,10 @@ public class MainView {
                     if (gymMemberFormView.isUpdateMode()) {
                         gymMemberController.updateMember(formMember);
                     } else {
-                        gymMemberController.addMember(formMember);
+                        gymMemberController.addMember(
+                                formMember,
+                                gymMemberFormView.getSponsorUsername()
+                        );
                     }
                 }
             } catch (Exception exception) {
@@ -240,6 +267,26 @@ public class MainView {
         });
 
         root.setCenter(gymMemberFormView.getRoot());
+    }
+
+    public void showMemberAccount(GymMember member, String sponsorText) {
+        memberAccountView = new MemberAccountView(member, sponsorText);
+
+        memberAccountView.getSaveButton().setOnAction(event -> {
+            try {
+                if (gymMemberController != null) {
+                    gymMemberController.updateMyAccount(
+                            memberAccountView.createUpdatedMember()
+                    );
+                }
+            } catch (Exception exception) {
+                showErrorMessage(exception.getMessage());
+            }
+        });
+
+        memberAccountView.getBackButton().setOnAction(event -> showWelcomeMessage());
+
+        root.setCenter(memberAccountView.getRoot());
     }
 
     public void showAppointmentSearch(List<GymMember> members) {
@@ -367,6 +414,52 @@ public class MainView {
         }
     }
 
+    public void showAppointmentList(List<modelPackage.Appointment> appointments) {
+        appointmentListView = new AppointmentListView(appointments);
+
+        appointmentListView.getRefreshButton().setOnAction(event -> {
+            if (appointmentController != null) {
+                appointmentController.showAppointmentList();
+            }
+        });
+
+        root.setCenter(appointmentListView.getRoot());
+    }
+
+    public void showCoachAvailabilityManagement(List<CoachAvailability> availabilities) {
+        coachAvailabilityManagementView = new CoachAvailabilityManagementView(availabilities);
+
+        coachAvailabilityManagementView.getAddButton().setOnAction(event -> {
+            try {
+                if (coachAvailabilityController != null) {
+                    coachAvailabilityController.addAvailability(
+                            coachAvailabilityManagementView.getDate(),
+                            coachAvailabilityManagementView.getStartTime(),
+                            coachAvailabilityManagementView.getEndTime()
+                    );
+                }
+            } catch (Exception exception) {
+                showErrorMessage(exception.getMessage());
+            }
+        });
+
+        coachAvailabilityManagementView.getDeleteButton().setOnAction(event -> {
+            if (coachAvailabilityController != null) {
+                coachAvailabilityController.deleteAvailability(
+                        coachAvailabilityManagementView.getSelectedAvailability()
+                );
+            }
+        });
+
+        coachAvailabilityManagementView.getRefreshButton().setOnAction(event -> {
+            if (coachAvailabilityController != null) {
+                coachAvailabilityController.showMyAvailabilities();
+            }
+        });
+
+        root.setCenter(coachAvailabilityManagementView.getRoot());
+    }
+
     public void showWelcomeMessage() {
         String firstName = "";
 
@@ -377,9 +470,16 @@ public class MainView {
         Label titleLabel = new Label("Bienvenue" + firstName);
         titleLabel.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;");
 
+        String roleText = "";
+
+        if (connectedUserRole != null) {
+            roleText = "Role : " + connectedUserRole.getDisplayName();
+        }
+
+        Label roleLabel = new Label(roleText);
         Label instructionLabel = new Label("Utilisez le menu pour acceder aux fonctionnalites.");
 
-        VBox welcomeBox = new VBox(15, titleLabel, instructionLabel);
+        VBox welcomeBox = new VBox(15, titleLabel, roleLabel, instructionLabel);
         welcomeBox.setAlignment(Pos.CENTER);
         welcomeBox.setPadding(new Insets(30));
 
@@ -428,6 +528,26 @@ public class MainView {
         homeMenu.getItems().add(welcomeItem);
         homeMenu.getItems().add(logoutItem);
 
+        menuBar.getMenus().add(homeMenu);
+
+        if (connectedUserRole == UserRole.ADMIN) {
+            menuBar.getMenus().add(createAccountMenu());
+            menuBar.getMenus().add(createMemberMenu(false, true));
+            menuBar.getMenus().add(createAdminAppointmentMenu());
+            menuBar.getMenus().add(createSearchMenu());
+        } else if (connectedUserRole == UserRole.COACH) {
+            menuBar.getMenus().add(createCoachMenu());
+        } else if (connectedUserRole == UserRole.MEMBER_WITH_SUBSCRIPTION) {
+            menuBar.getMenus().add(createMyAccountMenu());
+            menuBar.getMenus().add(createAppointmentMenu());
+        } else {
+            menuBar.getMenus().add(createMemberMenu(true, false));
+        }
+
+        return menuBar;
+    }
+
+    private Menu createAccountMenu() {
         Menu accountMenu = new Menu("Comptes");
 
         MenuItem listAccountsItem = new MenuItem("Lister les comptes");
@@ -439,25 +559,38 @@ public class MainView {
 
         accountMenu.getItems().add(listAccountsItem);
 
+        return accountMenu;
+    }
+
+    private Menu createMemberMenu(boolean showRegistration, boolean showList) {
         Menu memberMenu = new Menu("Membres");
 
-        MenuItem registrationItem = new MenuItem("Inscription");
-        registrationItem.setOnAction(event -> {
-            if (gymMemberController != null) {
-                gymMemberController.showConnectedPersonRegistrationForm();
-            }
-        });
+        if (showRegistration) {
+            MenuItem registrationItem = new MenuItem("S'inscrire a la salle");
+            registrationItem.setOnAction(event -> {
+                if (gymMemberController != null) {
+                    gymMemberController.showConnectedPersonRegistrationForm();
+                }
+            });
 
-        MenuItem listMembersItem = new MenuItem("Lister les membres");
-        listMembersItem.setOnAction(event -> {
-            if (gymMemberController != null) {
-                gymMemberController.showMembers();
-            }
-        });
+            memberMenu.getItems().add(registrationItem);
+        }
 
-        memberMenu.getItems().add(registrationItem);
-        memberMenu.getItems().add(listMembersItem);
+        if (showList) {
+            MenuItem listMembersItem = new MenuItem("Lister les membres");
+            listMembersItem.setOnAction(event -> {
+                if (gymMemberController != null) {
+                    gymMemberController.showMembers();
+                }
+            });
 
+            memberMenu.getItems().add(listMembersItem);
+        }
+
+        return memberMenu;
+    }
+
+    private Menu createAppointmentMenu() {
         Menu appointmentMenu = new Menu("Rendez-vous");
 
         MenuItem bookAppointmentItem = new MenuItem("Prendre rendez-vous");
@@ -469,6 +602,55 @@ public class MainView {
 
         appointmentMenu.getItems().add(bookAppointmentItem);
 
+        return appointmentMenu;
+    }
+
+    private Menu createAdminAppointmentMenu() {
+        Menu appointmentMenu = new Menu("Rendez-vous");
+
+        MenuItem listAppointmentItem = new MenuItem("Lister les rendez-vous");
+        listAppointmentItem.setOnAction(event -> {
+            if (appointmentController != null) {
+                appointmentController.showAppointmentList();
+            }
+        });
+
+        appointmentMenu.getItems().add(listAppointmentItem);
+
+        return appointmentMenu;
+    }
+
+    private Menu createMyAccountMenu() {
+        Menu myAccountMenu = new Menu("Mon compte");
+
+        MenuItem myAccountItem = new MenuItem("Voir mon compte");
+        myAccountItem.setOnAction(event -> {
+            if (gymMemberController != null) {
+                gymMemberController.showMyAccount();
+            }
+        });
+
+        myAccountMenu.getItems().add(myAccountItem);
+
+        return myAccountMenu;
+    }
+
+    private Menu createCoachMenu() {
+        Menu coachMenu = new Menu("Coach");
+
+        MenuItem myAvailabilitiesItem = new MenuItem("Mes disponibilites");
+        myAvailabilitiesItem.setOnAction(event -> {
+            if (coachAvailabilityController != null) {
+                coachAvailabilityController.showMyAvailabilities();
+            }
+        });
+
+        coachMenu.getItems().add(myAvailabilitiesItem);
+
+        return coachMenu;
+    }
+
+    private Menu createSearchMenu() {
         Menu searchMenu = new Menu("Recherches");
 
         MenuItem appointmentSearchItem = new MenuItem("Rendez-vous d'un membre");
@@ -496,9 +678,7 @@ public class MainView {
         searchMenu.getItems().add(sponsoredMemberSearchItem);
         searchMenu.getItems().add(availableCoachSearchItem);
 
-        menuBar.getMenus().addAll(homeMenu, accountMenu, memberMenu, appointmentMenu, searchMenu);
-
-        return menuBar;
+        return searchMenu;
     }
 
     public boolean askConfirmation(String message) {

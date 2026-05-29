@@ -4,6 +4,7 @@ import businessPackage.PersonManager;
 import exceptionPackage.person.AddPersonException;
 import exceptionPackage.person.ReadPersonException;
 import modelPackage.Person;
+import modelPackage.UserRole;
 import viewPackage.MainView;
 
 import java.util.List;
@@ -35,7 +36,8 @@ public class PersonController {
                 return;
             }
 
-            mainView.login(person);
+            UserRole userRole = personManager.getUserRoleByPersonId(person.getId());
+            mainView.login(person, userRole);
 
         } catch (ReadPersonException exception) {
             mainView.showErrorMessage(exception.getMessage());
@@ -65,8 +67,9 @@ public class PersonController {
         try {
             int id = personManager.createPerson(person);
             Person createdPerson = personManager.getPersonById(id);
+            UserRole userRole = personManager.getUserRoleByPersonId(id);
             mainView.showInformationMessage("Compte cree avec succes.");
-            mainView.login(createdPerson);
+            mainView.login(createdPerson, userRole);
         } catch (AddPersonException | ReadPersonException exception) {
             mainView.showErrorMessage(exception.getMessage());
         }

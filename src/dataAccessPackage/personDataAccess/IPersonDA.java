@@ -5,6 +5,7 @@ import exceptionPackage.person.DeletePersonException;
 import exceptionPackage.person.ReadPersonException;
 import exceptionPackage.person.UpdatePersonException;
 import modelPackage.Person;
+import modelPackage.UserRole;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ public interface IPersonDA {
     List<Person> getAll() throws ReadPersonException;
 
     Person getById(int id) throws ReadPersonException;
+
+    UserRole getUserRoleByPersonId(int id) throws ReadPersonException;
 
     void update(Person person) throws UpdatePersonException;
 

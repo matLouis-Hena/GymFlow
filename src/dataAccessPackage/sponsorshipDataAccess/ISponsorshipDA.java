@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface ISponsorshipDA {
 
+    void insert(int sponsorId, int sponsoredId) throws AddSponsorshipException;
+
     List<Sponsorship> getByMemberId(int memberId) throws ReadSponsorshipException;
 
     int countSponsoredBySponsorId(int sponsorId) throws ReadSponsorshipException;

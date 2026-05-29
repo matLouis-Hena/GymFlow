@@ -15,6 +15,7 @@ import exceptionPackage.person.ReadPersonException;
 import exceptionPackage.person.UpdatePersonException;
 import modelPackage.Gender;
 import modelPackage.Person;
+import modelPackage.UserRole;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -63,6 +64,24 @@ public class PersonDBAccess implements IPersonDA {
     private static final String DELETE_PERSON_SQL = """
             DELETE FROM person
             WHERE id = ?
+            """;
+
+    private static final String SELECT_ADMIN_BY_PERSON_ID_SQL = """
+            SELECT person_id
+            FROM admin
+            WHERE person_id = ?
+            """;
+
+    private static final String SELECT_COACH_BY_PERSON_ID_SQL = """
+            SELECT person_id
+            FROM coach
+            WHERE person_id = ?
+            """;
+
+    private static final String SELECT_MEMBER_BY_PERSON_ID_SQL = """
+            SELECT is_active
+            FROM gym_member
+            WHERE person_id = ?
             """;
 
     private Connection connection;
@@ -146,6 +165,35 @@ public class PersonDBAccess implements IPersonDA {
 
         } catch (SQLException exception) {
             throw new ReadPersonException("database", "Erreur lors de la récupération des personnes.");
+        }
+    }
+
+    @Override
+    public UserRole getUserRoleByPersonId(int id) throws ReadPersonException {
+        try {
+            connection = getConnection();
+
+            if (existsByPersonId(id, SELECT_ADMIN_BY_PERSON_ID_SQL)) {
+                return UserRole.ADMIN;
+            }
+
+            if (existsByPersonId(id, SELECT_COACH_BY_PERSON_ID_SQL)) {
+                return UserRole.COACH;
+            }
+
+            Boolean isActiveMember = getMemberActiveValue(id);
+
+            if (isActiveMember != null && isActiveMember) {
+                return UserRole.MEMBER_WITH_SUBSCRIPTION;
+            }
+
+            return UserRole.MEMBER_WITHOUT_SUBSCRIPTION;
+
+        } catch (SQLException exception) {
+            throw new ReadPersonException(
+                    String.valueOf(id),
+                    "Erreur lors de la recuperation du role de l'utilisateur."
+            );
         }
     }
 
@@ -263,6 +311,30 @@ public class PersonDBAccess implements IPersonDA {
         }
 
         return value;
+    }
+
+    private boolean existsByPersonId(int id, String sql) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        }
+    }
+
+    private Boolean getMemberActiveValue(int id) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_MEMBER_BY_PERSON_ID_SQL)) {
+            statement.setInt(1, id);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getBoolean("is_active");
+                }
+
+                return null;
+            }
+        }
     }
 
     private Connection getConnection() throws SQLException {

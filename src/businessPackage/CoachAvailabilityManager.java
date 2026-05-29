@@ -6,7 +6,9 @@ import exceptionPackage.coachAvailability.ReadCoachAvailabilityException;
 import exceptionPackage.coachAvailability.UpdateCoachAvailabilityException;
 import modelPackage.CoachAvailability;
 
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class CoachAvailabilityManager {
@@ -23,6 +25,12 @@ public class CoachAvailabilityManager {
 
     public List<CoachAvailability> getAllAvailabilities() throws ReadCoachAvailabilityException {
         return coachAvailabilityDataAccess.getAll();
+    }
+
+    public List<CoachAvailability> getAvailabilitiesByCoachId(int coachId)
+            throws ReadCoachAvailabilityException {
+        validateIdForRead(coachId);
+        return coachAvailabilityDataAccess.getByCoachId(coachId);
     }
 
     public CoachAvailability getAvailabilityById(int id) throws ReadCoachAvailabilityException {
@@ -62,6 +70,51 @@ public class CoachAvailabilityManager {
     public void markAsAvailable(int id) throws UpdateCoachAvailabilityException {
         validateIdForUpdate(id);
         coachAvailabilityDataAccess.markAsAvailable(id);
+    }
+
+    public void addAvailability(int coachId, LocalDate date, LocalTime startTime, LocalTime endTime)
+            throws UpdateCoachAvailabilityException {
+        validateIdForUpdate(coachId);
+
+        if (date == null) {
+            throw new UpdateCoachAvailabilityException(
+                    "date",
+                    "La date est obligatoire."
+            );
+        }
+
+        if (date.isBefore(LocalDate.now())) {
+            throw new UpdateCoachAvailabilityException(
+                    String.valueOf(date),
+                    "La date ne peut pas etre dans le passe."
+            );
+        }
+
+        if (startTime == null || endTime == null) {
+            throw new UpdateCoachAvailabilityException(
+                    "time",
+                    "Les heures sont obligatoires."
+            );
+        }
+
+        if (!endTime.isAfter(startTime)) {
+            throw new UpdateCoachAvailabilityException(
+                    String.valueOf(endTime),
+                    "L'heure de fin doit etre apres l'heure de debut."
+            );
+        }
+
+        coachAvailabilityDataAccess.insert(
+                coachId,
+                date,
+                Time.valueOf(startTime),
+                Time.valueOf(endTime)
+        );
+    }
+
+    public void deleteAvailability(int id) throws UpdateCoachAvailabilityException {
+        validateIdForUpdate(id);
+        coachAvailabilityDataAccess.delete(id);
     }
 
     private void validateSearchCriteria(String specialityName, LocalDate startDate, LocalDate endDate)

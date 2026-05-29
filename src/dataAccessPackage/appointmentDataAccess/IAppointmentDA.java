@@ -15,6 +15,8 @@ public interface IAppointmentDA {
 
     Appointment getById(int id) throws ReadAppointmentException;
 
+    List<Appointment> getAll() throws ReadAppointmentException;
+
     List<Appointment> getByMemberId(int memberId) throws ReadAppointmentException;
 
     boolean existsForMemberOnDate(int memberId, LocalDate date) throws ReadAppointmentException;

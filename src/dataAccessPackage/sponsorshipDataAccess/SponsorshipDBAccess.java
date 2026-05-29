@@ -16,6 +16,12 @@ import java.util.List;
 
 public class SponsorshipDBAccess implements ISponsorshipDA {
 
+    private static final String INSERT_SPONSORSHIP_SQL = """
+            INSERT INTO sponsorship
+            (sponsor_id, sponsored_id, start_date)
+            VALUES (?, ?, CURDATE())
+            """;
+
     private static final String SELECT_SPONSORSHIPS_BY_MEMBER_ID_SQL = """
             SELECT id, start_date, sponsor_id, sponsored_id
             FROM sponsorship
@@ -45,6 +51,33 @@ public class SponsorshipDBAccess implements ISponsorshipDA {
 
     public SponsorshipDBAccess() {
         this.gymMemberDataAccess = new GymMemberDBAccess();
+    }
+
+    @Override
+    public void insert(int sponsorId, int sponsoredId) throws AddSponsorshipException {
+        try {
+            connection = getConnection();
+
+            try (PreparedStatement statement = connection.prepareStatement(INSERT_SPONSORSHIP_SQL)) {
+                statement.setInt(1, sponsorId);
+                statement.setInt(2, sponsoredId);
+
+                int affectedRows = statement.executeUpdate();
+
+                if (affectedRows == 0) {
+                    throw new AddSponsorshipException(
+                            String.valueOf(sponsoredId),
+                            "Aucun parrainage n'a ete ajoute."
+                    );
+                }
+            }
+
+        } catch (SQLException exception) {
+            throw new AddSponsorshipException(
+                    String.valueOf(sponsoredId),
+                    "Erreur lors de l'ajout du parrainage."
+            );
+        }
     }
 
     @Override

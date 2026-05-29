@@ -150,6 +150,10 @@ public class AppointmentManager {
         return appointment;
     }
 
+    public List<Appointment> getAllAppointments() throws ReadAppointmentException {
+        return appointmentDataAccess.getAll();
+    }
+
     public List<Appointment> getAppointmentsByMemberId(int memberId)
             throws ReadAppointmentException, AppointmentBusinessException {
         validateId(memberId, "memberId", "L'identifiant du membre doit être supérieur à 0.");

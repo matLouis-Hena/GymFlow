@@ -71,6 +71,28 @@ public class GymMemberManager {
         return member;
     }
 
+    public GymMember getMemberByUsername(String username) throws ReadGymMemberException {
+        if (username == null || username.isBlank()) {
+            throw new ReadGymMemberException(
+                    "username",
+                    "Le nom d'utilisateur du membre est obligatoire."
+            );
+        }
+
+        List<GymMember> members = gymMemberDataAccess.getAll();
+
+        for (GymMember member : members) {
+            if (member.getUsername().equals(username.trim())) {
+                return member;
+            }
+        }
+
+        throw new ReadGymMemberException(
+                username,
+                "Aucun membre trouve avec ce nom d'utilisateur."
+        );
+    }
+
     public void updateMember(GymMember member)
             throws UpdateGymMemberException, DuplicateGymMemberException {
         validateMemberForUpdate(member);

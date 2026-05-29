@@ -42,6 +42,13 @@ public class AppointmentDBAccess implements IAppointmentDA {
             WHERE id = ?
             """;
 
+    private static final String SELECT_ALL_APPOINTMENTS_SQL = """
+            SELECT a.id, a.member_id, a.availability_id, a.objective, a.room_id, a.status, a.cancellation_reason
+            FROM appointment a
+            INNER JOIN coach_availability ca ON a.availability_id = ca.id
+            ORDER BY ca.available_date, ca.start_time, a.id
+            """;
+
     private static final String SELECT_APPOINTMENTS_BY_MEMBER_ID_SQL = """
             SELECT id, member_id, availability_id, objective, room_id, status, cancellation_reason
             FROM appointment
@@ -144,6 +151,32 @@ public class AppointmentDBAccess implements IAppointmentDA {
             throw new ReadAppointmentException(
                     String.valueOf(id),
                     "Erreur lors de la récupération du rendez-vous."
+            );
+        }
+    }
+
+    @Override
+    public List<Appointment> getAll() throws ReadAppointmentException {
+        List<Appointment> appointments = new ArrayList<>();
+
+        try {
+            connection = getConnection();
+
+            try (
+                    PreparedStatement statement = connection.prepareStatement(SELECT_ALL_APPOINTMENTS_SQL);
+                    ResultSet resultSet = statement.executeQuery()
+            ) {
+                while (resultSet.next()) {
+                    appointments.add(mapAppointment(resultSet));
+                }
+            }
+
+            return appointments;
+
+        } catch (SQLException exception) {
+            throw new ReadAppointmentException(
+                    "database",
+                    "Erreur lors de la recuperation des rendez-vous."
             );
         }
     }
