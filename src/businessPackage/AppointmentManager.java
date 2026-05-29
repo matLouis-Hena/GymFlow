@@ -6,13 +6,9 @@ import dataAccessPackage.gymMemberDataAccess.*;
 import dataAccessPackage.roomDataAccess.*;
 import exceptionPackage.appointment.*;
 import exceptionPackage.coachAvailability.*;
-import exceptionPackage.gymMember.ReadGymMemberException;
-import exceptionPackage.room.ReadRoomException;
-import modelPackage.Appointment;
-import modelPackage.AppointmentStatus;
-import modelPackage.CoachAvailability;
-import modelPackage.GymMember;
-import modelPackage.Room;
+import exceptionPackage.gymMember.*;
+import exceptionPackage.room.*;
+import modelPackage.*;
 
 import java.util.List;
 
@@ -42,8 +38,13 @@ public class AppointmentManager {
         this.roomDataAccess = roomDataAccess;
     }
 
-    public int bookAppointment(int memberId, int availabilityId, Integer roomId, String objective)
-            throws ReadGymMemberException,
+    public int bookAppointment(
+            int memberId,
+            int availabilityId,
+            String specialityName,
+            Integer roomId,
+            String objective
+    ) throws ReadGymMemberException,
             ReadCoachAvailabilityException,
             ReadRoomException,
             ReadAppointmentException,
@@ -52,6 +53,7 @@ public class AppointmentManager {
             AppointmentBusinessException {
         validateId(memberId, "memberId", "L'identifiant du membre doit être supérieur à 0.");
         validateId(availabilityId, "availabilityId", "L'identifiant de la disponibilité doit être supérieur à 0.");
+        validateSpecialityName(specialityName);
 
         GymMember member = gymMemberDataAccess.getById(memberId);
 
@@ -85,6 +87,18 @@ public class AppointmentManager {
             );
         }
 
+        boolean coachQualified = coachAvailabilityDataAccess.isCoachQualifiedForSpeciality(
+                availability.getId(),
+                specialityName
+        );
+
+        if (!coachQualified) {
+            throw new AppointmentBusinessException(
+                    specialityName,
+                    "Le coach du créneau sélectionné n'est pas qualifié pour cette spécialité."
+            );
+        }
+
         boolean alreadyHasAppointment = appointmentDataAccess.existsForMemberOnDate(
                 member.getId(),
                 availability.getAvailableDate()
@@ -115,7 +129,6 @@ public class AppointmentManager {
             coachAvailabilityDataAccess.markAsBooked(availability.getId());
         } catch (UpdateCoachAvailabilityException exception) {
             cleanAppointmentAfterBookingFailure(appointmentId);
-
             throw exception;
         }
 
@@ -202,6 +215,26 @@ public class AppointmentManager {
         }
     }
 
+    public void deleteAppointmentsByMemberId(int memberId)
+            throws ReadAppointmentException,
+            DeleteAppointmentException,
+            UpdateCoachAvailabilityException,
+            AppointmentBusinessException {
+        validateId(memberId, "memberId", "L'identifiant du membre doit être supérieur à 0.");
+
+        List<Appointment> appointments = appointmentDataAccess.getByMemberId(memberId);
+
+        for (Appointment appointment : appointments) {
+            if (appointment.getAvailability() != null) {
+                coachAvailabilityDataAccess.markAsAvailable(
+                        appointment.getAvailability().getId()
+                );
+            }
+        }
+
+        appointmentDataAccess.deleteByMemberId(memberId);
+    }
+
     private void cancelAppointment(
             int appointmentId,
             AppointmentStatus cancelledStatus,
@@ -264,31 +297,20 @@ public class AppointmentManager {
         }
     }
 
+    private void validateSpecialityName(String specialityName) throws AppointmentBusinessException {
+        if (specialityName == null || specialityName.isBlank()) {
+            throw new AppointmentBusinessException(
+                    "specialityName",
+                    "La spécialité choisie est obligatoire."
+            );
+        }
+    }
+
     private void cleanAppointmentAfterBookingFailure(int appointmentId) {
         try {
             appointmentDataAccess.delete(appointmentId);
         } catch (DeleteAppointmentException ignored) {
-            // Test/rollback métier silencieux : aucune sortie dans la couche business.
+            // Nettoyage silencieux côté business.
         }
-    }
-
-    public void deleteAppointmentsByMemberId(int memberId)
-            throws ReadAppointmentException,
-            DeleteAppointmentException,
-            UpdateCoachAvailabilityException,
-            AppointmentBusinessException {
-        validateId(memberId, "memberId", "L'identifiant du membre doit être supérieur à 0.");
-
-        List<Appointment> appointments = appointmentDataAccess.getByMemberId(memberId);
-
-        for (Appointment appointment : appointments) {
-            if (appointment.getAvailability() != null) {
-                coachAvailabilityDataAccess.markAsAvailable(
-                        appointment.getAvailability().getId()
-                );
-            }
-        }
-
-        appointmentDataAccess.deleteByMemberId(memberId);
     }
 }

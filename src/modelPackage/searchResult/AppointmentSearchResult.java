@@ -8,58 +8,51 @@ import java.time.LocalTime;
 public class AppointmentSearchResult {
 
     private int appointmentId;
-    private int memberId;
-    private String memberFullName;
-    private String coachFullName;
-    private LocalDate appointmentDate;
+    private String coachFirstName;
+    private String coachLastName;
+    private LocalDate availableDate;
     private LocalTime startTime;
     private LocalTime endTime;
-    private String roomName;
     private String objective;
     private AppointmentStatus status;
+    private String roomName;
 
     public AppointmentSearchResult(
             int appointmentId,
-            int memberId,
-            String memberFullName,
-            String coachFullName,
-            LocalDate appointmentDate,
+            String coachFirstName,
+            String coachLastName,
+            LocalDate availableDate,
             LocalTime startTime,
             LocalTime endTime,
-            String roomName,
             String objective,
-            AppointmentStatus status
+            AppointmentStatus status,
+            String roomName
     ) {
         this.appointmentId = appointmentId;
-        this.memberId = memberId;
-        this.memberFullName = memberFullName;
-        this.coachFullName = coachFullName;
-        this.appointmentDate = appointmentDate;
+        this.coachFirstName = coachFirstName;
+        this.coachLastName = coachLastName;
+        this.availableDate = availableDate;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.roomName = roomName;
         this.objective = objective;
         this.status = status;
+        this.roomName = roomName;
     }
 
     public int getAppointmentId() {
         return appointmentId;
     }
 
-    public int getMemberId() {
-        return memberId;
+    public String getCoachFirstName() {
+        return coachFirstName;
     }
 
-    public String getMemberFullName() {
-        return memberFullName;
+    public String getCoachLastName() {
+        return coachLastName;
     }
 
-    public String getCoachFullName() {
-        return coachFullName;
-    }
-
-    public LocalDate getAppointmentDate() {
-        return appointmentDate;
+    public LocalDate getAvailableDate() {
+        return availableDate;
     }
 
     public LocalTime getStartTime() {
@@ -70,15 +63,15 @@ public class AppointmentSearchResult {
         return endTime;
     }
 
-    public String getRoomName() {
-        return roomName;
-    }
-
     public String getObjective() {
         return objective;
     }
 
     public AppointmentStatus getStatus() {
         return status;
+    }
+
+    public String getRoomName() {
+        return roomName;
     }
 }

@@ -19,23 +19,23 @@ public class TestAvailableCoachSearchDA {
                             LocalDate.now().plusMonths(3)
                     );
 
-            System.out.println("Coachs disponibles trouvés : " + results.size());
+            System.out.println("Créneaux disponibles trouvés : " + results.size());
 
             for (AvailableCoachSearchResult result : results) {
                 System.out.println(
                         result.getAvailabilityId()
-                                + " - "
-                                + result.getCoachFullName()
-                                + " - "
-                                + result.getSpecialityName()
+                                + " - coach : "
+                                + result.getCoachFirstName()
+                                + " "
+                                + result.getCoachLastName()
+                                + " - diplômé : "
+                                + result.getHasDegree()
                                 + " - "
                                 + result.getAvailableDate()
                                 + " "
                                 + result.getStartTime()
                                 + " à "
                                 + result.getEndTime()
-                                + " - diplômé : "
-                                + result.getHasDegree()
                 );
             }
 

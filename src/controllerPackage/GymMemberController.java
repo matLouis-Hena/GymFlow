@@ -1,11 +1,12 @@
 package controllerPackage;
 
 import businessPackage.GymMemberManager;
-import exceptionPackage.gymMember.AddGymMemberException;
-import exceptionPackage.gymMember.DeleteGymMemberException;
-import exceptionPackage.gymMember.DuplicateGymMemberException;
-import exceptionPackage.gymMember.ReadGymMemberException;
-import exceptionPackage.gymMember.UpdateGymMemberException;
+import exceptionPackage.gymMember.*;
+import exceptionPackage.appointment.*;
+import exceptionPackage.coachAvailability.*;
+import exceptionPackage.gymMember.*;
+import exceptionPackage.payment.*;
+import exceptionPackage.sponsorship.*;
 import modelPackage.GymMember;
 import viewPackage.MainView;
 
@@ -75,7 +76,7 @@ public class GymMemberController {
 
     public void deleteSelectedMember(GymMember member) {
         if (member == null) {
-            mainView.showErrorMessage("Veuillez selectionner un membre a supprimer.");
+            mainView.showErrorMessage("Veuillez sélectionner un membre à supprimer.");
             return;
         }
 
@@ -93,11 +94,19 @@ public class GymMemberController {
 
         try {
             gymMemberManager.deleteMemberWithDependencies(member.getId());
-            mainView.showInformationMessage("Membre supprime avec succes.");
+
+            mainView.showInformationMessage("Membre supprimé avec succès.");
             showMembers();
-        } catch (DeleteGymMemberException exception) {
-            mainView.showErrorMessage(exception.getMessage());
-        } catch (Exception exception) {
+
+        } catch (
+                DeleteGymMemberException |
+                ReadAppointmentException |
+                DeleteAppointmentException |
+                UpdateCoachAvailabilityException |
+                AppointmentBusinessException |
+                DeletePaymentException |
+                DeleteSponsorshipException exception
+        ) {
             mainView.showErrorMessage(exception.getMessage());
         }
     }

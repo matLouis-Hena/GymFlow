@@ -7,31 +7,31 @@ public class AvailableCoachSearchResult {
 
     private int availabilityId;
     private int coachId;
-    private String coachFullName;
-    private String specialityName;
+    private String coachFirstName;
+    private String coachLastName;
+    private boolean hasDegree;
     private LocalDate availableDate;
     private LocalTime startTime;
     private LocalTime endTime;
-    private boolean hasDegree;
 
     public AvailableCoachSearchResult(
             int availabilityId,
             int coachId,
-            String coachFullName,
-            String specialityName,
+            String coachFirstName,
+            String coachLastName,
+            boolean hasDegree,
             LocalDate availableDate,
             LocalTime startTime,
-            LocalTime endTime,
-            boolean hasDegree
+            LocalTime endTime
     ) {
         this.availabilityId = availabilityId;
         this.coachId = coachId;
-        this.coachFullName = coachFullName;
-        this.specialityName = specialityName;
+        this.coachFirstName = coachFirstName;
+        this.coachLastName = coachLastName;
+        this.hasDegree = hasDegree;
         this.availableDate = availableDate;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.hasDegree = hasDegree;
     }
 
     public int getAvailabilityId() {
@@ -42,12 +42,16 @@ public class AvailableCoachSearchResult {
         return coachId;
     }
 
-    public String getCoachFullName() {
-        return coachFullName;
+    public String getCoachFirstName() {
+        return coachFirstName;
     }
 
-    public String getSpecialityName() {
-        return specialityName;
+    public String getCoachLastName() {
+        return coachLastName;
+    }
+
+    public boolean getHasDegree() {
+        return hasDegree;
     }
 
     public LocalDate getAvailableDate() {
@@ -60,9 +64,5 @@ public class AvailableCoachSearchResult {
 
     public LocalTime getEndTime() {
         return endTime;
-    }
-
-    public boolean getHasDegree() {
-        return hasDegree;
     }
 }

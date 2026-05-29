@@ -1,7 +1,6 @@
 package dataAccessPackage.coachAvailabilityDataAccess;
 
-import exceptionPackage.coachAvailability.ReadCoachAvailabilityException;
-import exceptionPackage.coachAvailability.UpdateCoachAvailabilityException;
+import exceptionPackage.coachAvailability.*;
 import modelPackage.CoachAvailability;
 
 import java.time.LocalDate;
@@ -17,6 +16,11 @@ public interface ICoachAvailabilityDA {
             String specialityName,
             LocalDate startDate,
             LocalDate endDate
+    ) throws ReadCoachAvailabilityException;
+
+    boolean isCoachQualifiedForSpeciality(
+            int availabilityId,
+            String specialityName
     ) throws ReadCoachAvailabilityException;
 
     void markAsBooked(int id) throws UpdateCoachAvailabilityException;
