@@ -7,16 +7,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class DatabaseConnection {
+public class SingletonConnection {
     private static Connection instance;
 
-    private DatabaseConnection() {}
+    private SingletonConnection() {}
 
     public static Connection getInstance() throws SQLException {
         if (instance == null || instance.isClosed()) {
             try {
                 Properties props = new Properties();
-                InputStream input = DatabaseConnection.class
+                InputStream input = SingletonConnection.class
                         .getClassLoader()
                         .getResourceAsStream("db.properties");
                 props.load(input);
