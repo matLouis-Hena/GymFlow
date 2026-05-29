@@ -13,6 +13,13 @@ public interface ICoachAvailabilityDA {
 
     CoachAvailability getById(int id) throws ReadCoachAvailabilityException;
 
+    List<CoachAvailability> getByCoachId(int coachId) throws ReadCoachAvailabilityException;
+
+    void insert(int coachId, LocalDate date, java.sql.Time startTime, java.sql.Time endTime)
+            throws UpdateCoachAvailabilityException;
+
+    void delete(int id) throws UpdateCoachAvailabilityException;
+
     List<CoachAvailability> getAvailableBySpecialityAndDateRange(
             String specialityName,
             LocalDate startDate,

@@ -15,6 +15,7 @@ import exceptionPackage.search.SearchException;
 import exceptionPackage.speciality.ReadSpecialityException;
 import modelPackage.Room;
 import modelPackage.Speciality;
+import modelPackage.Appointment;
 import modelPackage.searchResult.AvailableCoachSearchResult;
 import viewPackage.MainView;
 
@@ -49,6 +50,15 @@ public class AppointmentController {
             List<Room> rooms = roomManager.getAllRooms();
             mainView.showAppointmentBookingForm(specialities, rooms);
         } catch (ReadSpecialityException | ReadRoomException exception) {
+            mainView.showErrorMessage(exception.getMessage());
+        }
+    }
+
+    public void showAppointmentList() {
+        try {
+            List<Appointment> appointments = appointmentManager.getAllAppointments();
+            mainView.showAppointmentList(appointments);
+        } catch (ReadAppointmentException exception) {
             mainView.showErrorMessage(exception.getMessage());
         }
     }

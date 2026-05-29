@@ -31,6 +31,7 @@ public class GymMemberFormView {
     private PasswordField passwordField;
     private TextField weightField;
     private TextField heightField;
+    private TextField sponsorUsernameField;
     private ComboBox<SubscriptionType> subscriptionTypeComboBox;
     private TextField durationField;
     private Label monthlyPriceLabel;
@@ -64,6 +65,20 @@ public class GymMemberFormView {
 
     public boolean isUpdateMode() {
         return memberToUpdate != null;
+    }
+
+    public String getSponsorUsername() {
+        if (sponsorUsernameField == null) {
+            return null;
+        }
+
+        String value = sponsorUsernameField.getText();
+
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+
+        return value.trim();
     }
 
     public GymMember createGymMember() throws Exception {
@@ -136,6 +151,7 @@ public class GymMemberFormView {
         passwordField = new PasswordField();
         weightField = new TextField();
         heightField = new TextField();
+        sponsorUsernameField = new TextField();
         subscriptionTypeComboBox = new ComboBox<>();
         durationField = new TextField();
         monthlyPriceLabel = new Label("Prix par mois :");
@@ -163,6 +179,8 @@ public class GymMemberFormView {
         if (memberToUpdate != null) {
             titleLabel.setText("Modification d'un membre");
             registrationButton.setText("Enregistrer");
+            sponsorUsernameField.setDisable(true);
+            sponsorUsernameField.setPromptText("Parrainage uniquement a l'inscription");
         }
 
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
@@ -195,15 +213,17 @@ public class GymMemberFormView {
         formGrid.add(weightField, 1, 9);
         formGrid.add(new Label("Taille *"), 0, 10);
         formGrid.add(heightField, 1, 10);
-        formGrid.add(new Label("Abonnement *"), 0, 11);
-        formGrid.add(subscriptionTypeComboBox, 1, 11);
-        formGrid.add(new Label("Duree en mois *"), 0, 12);
-        formGrid.add(durationField, 1, 12);
-        formGrid.add(monthlyPriceLabel, 1, 13);
-        formGrid.add(totalPriceLabel, 1, 14);
+        formGrid.add(new Label("Parrain username"), 0, 11);
+        formGrid.add(sponsorUsernameField, 1, 11);
+        formGrid.add(new Label("Abonnement *"), 0, 12);
+        formGrid.add(subscriptionTypeComboBox, 1, 12);
+        formGrid.add(new Label("Duree en mois *"), 0, 13);
+        formGrid.add(durationField, 1, 13);
+        formGrid.add(monthlyPriceLabel, 1, 14);
+        formGrid.add(totalPriceLabel, 1, 15);
 
         HBox buttonBox = new HBox(10, registrationButton, cancelButton);
-        formGrid.add(buttonBox, 1, 15);
+        formGrid.add(buttonBox, 1, 16);
 
         BorderPane container = new BorderPane();
         container.setPadding(new Insets(20));

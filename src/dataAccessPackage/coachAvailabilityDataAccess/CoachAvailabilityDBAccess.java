@@ -60,6 +60,30 @@ public class CoachAvailabilityDBAccess implements ICoachAvailabilityDA {
             WHERE ca.id = ?
             """;
 
+    private static final String SELECT_AVAILABILITIES_BY_COACH_ID_SQL = """
+            SELECT ca.id,
+                   ca.available_date,
+                   ca.start_time,
+                   ca.end_time,
+                   ca.is_booked,
+                   p.id AS coach_id,
+                   p.first_name,
+                   p.last_name,
+                   p.birth_date,
+                   p.gender,
+                   p.email,
+                   p.phone,
+                   p.locker_number,
+                   p.username,
+                   p.password,
+                   c.has_degree
+            FROM coach_availability ca
+            INNER JOIN coach c ON ca.person_id = c.person_id
+            INNER JOIN person p ON c.person_id = p.id
+            WHERE ca.person_id = ?
+            ORDER BY ca.available_date, ca.start_time
+            """;
+
     private static final String SELECT_AVAILABLE_BY_SPECIALITY_AND_DATE_RANGE_SQL = """
             SELECT ca.id,
                    ca.available_date,
@@ -91,6 +115,18 @@ public class CoachAvailabilityDBAccess implements ICoachAvailabilityDA {
             UPDATE coach_availability
             SET is_booked = ?
             WHERE id = ?
+            """;
+
+    private static final String INSERT_AVAILABILITY_SQL = """
+            INSERT INTO coach_availability
+            (person_id, available_date, start_time, end_time, is_booked)
+            VALUES (?, ?, ?, ?, b'0')
+            """;
+
+    private static final String DELETE_AVAILABILITY_SQL = """
+            DELETE FROM coach_availability
+            WHERE id = ?
+              AND is_booked = false
             """;
 
     private Connection connection;
@@ -145,6 +181,89 @@ public class CoachAvailabilityDBAccess implements ICoachAvailabilityDA {
             throw new ReadCoachAvailabilityException(
                     String.valueOf(id),
                     "Erreur lors de la récupération de la disponibilité du coach."
+            );
+        }
+    }
+
+    @Override
+    public List<CoachAvailability> getByCoachId(int coachId) throws ReadCoachAvailabilityException {
+        List<CoachAvailability> availabilities = new ArrayList<>();
+
+        try {
+            connection = getConnection();
+
+            try (PreparedStatement statement = connection.prepareStatement(SELECT_AVAILABILITIES_BY_COACH_ID_SQL)) {
+                statement.setInt(1, coachId);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        availabilities.add(mapCoachAvailability(resultSet));
+                    }
+                }
+            }
+
+            return availabilities;
+
+        } catch (SQLException exception) {
+            throw new ReadCoachAvailabilityException(
+                    String.valueOf(coachId),
+                    "Erreur lors de la recuperation des disponibilites du coach."
+            );
+        }
+    }
+
+    @Override
+    public void insert(int coachId, java.time.LocalDate date, java.sql.Time startTime, java.sql.Time endTime)
+            throws UpdateCoachAvailabilityException {
+        try {
+            connection = getConnection();
+
+            try (PreparedStatement statement = connection.prepareStatement(INSERT_AVAILABILITY_SQL)) {
+                statement.setInt(1, coachId);
+                statement.setDate(2, Date.valueOf(date));
+                statement.setTime(3, startTime);
+                statement.setTime(4, endTime);
+
+                int affectedRows = statement.executeUpdate();
+
+                if (affectedRows == 0) {
+                    throw new UpdateCoachAvailabilityException(
+                            String.valueOf(coachId),
+                            "Aucune disponibilite n'a ete ajoutee."
+                    );
+                }
+            }
+
+        } catch (SQLException exception) {
+            throw new UpdateCoachAvailabilityException(
+                    String.valueOf(coachId),
+                    "Erreur lors de l'ajout de la disponibilite."
+            );
+        }
+    }
+
+    @Override
+    public void delete(int id) throws UpdateCoachAvailabilityException {
+        try {
+            connection = getConnection();
+
+            try (PreparedStatement statement = connection.prepareStatement(DELETE_AVAILABILITY_SQL)) {
+                statement.setInt(1, id);
+
+                int affectedRows = statement.executeUpdate();
+
+                if (affectedRows == 0) {
+                    throw new UpdateCoachAvailabilityException(
+                            String.valueOf(id),
+                            "La disponibilite est introuvable ou deja reservee."
+                    );
+                }
+            }
+
+        } catch (SQLException exception) {
+            throw new UpdateCoachAvailabilityException(
+                    String.valueOf(id),
+                    "Erreur lors de la suppression de la disponibilite."
             );
         }
     }

@@ -1,12 +1,14 @@
 package viewPackage;
 
 import businessPackage.AppointmentManager;
+import businessPackage.CoachAvailabilityManager;
 import businessPackage.GymMemberManager;
 import businessPackage.PersonManager;
 import businessPackage.RoomManager;
 import businessPackage.SearchManager;
 import businessPackage.SpecialityManager;
 import controllerPackage.AppointmentController;
+import controllerPackage.CoachAvailabilityController;
 import controllerPackage.GymMemberController;
 import controllerPackage.PersonController;
 import controllerPackage.SearchController;
@@ -24,6 +26,7 @@ public class MainApplication extends Application {
         SpecialityManager specialityManager = new SpecialityManager();
         AppointmentManager appointmentManager = new AppointmentManager();
         RoomManager roomManager = new RoomManager();
+        CoachAvailabilityManager coachAvailabilityManager = new CoachAvailabilityManager();
 
         MainView mainView = new MainView();
         GymMemberController gymMemberController = new GymMemberController(gymMemberManager, mainView);
@@ -41,11 +44,16 @@ public class MainApplication extends Application {
                 roomManager,
                 mainView
         );
+        CoachAvailabilityController coachAvailabilityController = new CoachAvailabilityController(
+                coachAvailabilityManager,
+                mainView
+        );
 
         mainView.setGymMemberController(gymMemberController);
         mainView.setPersonController(personController);
         mainView.setSearchController(searchController);
         mainView.setAppointmentController(appointmentController);
+        mainView.setCoachAvailabilityController(coachAvailabilityController);
 
         Scene scene = new Scene(mainView.getRoot(), 1000, 650);
 

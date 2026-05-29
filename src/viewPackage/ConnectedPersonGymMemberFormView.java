@@ -23,6 +23,7 @@ public class ConnectedPersonGymMemberFormView {
     private TextField lockerNumberField;
     private TextField weightField;
     private TextField heightField;
+    private TextField sponsorUsernameField;
     private ComboBox<SubscriptionType> subscriptionTypeComboBox;
     private TextField durationField;
     private Label monthlyPriceLabel;
@@ -48,6 +49,16 @@ public class ConnectedPersonGymMemberFormView {
 
     public Button getCancelButton() {
         return cancelButton;
+    }
+
+    public String getSponsorUsername() {
+        String value = sponsorUsernameField.getText();
+
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+
+        return value.trim();
     }
 
     public GymMember createGymMember() throws Exception {
@@ -97,6 +108,7 @@ public class ConnectedPersonGymMemberFormView {
         lockerNumberField = new TextField();
         weightField = new TextField();
         heightField = new TextField();
+        sponsorUsernameField = new TextField();
         subscriptionTypeComboBox = new ComboBox<>();
         durationField = new TextField();
         monthlyPriceLabel = new Label("Prix par mois :");
@@ -145,15 +157,17 @@ public class ConnectedPersonGymMemberFormView {
         formGrid.add(weightField, 1, 2);
         formGrid.add(new Label("Taille *"), 0, 3);
         formGrid.add(heightField, 1, 3);
-        formGrid.add(new Label("Abonnement *"), 0, 4);
-        formGrid.add(subscriptionTypeComboBox, 1, 4);
-        formGrid.add(new Label("Duree en mois *"), 0, 5);
-        formGrid.add(durationField, 1, 5);
-        formGrid.add(monthlyPriceLabel, 1, 6);
-        formGrid.add(totalPriceLabel, 1, 7);
+        formGrid.add(new Label("Parrain username"), 0, 4);
+        formGrid.add(sponsorUsernameField, 1, 4);
+        formGrid.add(new Label("Abonnement *"), 0, 5);
+        formGrid.add(subscriptionTypeComboBox, 1, 5);
+        formGrid.add(new Label("Duree en mois *"), 0, 6);
+        formGrid.add(durationField, 1, 6);
+        formGrid.add(monthlyPriceLabel, 1, 7);
+        formGrid.add(totalPriceLabel, 1, 8);
 
         HBox buttonBox = new HBox(10, registrationButton, cancelButton);
-        formGrid.add(buttonBox, 1, 8);
+        formGrid.add(buttonBox, 1, 9);
 
         BorderPane container = new BorderPane();
         container.setPadding(new Insets(20));

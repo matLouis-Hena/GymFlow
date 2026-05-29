@@ -7,6 +7,7 @@ import exceptionPackage.person.DeletePersonException;
 import exceptionPackage.person.ReadPersonException;
 import exceptionPackage.person.UpdatePersonException;
 import modelPackage.Person;
+import modelPackage.UserRole;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -45,6 +46,11 @@ public class PersonManager {
         }
 
         return person;
+    }
+
+    public UserRole getUserRoleByPersonId(int id) throws ReadPersonException {
+        validateIdForRead(id);
+        return personDataAccess.getUserRoleByPersonId(id);
     }
 
     public void updatePerson(Person person) throws UpdatePersonException {

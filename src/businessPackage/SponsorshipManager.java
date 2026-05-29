@@ -20,6 +20,31 @@ public class SponsorshipManager {
         this.sponsorshipDataAccess = sponsorshipDataAccess;
     }
 
+    public void createSponsorship(int sponsorId, int sponsoredId) throws AddSponsorshipException {
+        if (sponsorId <= 0) {
+            throw new AddSponsorshipException(
+                    String.valueOf(sponsorId),
+                    "L'identifiant du parrain doit etre superieur a 0."
+            );
+        }
+
+        if (sponsoredId <= 0) {
+            throw new AddSponsorshipException(
+                    String.valueOf(sponsoredId),
+                    "L'identifiant du membre parraine doit etre superieur a 0."
+            );
+        }
+
+        if (sponsorId == sponsoredId) {
+            throw new AddSponsorshipException(
+                    String.valueOf(sponsoredId),
+                    "Un membre ne peut pas se parrainer lui-meme."
+            );
+        }
+
+        sponsorshipDataAccess.insert(sponsorId, sponsoredId);
+    }
+
     public List<Sponsorship> getSponsorshipsByMemberId(int memberId) throws ReadSponsorshipException {
         validateMemberIdForRead(memberId);
         return sponsorshipDataAccess.getByMemberId(memberId);
