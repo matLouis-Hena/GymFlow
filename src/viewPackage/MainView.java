@@ -1,22 +1,13 @@
 package viewPackage;
 
-import controllerPackage.AppointmentController;
-import controllerPackage.CoachAvailabilityController;
-import controllerPackage.GymMemberController;
-import controllerPackage.PersonController;
-import controllerPackage.SearchController;
+import controllerPackage.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import modelPackage.GymMember;
-import modelPackage.CoachAvailability;
-import modelPackage.Person;
-import modelPackage.Room;
-import modelPackage.Speciality;
-import modelPackage.UserRole;
+import modelPackage.*;
 import modelPackage.searchResult.AppointmentSearchResult;
 import modelPackage.searchResult.AvailableCoachSearchResult;
 import modelPackage.searchResult.SponsoredMemberSearchResult;

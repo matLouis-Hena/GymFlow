@@ -1,11 +1,11 @@
 package controllerPackage;
 
 import businessPackage.PersonManager;
-import exceptionPackage.person.AddPersonException;
-import exceptionPackage.person.ReadPersonException;
+import exceptionPackage.person.*;
 import modelPackage.Person;
 import modelPackage.UserRole;
 import viewPackage.MainView;
+import securityPackage.*;
 
 import java.util.List;
 
@@ -80,7 +80,8 @@ public class PersonController {
         List<Person> persons = personManager.getAllPersons();
 
         for (Person person : persons) {
-            if (person.getUsername().equals(username) && person.getPassword().equals(password)) {
+            if (person.getUsername().equals(username)
+                    && PasswordUtil.verifyPassword(password, person.getPassword())) {
                 return person;
             }
         }

@@ -1,5 +1,6 @@
 package dataAccessPackage.sponsorshipDataAccess;
 
+import exceptionPackage.sponsorship.AddSponsorshipException;
 import exceptionPackage.sponsorship.DeleteSponsorshipException;
 import exceptionPackage.sponsorship.ReadSponsorshipException;
 import modelPackage.Sponsorship;

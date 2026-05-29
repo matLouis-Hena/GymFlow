@@ -1,6 +1,6 @@
 package dataAccessPackage.qualificationDataAccess;
 
-import exceptionPackage.qualification.*;
+import exceptionPackage.qualification.ReadQualificationException;
 import modelPackage.Speciality;
 
 import java.util.List;

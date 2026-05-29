@@ -1,17 +1,7 @@
 package viewPackage;
 
-import businessPackage.AppointmentManager;
-import businessPackage.CoachAvailabilityManager;
-import businessPackage.GymMemberManager;
-import businessPackage.PersonManager;
-import businessPackage.RoomManager;
-import businessPackage.SearchManager;
-import businessPackage.SpecialityManager;
-import controllerPackage.AppointmentController;
-import controllerPackage.CoachAvailabilityController;
-import controllerPackage.GymMemberController;
-import controllerPackage.PersonController;
-import controllerPackage.SearchController;
+import businessPackage.*;
+import controllerPackage.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

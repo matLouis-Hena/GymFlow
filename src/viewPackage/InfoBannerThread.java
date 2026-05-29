@@ -12,10 +12,10 @@ public class InfoBannerThread extends Thread {
     public InfoBannerThread(Label bannerLabel) {
         this.bannerLabel = bannerLabel;
         this.bannerText =
-                "Bienvenue chez BasicFrite   |   "
+                "Bienvenue chez Basic-Frite   |   "
                         + "Prenez rendez-vous avec un coach    |    "
                         + "Pensez a renouveler votre abonnement    |    "
-                        + "Fermeture exceptionnelle le 20/04    |    ";
+                        + "Fermeture exceptionnelle le 12/06    |    ";
         this.position = 0;
         setDaemon(true);
     }

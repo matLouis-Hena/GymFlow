@@ -4,6 +4,7 @@ import dataAccessPackage.SingletonConnection;
 import dataAccessPackage.gymMemberDataAccess.GymMemberDBAccess;
 import dataAccessPackage.gymMemberDataAccess.IGymMemberDA;
 import exceptionPackage.gymMember.ReadGymMemberException;
+import exceptionPackage.sponsorship.AddSponsorshipException;
 import exceptionPackage.sponsorship.DeleteSponsorshipException;
 import exceptionPackage.sponsorship.ReadSponsorshipException;
 import modelPackage.GymMember;

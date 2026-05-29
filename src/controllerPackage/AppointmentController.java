@@ -13,9 +13,9 @@ import exceptionPackage.gymMember.ReadGymMemberException;
 import exceptionPackage.room.ReadRoomException;
 import exceptionPackage.search.SearchException;
 import exceptionPackage.speciality.ReadSpecialityException;
+import modelPackage.Appointment;
 import modelPackage.Room;
 import modelPackage.Speciality;
-import modelPackage.Appointment;
 import modelPackage.searchResult.AvailableCoachSearchResult;
 import viewPackage.MainView;
 

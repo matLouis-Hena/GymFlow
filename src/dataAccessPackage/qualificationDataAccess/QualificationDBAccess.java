@@ -1,11 +1,15 @@
 package dataAccessPackage.qualificationDataAccess;
 
-import dataAccessPackage.*;
-import exceptionPackage.qualification.*;
-import exceptionPackage.validation.*;
-import modelPackage.*;
+import dataAccessPackage.SingletonConnection;
+import exceptionPackage.qualification.ReadQualificationException;
+import exceptionPackage.validation.InvalidDescriptionException;
+import exceptionPackage.validation.InvalidNameException;
+import modelPackage.Speciality;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

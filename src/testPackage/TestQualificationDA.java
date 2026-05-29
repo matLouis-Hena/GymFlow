@@ -1,7 +1,8 @@
 package testPackage;
 
 import businessPackage.QualificationManager;
-import dataAccessPackage.coachDataAccess.*;
+import dataAccessPackage.coachDataAccess.CoachDBAccess;
+import dataAccessPackage.coachDataAccess.ICoachDA;
 import modelPackage.Coach;
 import modelPackage.Speciality;
 

@@ -7,7 +7,7 @@ import modelPackage.Gender;
 import modelPackage.GymMember;
 import modelPackage.Subscription;
 import modelPackage.SubscriptionType;
-import securityPackage.*;
+import securityPackage.PasswordUtil;
 
 import java.sql.*;
 import java.util.ArrayList;

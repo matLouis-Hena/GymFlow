@@ -2,6 +2,7 @@ package businessPackage;
 
 import dataAccessPackage.sponsorshipDataAccess.ISponsorshipDA;
 import dataAccessPackage.sponsorshipDataAccess.SponsorshipDBAccess;
+import exceptionPackage.sponsorship.AddSponsorshipException;
 import exceptionPackage.sponsorship.DeleteSponsorshipException;
 import exceptionPackage.sponsorship.ReadSponsorshipException;
 import modelPackage.Sponsorship;

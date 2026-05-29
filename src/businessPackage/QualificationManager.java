@@ -1,7 +1,8 @@
 package businessPackage;
 
-import dataAccessPackage.qualificationDataAccess.*;
-import exceptionPackage.qualification.*;
+import dataAccessPackage.qualificationDataAccess.IQualificationDA;
+import dataAccessPackage.qualificationDataAccess.QualificationDBAccess;
+import exceptionPackage.qualification.ReadQualificationException;
 import modelPackage.Speciality;
 
 import java.util.List;

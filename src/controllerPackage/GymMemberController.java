@@ -8,7 +8,9 @@ import exceptionPackage.appointment.ReadAppointmentException;
 import exceptionPackage.coachAvailability.UpdateCoachAvailabilityException;
 import exceptionPackage.gymMember.*;
 import exceptionPackage.payment.DeletePaymentException;
+import exceptionPackage.sponsorship.AddSponsorshipException;
 import exceptionPackage.sponsorship.DeleteSponsorshipException;
+import exceptionPackage.sponsorship.ReadSponsorshipException;
 import modelPackage.GymMember;
 import modelPackage.Sponsorship;
 import modelPackage.UserRole;
@@ -78,10 +80,11 @@ public class GymMemberController {
         } catch (
                 AddGymMemberException |
                 DuplicateGymMemberException |
-                ReadGymMemberException |
-                AddSponsorshipException exception
+                ReadGymMemberException exception
         ) {
             mainView.showErrorMessage(exception.getMessage());
+        } catch (AddSponsorshipException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -100,10 +103,11 @@ public class GymMemberController {
         } catch (
                 AddGymMemberException |
                 DuplicateGymMemberException |
-                ReadGymMemberException |
-                AddSponsorshipException exception
+                ReadGymMemberException exception
         ) {
             mainView.showErrorMessage(exception.getMessage());
+        } catch (AddSponsorshipException e) {
+            throw new RuntimeException(e);
         }
     }
 
