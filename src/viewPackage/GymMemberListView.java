@@ -20,14 +20,18 @@ public class GymMemberListView {
 
     private final BorderPane root;
     private final TableView<GymMember> memberTable;
+    private final Button addButton;
     private final Button refreshButton;
+    private final Button updateButton;
     private final Button deleteButton;
 
     public GymMemberListView(List<GymMember> members) {
         root = new BorderPane();
         memberTable = new TableView<>();
-        refreshButton = new Button("Rafraîchir");
-        deleteButton = new Button("Supprimer le membre sélectionné");
+        addButton = new Button("Inscription");
+        refreshButton = new Button("Rafraichir");
+        updateButton = new Button("Modifier");
+        deleteButton = new Button("Supprimer le membre selectionne");
 
         createColumns();
 
@@ -37,7 +41,7 @@ public class GymMemberListView {
         Label titleLabel = new Label("Liste des membres");
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
-        HBox buttonBox = new HBox(10, refreshButton, deleteButton);
+        HBox buttonBox = new HBox(10, addButton, updateButton, refreshButton, deleteButton);
 
         VBox container = new VBox(15, titleLabel, memberTable, buttonBox);
         container.setPadding(new Insets(20));
@@ -49,8 +53,16 @@ public class GymMemberListView {
         return root;
     }
 
+    public Button getAddButton() {
+        return addButton;
+    }
+
     public Button getRefreshButton() {
         return refreshButton;
+    }
+
+    public Button getUpdateButton() {
+        return updateButton;
     }
 
     public Button getDeleteButton() {
@@ -67,7 +79,7 @@ public class GymMemberListView {
                 new ReadOnlyObjectWrapper<>(cellData.getValue().getId())
         );
 
-        TableColumn<GymMember, String> firstNameColumn = new TableColumn<>("Prénom");
+        TableColumn<GymMember, String> firstNameColumn = new TableColumn<>("Prenom");
         firstNameColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getFirstName())
         );

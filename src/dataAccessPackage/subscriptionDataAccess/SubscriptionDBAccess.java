@@ -16,13 +16,13 @@ import java.util.List;
 public class SubscriptionDBAccess implements ISubscriptionDA {
 
     private static final String SELECT_ALL_SUBSCRIPTIONS_SQL = """
-            SELECT id, tier, price, duration_months
+            SELECT id, type, price, duration_months
             FROM subscription
-            ORDER BY tier, duration_months
+            ORDER BY type, duration_months
             """;
 
     private static final String SELECT_SUBSCRIPTION_BY_ID_SQL = """
-            SELECT id, tier, price, duration_months
+            SELECT id, type, price, duration_months
             FROM subscription
             WHERE id = ?
             """;

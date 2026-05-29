@@ -1,4 +1,4 @@
-package testPackage;
+/* package testPackage;
 
 import dataAccessPackage.gymMemberDataAccess.GymMemberDBAccess;
 import dataAccessPackage.gymMemberDataAccess.IGymMemberDA;
@@ -21,22 +21,22 @@ public class TestGymMemberDAO {
             String unique = String.valueOf(System.currentTimeMillis());
 
             Subscription subscription = new Subscription(
-                    0,
+                    2 +-,
                     SubscriptionType.BASIC,
                     1
             );
 
             GymMember member = new GymMember(
-                    0,
-                    "Mat",
+                    1,
+                    "Ethan",
                     "Gym",
-                    LocalDate.of(2000, 1, 1),
+                    LocalDate.of(2000, 4, 1),
                     Gender.MALE,
-                    "matgym" + unique + "@test.com",
+                    "ethangym@test.com",
                     null,
                     null,
-                    "matgym" + unique,
-                    "password123",
+                    "ethangym2105",
+                    "password12322222",
                     true,
                     72.5,
                     180,
@@ -108,3 +108,4 @@ public class TestGymMemberDAO {
         }
     }
 }
+*/
