@@ -30,3 +30,6 @@ bin/
 
 ### DB ###
 src/db.properties
+
+
+.idea/libraries/
