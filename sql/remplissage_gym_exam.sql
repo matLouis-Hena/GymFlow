@@ -1,6 +1,6 @@
--- ============================================================
+-- -------------------------------------------------------
 -- Script de remplissage - Projet Java salle de sport
--- ============================================================
+--
 -- Les mots de passe sont stockes sous forme de hash PBKDF2.
 -- Les mots de passe en clair sont uniquement indiques en commentaire
 -- pour permettre les tests dans l'application.
@@ -25,7 +25,7 @@
 --   camille.evrard / cevrard425
 --   antoine.leclercq / aleclercq94
 --   sarah.janssens / sjanssens16
--- ============================================================
+-- -------------------------------------------------------
 
 USE gym_db;
 
@@ -56,10 +56,6 @@ ALTER TABLE room AUTO_INCREMENT = 1;
 ALTER TABLE person AUTO_INCREMENT = 1;
 
 SET FOREIGN_KEY_CHECKS = 1;
-
--- ============================================================
--- Tables sans cle etrangere
--- ============================================================
 
 INSERT INTO person
     (id, first_name, last_name, birth_date, gender, email, phone, locker_number, username, password)
@@ -108,10 +104,6 @@ VALUES
     (4, 'STANDARD', 299.88, 12),
     (5, 'PREMIUM', 959.76, 24);
 
--- ============================================================
--- Roles
--- ============================================================
-
 INSERT INTO admin (person_id, access_level)
 VALUES
     (1, 2);
@@ -130,9 +122,6 @@ VALUES
     (8, b'0', 54.90, 162, 4),
     (9, b'1', 88.60, 187, 5);
 
--- ============================================================
--- Acces aux installations selon les abonnements
--- ============================================================
 
 INSERT INTO access (subscription_id, facility_name)
 VALUES
@@ -188,53 +177,68 @@ VALUES
 
 -- ============================================================
 -- Disponibilites coachs
--- Les dates sont calculees depuis CURDATE pour rester futures.
+-- Certaines disponibilites sont deja reservees par des rendez-vous.
 -- ============================================================
 
 INSERT INTO coach_availability
     (id, person_id, available_date, start_time, end_time, is_booked)
 VALUES
-    (1, 10, DATE_ADD(CURDATE(), INTERVAL 1 DAY), '09:00:00', '10:00:00', b'1');
+    (1, 10, '2026-06-01', '09:00:00', '10:00:00', b'1');
 
 INSERT INTO coach_availability
     (id, person_id, available_date, start_time, end_time, is_booked)
 VALUES
-    (2, 10, DATE_ADD(CURDATE(), INTERVAL 2 DAY), '10:00:00', '11:00:00', b'0');
+    (2, 11, '2026-06-02', '15:00:00', '16:00:00', b'1');
 
 INSERT INTO coach_availability
     (id, person_id, available_date, start_time, end_time, is_booked)
 VALUES
-    (3, 10, DATE_ADD(CURDATE(), INTERVAL 4 DAY), '14:00:00', '15:00:00', b'1');
+    (3, 10, '2026-06-04', '10:00:00', '11:00:00', b'1');
 
 INSERT INTO coach_availability
     (id, person_id, available_date, start_time, end_time, is_booked)
 VALUES
-    (4, 11, DATE_ADD(CURDATE(), INTERVAL 1 DAY), '15:00:00', '16:00:00', b'1');
+    (4, 11, '2026-06-05', '14:00:00', '15:00:00', b'1');
 
 INSERT INTO coach_availability
     (id, person_id, available_date, start_time, end_time, is_booked)
 VALUES
-    (5, 11, DATE_ADD(CURDATE(), INTERVAL 3 DAY), '09:00:00', '10:00:00', b'0');
+    (5, 12, '2026-06-06', '10:00:00', '11:00:00', b'1');
 
 INSERT INTO coach_availability
     (id, person_id, available_date, start_time, end_time, is_booked)
 VALUES
-    (6, 11, DATE_ADD(CURDATE(), INTERVAL 5 DAY), '11:00:00', '12:00:00', b'1');
+    (6, 10, '2026-06-08', '18:00:00', '19:00:00', b'1');
 
 INSERT INTO coach_availability
     (id, person_id, available_date, start_time, end_time, is_booked)
 VALUES
-    (7, 12, DATE_ADD(CURDATE(), INTERVAL 2 DAY), '16:00:00', '17:00:00', b'1');
+    (7, 11, '2026-06-10', '09:00:00', '10:00:00', b'1');
 
 INSERT INTO coach_availability
     (id, person_id, available_date, start_time, end_time, is_booked)
 VALUES
-    (8, 12, DATE_ADD(CURDATE(), INTERVAL 6 DAY), '10:00:00', '11:00:00', b'0');
+    (8, 12, '2026-06-12', '16:00:00', '17:00:00', b'1');
 
 INSERT INTO coach_availability
     (id, person_id, available_date, start_time, end_time, is_booked)
 VALUES
-    (9, 12, DATE_ADD(CURDATE(), INTERVAL 8 DAY), '14:00:00', '15:00:00', b'0');
+    (9, 10, '2026-06-16', '11:00:00', '12:00:00', b'1');
+
+INSERT INTO coach_availability
+    (id, person_id, available_date, start_time, end_time, is_booked)
+VALUES
+    (10, 10, '2026-06-07', '15:00:00', '16:00:00', b'0');
+
+INSERT INTO coach_availability
+    (id, person_id, available_date, start_time, end_time, is_booked)
+VALUES
+    (11, 11, '2026-06-11', '13:00:00', '14:00:00', b'0');
+
+INSERT INTO coach_availability
+    (id, person_id, available_date, start_time, end_time, is_booked)
+VALUES
+    (12, 12, '2026-06-15', '10:00:00', '11:00:00', b'0');
 
 -- ============================================================
 -- Rendez-vous
@@ -245,30 +249,48 @@ VALUES
 INSERT INTO appointment
     (id, member_id, availability_id, objective, room_id, status, cancellation_reason)
 VALUES
-    (1, 5, 1, 'Programme de reprise en musculation', 1, 1, NULL);
+    (1, 5, 1, 'Seance passee avec Camille', 1, 1, NULL);
 
 INSERT INTO appointment
     (id, member_id, availability_id, objective, room_id, status, cancellation_reason)
 VALUES
-    (2, 6, 3, 'Correction technique squat', 1, 0, NULL);
+    (2, 6, 2, 'Seance yoga passee', 3, 1, NULL);
 
 INSERT INTO appointment
     (id, member_id, availability_id, objective, room_id, status, cancellation_reason)
 VALUES
-    (3, 7, 4, 'Yoga et mobilite', 3, 1, NULL);
+    (3, 7, 3, 'Programme de reprise en musculation', 1, 1, NULL);
 
 INSERT INTO appointment
     (id, member_id, availability_id, objective, room_id, status, cancellation_reason)
 VALUES
-    (4, 8, 6, 'Pilates et gainage', 3, 0, NULL);
+    (4, 8, 4, 'Yoga et mobilite', 3, 1, NULL);
 
 INSERT INTO appointment
     (id, member_id, availability_id, objective, room_id, status, cancellation_reason)
 VALUES
-    (5, 9, 7, 'Bilan nutrition et cardio', 4, 1, NULL);
+    (5, 9, 5, 'Bilan nutrition et cardio', 4, 0, NULL);
+
+INSERT INTO appointment
+    (id, member_id, availability_id, objective, room_id, status, cancellation_reason)
+VALUES
+    (6, 5, 6, 'Correction technique squat', 1, 1, NULL);
+
+INSERT INTO appointment
+    (id, member_id, availability_id, objective, room_id, status, cancellation_reason)
+VALUES
+    (7, 6, 7, 'Pilates et gainage', 3, 0, NULL);
+
+INSERT INTO appointment
+    (id, member_id, availability_id, objective, room_id, status, cancellation_reason)
+VALUES
+    (8, 7, 8, 'Conseils nutrition et cardio', 4, 1, NULL);
+
+INSERT INTO appointment
+    (id, member_id, availability_id, objective, room_id, status, cancellation_reason)
+VALUES
+    (9, 8, 9, 'Suivi musculation', 1, 1, NULL);
 
 SET SQL_SAFE_UPDATES = 1;
 
--- ============================================================
--- Fin du remplissage
--- ============================================================
+

@@ -48,11 +48,11 @@ public class MemberAccountView {
         Integer height = ViewInputHelper.getRequiredInteger(heightField, "La taille doit être un nombre.");
 
         if (weight <= 0) {
-            throw new IllegalArgumentException("Le poids doit être superieur à 0.");
+            throw new IllegalArgumentException("Le poids doit être supérieur à 0.");
         }
 
         if (height <= 0) {
-            throw new IllegalArgumentException("La taille doit être superieure à 0.");
+            throw new IllegalArgumentException("La taille doit être supérieur à 0.");
         }
 
         return new GymMember(

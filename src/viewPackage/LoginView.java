@@ -112,7 +112,7 @@ public class LoginView {
     }
 
     private Node createLogoView() {
-        InputStream logoStream = getClass().getResourceAsStream("/images/logo_salle.png");
+        InputStream logoStream = getClass().getResourceAsStream("/images/logo_gymflow.png");
 
         if (logoStream == null) {
             return new Label("");

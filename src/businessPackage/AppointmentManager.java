@@ -199,7 +199,7 @@ public class AppointmentManager {
         if (appointment.getStatus() != AppointmentStatus.PENDING) {
             throw new AppointmentBusinessException(
                     String.valueOf(appointmentId),
-                    "Seul un rendez-vous en attente peut etre confirmé."
+                    "Seul un rendez-vous en attente peut être confirmé."
             );
         }
 

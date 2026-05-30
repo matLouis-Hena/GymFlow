@@ -65,7 +65,7 @@ public class PersonManager {
 
     private void validatePersonForAdd(Person person) throws AddPersonException {
         if (person == null) {
-            throw new AddPersonException("person", "La personne ne peut pas etre vide.");
+            throw new AddPersonException("person", "La personne ne peut pas être vide.");
         }
 
         validateRequiredFieldsForAdd(person);
@@ -74,7 +74,7 @@ public class PersonManager {
 
     private void validatePersonForUpdate(Person person) throws UpdatePersonException {
         if (person == null) {
-            throw new UpdatePersonException("person", "La personne ne peut pas etre vide.");
+            throw new UpdatePersonException("person", "La personne ne peut pas être vide.");
         }
 
         if (person.getId() <= 0) {
@@ -150,25 +150,25 @@ public class PersonManager {
 
     private void validateBirthDateForAdd(Person person) throws AddPersonException {
         if (person.getBirthDate().isAfter(LocalDate.now())) {
-            throw new AddPersonException("birthDate", "La date de naissance ne peut pas etre dans le futur.");
+            throw new AddPersonException("birthDate", "La date de naissance ne peut pas être dans le futur.");
         }
     }
 
     private void validateBirthDateForUpdate(Person person) throws UpdatePersonException {
         if (person.getBirthDate().isAfter(LocalDate.now())) {
-            throw new UpdatePersonException(String.valueOf(person.getId()), "La date de naissance ne peut pas etre dans le futur.");
+            throw new UpdatePersonException(String.valueOf(person.getId()), "La date de naissance ne peut pas être dans le futur.");
         }
     }
 
     private void validateIdForRead(int id) throws ReadPersonException {
         if (id <= 0) {
-            throw new ReadPersonException(String.valueOf(id), "L'identifiant doit etre superieur a 0.");
+            throw new ReadPersonException(String.valueOf(id), "L'identifiant doit être supérieur à 0.");
         }
     }
 
     private void validateIdForDelete(int id) throws DeletePersonException {
         if (id <= 0) {
-            throw new DeletePersonException(String.valueOf(id), "L'identifiant doit etre superieur a 0.");
+            throw new DeletePersonException(String.valueOf(id), "L'identifiant doit être supérieur à 0.");
         }
     }
 }

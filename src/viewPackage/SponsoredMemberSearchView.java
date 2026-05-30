@@ -51,7 +51,7 @@ public class SponsoredMemberSearchView {
     }
 
     private void createContent() {
-        Label titleLabel = new Label("Membres parraines");
+        Label titleLabel = new Label("Membres parrainés");
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
         GridPane criteriaGrid = new GridPane();

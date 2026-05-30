@@ -86,7 +86,7 @@ public class CoachAvailabilityManager {
         if (date.isBefore(LocalDate.now())) {
             throw new UpdateCoachAvailabilityException(
                     String.valueOf(date),
-                    "La date ne peut pas etre dans le passe."
+                    "La date ne peut pas être dans le passe."
             );
         }
 
@@ -100,7 +100,7 @@ public class CoachAvailabilityManager {
         if (!endTime.isAfter(startTime)) {
             throw new UpdateCoachAvailabilityException(
                     String.valueOf(endTime),
-                    "L'heure de fin doit etre apres l'heure de debut."
+                    "L'heure de fin doit être après l'heure de début."
             );
         }
 

@@ -5,15 +5,13 @@ import businessPackage.RoomManager;
 import businessPackage.SearchManager;
 import businessPackage.SpecialityManager;
 import exceptionPackage.appointment.*;
-import exceptionPackage.coachAvailability.*;
+import exceptionPackage.coachAvailability.ReadCoachAvailabilityException;
+import exceptionPackage.coachAvailability.UpdateCoachAvailabilityException;
 import exceptionPackage.gymMember.ReadGymMemberException;
 import exceptionPackage.room.ReadRoomException;
 import exceptionPackage.search.SearchException;
 import exceptionPackage.speciality.ReadSpecialityException;
-import modelPackage.Appointment;
-import modelPackage.Room;
-import modelPackage.Speciality;
-import modelPackage.UserRole;
+import modelPackage.*;
 import modelPackage.searchResult.AvailableCoachSearchResult;
 
 import viewPackage.MainView;

@@ -104,11 +104,6 @@ public class GymMemberListView {
                 new SimpleStringProperty(cellData.getValue().getUsername())
         );
 
-        TableColumn<GymMember, Boolean> wantsLockerColumn = new TableColumn<>("Veut casier");
-        wantsLockerColumn.setCellValueFactory(cellData ->
-                new ReadOnlyObjectWrapper<>(cellData.getValue().getWantsLocker())
-        );
-
         TableColumn<GymMember, Integer> lockerNumberColumn = new TableColumn<>("Casier");
         lockerNumberColumn.setCellValueFactory(cellData ->
                 new ReadOnlyObjectWrapper<>(cellData.getValue().getLockerNumber())
@@ -134,7 +129,6 @@ public class GymMemberListView {
         memberTable.getColumns().add(lastNameColumn);
         memberTable.getColumns().add(emailColumn);
         memberTable.getColumns().add(usernameColumn);
-        memberTable.getColumns().add(wantsLockerColumn);
         memberTable.getColumns().add(lockerNumberColumn);
         memberTable.getColumns().add(weightColumn);
         memberTable.getColumns().add(heightColumn);

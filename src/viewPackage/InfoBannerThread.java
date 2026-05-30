@@ -12,7 +12,7 @@ public class InfoBannerThread extends Thread {
     public InfoBannerThread(Label bannerLabel) {
         this.bannerLabel = bannerLabel;
         this.bannerText =
-                "Bienvenue chez Basic-Frite   |   "
+                "Bienvenue chez GymFlow   |   "
                         + "Prenez rendez-vous avec un coach    |    "
                         + "Pensez à renouveler votre abonnement    |    "
                         + "Fermeture exceptionnelle le 12/06    |    ";

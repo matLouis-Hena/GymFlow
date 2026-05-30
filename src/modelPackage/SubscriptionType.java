@@ -23,7 +23,7 @@ public enum SubscriptionType {
             39.99,
             true,
             true,
-            "salle de sport normale + réservation coach + facilities"
+            "salle de sport normale + réservation coach + installations"
     );
 
     private final String databaseValue;

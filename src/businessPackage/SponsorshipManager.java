@@ -25,14 +25,14 @@ public class SponsorshipManager {
         if (sponsorId <= 0) {
             throw new AddSponsorshipException(
                     String.valueOf(sponsorId),
-                    "L'identifiant du parrain doit etre superieur a 0."
+                    "L'identifiant du parrain doit être supérieur a 0."
             );
         }
 
         if (sponsoredId <= 0) {
             throw new AddSponsorshipException(
                     String.valueOf(sponsoredId),
-                    "L'identifiant du membre parraine doit etre superieur a 0."
+                    "L'identifiant du membre parrainé doit être supérieur a 0."
             );
         }
 
