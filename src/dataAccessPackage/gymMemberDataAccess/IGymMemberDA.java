@@ -18,6 +18,4 @@ public interface IGymMemberDA {
     void update(GymMember member) throws UpdateGymMemberException, DuplicateGymMemberException;
 
     void delete(int id) throws DeleteGymMemberException;
-
-    void insertExistingPersonAsGymMember(GymMember member) throws AddGymMemberException, DuplicateGymMemberException;
 }

@@ -34,7 +34,7 @@ public class AppointmentBookingView {
         specialityComboBox = new ComboBox<>();
         startDateField = new TextField();
         endDateField = new TextField();
-        searchButton = new Button("Rechercher les creneaux");
+        searchButton = new Button("Rechercher les créneaux");
         availabilityTable = new TableView<>();
         roomComboBox = new ComboBox<>();
         objectiveField = new TextField();
@@ -74,7 +74,7 @@ public class AppointmentBookingView {
     }
 
     public LocalDate getStartDate() {
-        return getDate(startDateField, "La date de debut est obligatoire.");
+        return getDate(startDateField, "La date de début est obligatoire.");
     }
 
     public LocalDate getEndDate() {
@@ -85,7 +85,7 @@ public class AppointmentBookingView {
         AvailableCoachSearchResult result = availabilityTable.getSelectionModel().getSelectedItem();
 
         if (result == null) {
-            throw new IllegalArgumentException("Veuillez séléctionner un créneau.");
+            throw new IllegalArgumentException("Veuillez sélectionner un créneau.");
         }
 
         return result.getAvailabilityId();
@@ -220,7 +220,7 @@ public class AppointmentBookingView {
         try {
             return LocalDate.parse(value.trim());
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("La date doit réspecter le format yyyy-mm-dd.");
+            throw new IllegalArgumentException("La date doit respecter le format yyyy-mm-dd.");
         }
     }
 }

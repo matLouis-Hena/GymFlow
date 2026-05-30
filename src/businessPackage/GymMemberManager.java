@@ -43,15 +43,7 @@ public class GymMemberManager {
 
     public void registerExistingPersonAsMember(GymMember member)
             throws AddGymMemberException, DuplicateGymMemberException {
-        validateMemberForAdd(member);
-
-        if (member.getId() <= 0) {
-            throw new AddGymMemberException(
-                    String.valueOf(member.getId()),
-                    "L'identifiant du compte est invalide."
-            );
-        }
-
+        validateExistingPersonMemberForAdd(member);
         gymMemberDataAccess.insertForExistingPerson(member);
     }
 

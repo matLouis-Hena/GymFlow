@@ -207,7 +207,7 @@ public class CoachAvailabilityDBAccess implements ICoachAvailabilityDA {
         } catch (SQLException exception) {
             throw new ReadCoachAvailabilityException(
                     String.valueOf(coachId),
-                    "Erreur lors de la recuperation des disponibilites du coach."
+                    "Erreur lors de la récupération des disponibilités du coach."
             );
         }
     }
@@ -229,7 +229,7 @@ public class CoachAvailabilityDBAccess implements ICoachAvailabilityDA {
                 if (affectedRows == 0) {
                     throw new UpdateCoachAvailabilityException(
                             String.valueOf(coachId),
-                            "Aucune disponibilite n'a ete ajoutee."
+                            "Aucune disponibilité n'a été ajoutée."
                     );
                 }
             }
@@ -237,7 +237,7 @@ public class CoachAvailabilityDBAccess implements ICoachAvailabilityDA {
         } catch (SQLException exception) {
             throw new UpdateCoachAvailabilityException(
                     String.valueOf(coachId),
-                    "Erreur lors de l'ajout de la disponibilite."
+                    "Erreur lors de l'ajout de la disponibilité."
             );
         }
     }
@@ -255,7 +255,7 @@ public class CoachAvailabilityDBAccess implements ICoachAvailabilityDA {
                 if (affectedRows == 0) {
                     throw new UpdateCoachAvailabilityException(
                             String.valueOf(id),
-                            "La disponibilite est introuvable ou deja reservee."
+                            "La disponibilité est introuvable ou déjà réservée."
                     );
                 }
             }
@@ -263,7 +263,7 @@ public class CoachAvailabilityDBAccess implements ICoachAvailabilityDA {
         } catch (SQLException exception) {
             throw new UpdateCoachAvailabilityException(
                     String.valueOf(id),
-                    "Erreur lors de la suppression de la disponibilite."
+                    "Erreur lors de la suppression de la disponibilité."
             );
         }
     }

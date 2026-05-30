@@ -6,7 +6,7 @@ CREATE DATABASE IF NOT EXISTS gym_db;
 USE gym_db;
 
 -- ============================================
--- DROP (ordre inverse)
+-- DROP
 -- ============================================
 DROP TABLE IF EXISTS appointment;
 DROP TABLE IF EXISTS coach_availability;

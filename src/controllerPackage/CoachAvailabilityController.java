@@ -50,7 +50,7 @@ public class CoachAvailabilityController {
 
     public void deleteAvailability(CoachAvailability availability) {
         if (availability == null) {
-            mainView.showErrorMessage("Veuillez séléctionner une disponibilité.");
+            mainView.showErrorMessage("Veuillez sélectionner une disponibilité.");
             return;
         }
 

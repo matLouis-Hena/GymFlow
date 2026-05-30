@@ -292,5 +292,3 @@ VALUES
     (9, 8, 9, 'Suivi musculation', 1, 1, NULL);
 
 SET SQL_SAFE_UPDATES = 1;
-
-

@@ -126,7 +126,7 @@ public class AppointmentController {
 
     public void confirmAppointment(Appointment appointment) {
         if (appointment == null) {
-            mainView.showErrorMessage("Veuillez séléctionner un rendez-vous.");
+            mainView.showErrorMessage("Veuillez sélectionner un rendez-vous.");
             return;
         }
 
@@ -146,7 +146,7 @@ public class AppointmentController {
 
     public void cancelAppointment(Appointment appointment, String cancellationReason) {
         if (appointment == null) {
-            mainView.showErrorMessage("Veuillez séléctionner un rendez-vous.");
+            mainView.showErrorMessage("Veuillez sélectionner un rendez-vous.");
             return;
         }
 

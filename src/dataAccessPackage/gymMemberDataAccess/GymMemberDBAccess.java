@@ -764,7 +764,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
                 if (!resultSet.next()) {
                     throw new AddGymMemberException(
                             String.valueOf(personId),
-                            "Le compte selectionne n'existe pas."
+                            "Le compte sélectionné n'existe pas."
                     );
                 }
             }
@@ -907,48 +907,6 @@ public class GymMemberDBAccess implements IGymMemberDA {
         return null;
     }
 
-    @Override
-    public void insertExistingPersonAsGymMember(GymMember member)
-            throws AddGymMemberException, DuplicateGymMemberException {
-        boolean previousAutoCommit = true;
-
-        try {
-            connection = getConnection();
-            previousAutoCommit = connection.getAutoCommit();
-            connection.setAutoCommit(false);
-
-            if (existsByIdInGymMember(member.getId())) {
-                throw new DuplicateGymMemberException(
-                        String.valueOf(member.getId()),
-                        "Ce compte est déjà inscrit comme membre."
-                );
-            }
-
-            int subscriptionId = insertSubscription(member.getEnrollment());
-
-            Integer lockerNumber = getLockerNumberToSave(member);
-            updatePersonLockerNumber(member.getId(), lockerNumber);
-
-            insertGymMemberForExistingPerson(member, subscriptionId);
-
-            connection.commit();
-
-        } catch (DuplicateGymMemberException exception) {
-            rollback();
-            throw exception;
-
-        } catch (SQLException exception) {
-            rollback();
-            throw new AddGymMemberException(
-                    String.valueOf(member.getId()),
-                    "Erreur lors de l'inscription du compte existant."
-            );
-
-        } finally {
-            restoreAutoCommit(previousAutoCommit);
-        }
-    }
-
     private int insertSubscription(Subscription subscription)
             throws SQLException, AddGymMemberException {
         String sql = """
@@ -990,57 +948,6 @@ public class GymMemberDBAccess implements IGymMemberDA {
         }
     }
 
-    private void insertGymMemberForExistingPerson(GymMember member, int subscriptionId)
-        throws SQLException, AddGymMemberException {
-        String sql = """
-        INSERT INTO gym_member (
-            person_id,
-            wants_locker,
-            weight,
-            height,
-            enrollment
-        )
-        VALUES (?, ?, ?, ?, ?)
-        """;
-
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, member.getId());
-            statement.setBoolean(2, member.getWantsLocker());
-            statement.setDouble(3, member.getWeight());
-            statement.setInt(4, member.getHeight());
-            statement.setInt(5, subscriptionId);
-
-            int affectedRows = statement.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new AddGymMemberException(
-                        "gymMember",
-                        "Aucun membre n'a été ajouté."
-                );
-            }
-        }
-    }
-
-    private boolean existsByIdInGymMember(int personId) throws SQLException {
-        String sql = """
-            SELECT COUNT(*) AS member_count
-            FROM gym_member
-            WHERE person_id = ?
-            """;
-
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, personId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getInt("member_count") > 0;
-                }
-
-                return false;
-            }
-        }
-    }
-
     private Integer getNextAvailableLockerNumber() throws SQLException {
         String sql = """
             SELECT COALESCE(MAX(locker_number), 0) + 1 AS next_locker_number
@@ -1069,24 +976,5 @@ public class GymMemberDBAccess implements IGymMemberDA {
         }
 
         return getNextAvailableLockerNumber();
-    }
-
-    private void updatePersonLockerNumber(int personId, Integer lockerNumber) throws SQLException {
-        String sql = """
-            UPDATE person
-            SET locker_number = ?
-            WHERE id = ?
-            """;
-
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            if (lockerNumber == null) {
-                statement.setNull(1, java.sql.Types.INTEGER);
-            } else {
-                statement.setInt(1, lockerNumber);
-            }
-
-            statement.setInt(2, personId);
-            statement.executeUpdate();
-        }
     }
 }
