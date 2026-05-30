@@ -14,7 +14,7 @@ public class InfoBannerThread extends Thread {
         this.bannerText =
                 "Bienvenue chez Basic-Frite   |   "
                         + "Prenez rendez-vous avec un coach    |    "
-                        + "Pensez a renouveler votre abonnement    |    "
+                        + "Pensez à renouveler votre abonnement    |    "
                         + "Fermeture exceptionnelle le 12/06    |    ";
         this.position = 0;
         setDaemon(true);

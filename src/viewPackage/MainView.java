@@ -498,11 +498,11 @@ public class MainView {
         String roleText = "";
 
         if (connectedUserRole != null) {
-            roleText = "Role : " + connectedUserRole.getDisplayName();
+            roleText = "Rôle : " + connectedUserRole.getDisplayName();
         }
 
         Label roleLabel = new Label(roleText);
-        Label instructionLabel = new Label("Utilisez le menu pour acceder aux fonctionnalites.");
+        Label instructionLabel = new Label("Utilisez le menu pour accéder aux fonctionnalités.");
 
         VBox welcomeBox = new VBox(15, titleLabel, roleLabel, instructionLabel);
         welcomeBox.setAlignment(Pos.CENTER);
@@ -547,7 +547,7 @@ public class MainView {
         MenuItem welcomeItem = new MenuItem("Afficher l'accueil");
         welcomeItem.setOnAction(event -> showWelcomeMessage());
 
-        MenuItem logoutItem = new MenuItem("Se deconnecter");
+        MenuItem logoutItem = new MenuItem("Se déconnecter");
         logoutItem.setOnAction(event -> logout());
 
         homeMenu.getItems().add(welcomeItem);
@@ -564,7 +564,14 @@ public class MainView {
             menuBar.getMenus().add(createCoachMenu());
         } else if (connectedUserRole == UserRole.MEMBER_WITH_SUBSCRIPTION) {
             menuBar.getMenus().add(createMyAccountMenu());
-            menuBar.getMenus().add(createAppointmentMenu());
+
+            if (gymMemberController != null && gymMemberController.connectedMemberCanBookCoach()) {
+                menuBar.getMenus().add(createAppointmentMenu());
+            }
+
+            if (gymMemberController != null && gymMemberController.connectedMemberHasFacilityAccess()) {
+                menuBar.getMenus().add(createFacilitiesMenu());
+            }
         } else {
             menuBar.getMenus().add(createMemberMenu(true, false));
         }
@@ -591,7 +598,7 @@ public class MainView {
         Menu memberMenu = new Menu("Membres");
 
         if (showRegistration) {
-            MenuItem registrationItem = new MenuItem("S'inscrire a la salle");
+            MenuItem registrationItem = new MenuItem("S'inscrire à la salle");
             registrationItem.setOnAction(event -> {
                 if (gymMemberController != null) {
                     gymMemberController.showConnectedPersonRegistrationForm();
@@ -671,7 +678,7 @@ public class MainView {
     private Menu createCoachMenu() {
         Menu coachMenu = new Menu("Coach");
 
-        MenuItem myAvailabilitiesItem = new MenuItem("Mes disponibilites");
+        MenuItem myAvailabilitiesItem = new MenuItem("Mes disponibilités");
         myAvailabilitiesItem.setOnAction(event -> {
             if (coachAvailabilityController != null) {
                 coachAvailabilityController.showMyAvailabilities();
@@ -701,7 +708,7 @@ public class MainView {
             }
         });
 
-        MenuItem sponsoredMemberSearchItem = new MenuItem("Membres parraines");
+        MenuItem sponsoredMemberSearchItem = new MenuItem("Membres parrainés");
         sponsoredMemberSearchItem.setOnAction(event -> {
             if (searchController != null) {
                 searchController.showSponsoredMemberSearch();
@@ -722,6 +729,17 @@ public class MainView {
         return searchMenu;
     }
 
+    private Menu createFacilitiesMenu() {
+        Menu facilitiesMenu = new Menu("Installations");
+
+        MenuItem premiumFacilitiesItem = new MenuItem("Mes installations premium");
+        premiumFacilitiesItem.setOnAction(event -> showPremiumFacilities());
+
+        facilitiesMenu.getItems().add(premiumFacilitiesItem);
+
+        return facilitiesMenu;
+    }
+
     public boolean askConfirmation(String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
@@ -740,5 +758,27 @@ public class MainView {
         dialog.setContentText(message);
 
         return dialog.showAndWait().orElse(null);
+    }
+
+    public void showPremiumFacilities() {
+        Label titleLabel = new Label("Installations premium");
+        titleLabel.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;");
+
+        Label descriptionLabel = new Label(
+                "Votre abonnement Premium vous donne accès aux installations suivantes :"
+        );
+
+        Label facilitiesLabel = new Label(
+                "- Sauna\n"
+                        + "- Piscine\n"
+                        + "- Espace détente\n"
+                        + "- Installations premium de la salle"
+        );
+
+        VBox container = new VBox(15, titleLabel, descriptionLabel, facilitiesLabel);
+        container.setPadding(new Insets(30));
+        container.setAlignment(Pos.CENTER);
+
+        root.setCenter(container);
     }
 }

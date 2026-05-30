@@ -111,7 +111,7 @@ public class AppointmentController {
                     roomId,
                     objective
             );
-            mainView.showInformationMessage("Rendez-vous reserve avec succes.");
+            mainView.showInformationMessage("Rendez-vous réservé avec succès.");
             showBookingForm();
         } catch (
                 ReadGymMemberException |
@@ -128,13 +128,13 @@ public class AppointmentController {
 
     public void confirmAppointment(Appointment appointment) {
         if (appointment == null) {
-            mainView.showErrorMessage("Veuillez selectionner un rendez-vous.");
+            mainView.showErrorMessage("Veuillez séléctionner un rendez-vous.");
             return;
         }
 
         try {
             appointmentManager.confirmAppointment(appointment.getId());
-            mainView.showInformationMessage("Rendez-vous confirme avec succes.");
+            mainView.showInformationMessage("Rendez-vous confirmé avec succès.");
             mainView.refreshAppointmentList();
 
         } catch (
@@ -148,7 +148,7 @@ public class AppointmentController {
 
     public void cancelAppointment(Appointment appointment, String cancellationReason) {
         if (appointment == null) {
-            mainView.showErrorMessage("Veuillez selectionner un rendez-vous.");
+            mainView.showErrorMessage("Veuillez séléctionner un rendez-vous.");
             return;
         }
 
@@ -171,7 +171,7 @@ public class AppointmentController {
                 return;
             }
 
-            mainView.showInformationMessage("Rendez-vous annule avec succes.");
+            mainView.showInformationMessage("Rendez-vous annulé avec succès.");
             mainView.refreshAppointmentList();
 
         } catch (

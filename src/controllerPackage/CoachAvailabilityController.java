@@ -40,7 +40,7 @@ public class CoachAvailabilityController {
         try {
             int coachId = mainView.getConnectedPerson().getId();
             coachAvailabilityManager.addAvailability(coachId, date, startTime, endTime);
-            mainView.showInformationMessage("Disponibilite ajoutee avec succes.");
+            mainView.showInformationMessage("Disponibilité ajoutée avec succès.");
             showMyAvailabilities();
 
         } catch (UpdateCoachAvailabilityException exception) {
@@ -50,13 +50,13 @@ public class CoachAvailabilityController {
 
     public void deleteAvailability(CoachAvailability availability) {
         if (availability == null) {
-            mainView.showErrorMessage("Veuillez selectionner une disponibilite.");
+            mainView.showErrorMessage("Veuillez séléctionner une disponibilité.");
             return;
         }
 
         try {
             coachAvailabilityManager.deleteAvailability(availability.getId());
-            mainView.showInformationMessage("Disponibilite supprimee avec succes.");
+            mainView.showInformationMessage("Disponibilité supprimée avec succès.");
             showMyAvailabilities();
 
         } catch (UpdateCoachAvailabilityException exception) {

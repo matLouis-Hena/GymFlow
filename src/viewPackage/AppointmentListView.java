@@ -29,7 +29,7 @@ public class AppointmentListView {
     public AppointmentListView(List<Appointment> appointments) {
         root = new BorderPane();
         appointmentTable = new TableView<>();
-        refreshButton = new Button("Rafraichir");
+        refreshButton = new Button("Rafraîchir");
         confirmButton = new Button("Confirmer");
         cancelButton = new Button("Annuler le rendez-vous");
 
@@ -78,7 +78,7 @@ public class AppointmentListView {
                 new SimpleStringProperty(String.valueOf(cellData.getValue().getAvailability().getAvailableDate()))
         );
 
-        TableColumn<Appointment, String> startColumn = new TableColumn<>("Debut");
+        TableColumn<Appointment, String> startColumn = new TableColumn<>("Début");
         startColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(String.valueOf(cellData.getValue().getAvailability().getStartTime()))
         );

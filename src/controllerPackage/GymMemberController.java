@@ -2,15 +2,11 @@ package controllerPackage;
 
 import businessPackage.GymMemberManager;
 import businessPackage.SponsorshipManager;
-import exceptionPackage.appointment.AppointmentBusinessException;
-import exceptionPackage.appointment.DeleteAppointmentException;
-import exceptionPackage.appointment.ReadAppointmentException;
+import exceptionPackage.appointment.*;
 import exceptionPackage.coachAvailability.UpdateCoachAvailabilityException;
 import exceptionPackage.gymMember.*;
 import exceptionPackage.payment.DeletePaymentException;
-import exceptionPackage.sponsorship.AddSponsorshipException;
-import exceptionPackage.sponsorship.DeleteSponsorshipException;
-import exceptionPackage.sponsorship.ReadSponsorshipException;
+import exceptionPackage.sponsorship.*;
 import modelPackage.GymMember;
 import modelPackage.Sponsorship;
 import modelPackage.UserRole;
@@ -36,7 +32,7 @@ public class GymMemberController {
 
     public void showUpdateMemberForm(GymMember member) {
         if (member == null) {
-            mainView.showErrorMessage("Veuillez selectionner un membre a modifier.");
+            mainView.showErrorMessage("Veuillez sélectionner un membre à modifier.");
             return;
         }
 
@@ -75,7 +71,7 @@ public class GymMemberController {
                 sponsorshipManager.createSponsorship(sponsor.getId(), sponsored.getId());
             }
 
-            mainView.showInformationMessage("Membre ajoute avec succes.");
+            mainView.showInformationMessage("Membre ajouté avec succès.");
             showMembers();
         } catch (
                 AddGymMemberException | DuplicateGymMemberException | ReadGymMemberException |
@@ -94,7 +90,7 @@ public class GymMemberController {
                 sponsorshipManager.createSponsorship(sponsor.getId(), member.getId());
             }
 
-            mainView.showInformationMessage("Compte inscrit comme membre avec succes.");
+            mainView.showInformationMessage("Compte inscrit comme membre avec succès.");
             mainView.setConnectedUserRole(UserRole.MEMBER_WITH_SUBSCRIPTION);
             mainView.showWelcomeMessage();
         } catch (
@@ -108,7 +104,7 @@ public class GymMemberController {
     public void updateMember(GymMember member) {
         try {
             gymMemberManager.updateMember(member);
-            mainView.showInformationMessage("Membre modifie avec succes.");
+            mainView.showInformationMessage("Membre modifié avec succès.");
             showMembers();
         } catch (UpdateGymMemberException | DuplicateGymMemberException exception) {
             mainView.showErrorMessage(exception.getMessage());
@@ -118,7 +114,7 @@ public class GymMemberController {
     public void updateMyAccount(GymMember member) {
         try {
             gymMemberManager.updateMember(member);
-            mainView.showInformationMessage("Compte modifie avec succes.");
+            mainView.showInformationMessage("Compte modifié avec succès.");
             showMyAccount();
         } catch (UpdateGymMemberException | DuplicateGymMemberException exception) {
             mainView.showErrorMessage(exception.getMessage());
@@ -175,11 +171,49 @@ public class GymMemberController {
 
         for (Sponsorship sponsorship : sponsorships) {
             if (sponsorship.getSponsored().getId() == memberId) {
-                return "Oui, parraine par "
+                return "Oui, parrainé par "
                         + sponsorship.getSponsor().getUsername();
             }
         }
 
         return "Non";
+    }
+
+    public boolean connectedMemberCanBookCoach() {
+        try {
+            if (mainView.getConnectedPerson() == null) {
+                return false;
+            }
+
+            GymMember member = gymMemberManager.getMemberById(
+                    mainView.getConnectedPerson().getId()
+            );
+
+            return member.getEnrollment() != null
+                    && member.getEnrollment().getType() != null
+                    && member.getEnrollment().getType().canBookCoach();
+
+        } catch (ReadGymMemberException exception) {
+            return false;
+        }
+    }
+
+    public boolean connectedMemberHasFacilityAccess() {
+        try {
+            if (mainView.getConnectedPerson() == null) {
+                return false;
+            }
+
+            GymMember member = gymMemberManager.getMemberById(
+                    mainView.getConnectedPerson().getId()
+            );
+
+            return member.getEnrollment() != null
+                    && member.getEnrollment().getType() != null
+                    && member.getEnrollment().getType().hasFacilityAccess();
+
+        } catch (ReadGymMemberException exception) {
+            return false;
+        }
     }
 }

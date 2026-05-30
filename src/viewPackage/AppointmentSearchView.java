@@ -52,7 +52,7 @@ public class AppointmentSearchView {
     }
 
     public LocalDate getStartDate() {
-        return getDate(startDateField, "La date de debut est obligatoire.");
+        return getDate(startDateField, "La date de début est obligatoire.");
     }
 
     public LocalDate getEndDate() {
@@ -74,7 +74,7 @@ public class AppointmentSearchView {
 
         criteriaGrid.add(new Label("Membre"), 0, 0);
         criteriaGrid.add(memberComboBox, 1, 0);
-        criteriaGrid.add(new Label("Date debut (yyyy-mm-dd)"), 0, 1);
+        criteriaGrid.add(new Label("Date début (yyyy-mm-dd)"), 0, 1);
         criteriaGrid.add(startDateField, 1, 1);
         criteriaGrid.add(new Label("Date fin (yyyy-mm-dd)"), 0, 2);
         criteriaGrid.add(endDateField, 1, 2);

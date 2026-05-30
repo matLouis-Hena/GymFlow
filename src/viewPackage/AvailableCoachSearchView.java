@@ -52,14 +52,14 @@ public class AvailableCoachSearchView {
         String value = specialityComboBox.getSelectionModel().getSelectedItem();
 
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("La specialite est obligatoire.");
+            throw new IllegalArgumentException("La spécialité est obligatoire.");
         }
 
         return value;
     }
 
     public LocalDate getStartDate() {
-        return getDate(startDateField, "La date de debut est obligatoire.");
+        return getDate(startDateField, "La date de début est obligatoire.");
     }
 
     public LocalDate getEndDate() {
@@ -79,9 +79,9 @@ public class AvailableCoachSearchView {
         criteriaGrid.setVgap(10);
         criteriaGrid.setAlignment(Pos.CENTER);
 
-        criteriaGrid.add(new Label("Specialite"), 0, 0);
+        criteriaGrid.add(new Label("Spécialité"), 0, 0);
         criteriaGrid.add(specialityComboBox, 1, 0);
-        criteriaGrid.add(new Label("Date debut (yyyy-mm-dd)"), 0, 1);
+        criteriaGrid.add(new Label("Date début (yyyy-mm-dd)"), 0, 1);
         criteriaGrid.add(startDateField, 1, 1);
         criteriaGrid.add(new Label("Date fin (yyyy-mm-dd)"), 0, 2);
         criteriaGrid.add(endDateField, 1, 2);
@@ -97,7 +97,7 @@ public class AvailableCoachSearchView {
     }
 
     private void createColumns() {
-        TableColumn<AvailableCoachSearchResult, Integer> idColumn = new TableColumn<>("Creneau");
+        TableColumn<AvailableCoachSearchResult, Integer> idColumn = new TableColumn<>("Créneau");
         idColumn.setCellValueFactory(cellData ->
                 new ReadOnlyObjectWrapper<>(cellData.getValue().getAvailabilityId())
         );
@@ -111,7 +111,7 @@ public class AvailableCoachSearchView {
                 )
         );
 
-        TableColumn<AvailableCoachSearchResult, Boolean> degreeColumn = new TableColumn<>("Diplome");
+        TableColumn<AvailableCoachSearchResult, Boolean> degreeColumn = new TableColumn<>("Diplôme");
         degreeColumn.setCellValueFactory(cellData ->
                 new ReadOnlyObjectWrapper<>(cellData.getValue().getHasDegree())
         );
@@ -154,7 +154,7 @@ public class AvailableCoachSearchView {
         try {
             return LocalDate.parse(value.trim());
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("La date doit respecter le format yyyy-mm-dd.");
+            throw new IllegalArgumentException("La date doit réspecter le format yyyy-mm-dd.");
         }
     }
 }

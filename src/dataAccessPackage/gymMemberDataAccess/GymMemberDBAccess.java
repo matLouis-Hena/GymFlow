@@ -153,7 +153,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
                         "FROM person p " +
                         "INNER JOIN gym_member gm ON p.id = gm.person_id " +
                         "INNER JOIN subscription s ON gm.enrollment = s.id " +
-                        "ORDER BY p.last_name, p.first_name";
+                        "ORDER BY p.id";
 
         List<GymMember> members = new ArrayList<>();
 
@@ -328,7 +328,15 @@ public class GymMemberDBAccess implements IGymMemberDA {
             statement.setString(4, member.getGender().getDatabaseValue());
             statement.setString(5, member.getEmail());
             setNullableString(statement, 6, member.getPhone());
-            setNullableInteger(statement, 7, member.getLockerNumber(), Types.SMALLINT);
+
+            Integer lockerNumber = getLockerNumberToSave(member);
+
+            if (lockerNumber == null) {
+                statement.setNull(7, java.sql.Types.INTEGER);
+            } else {
+                statement.setInt(7, lockerNumber);
+            }
+
             statement.setString(8, member.getUsername());
             statement.setString(9, PasswordUtil.hashIfNeeded(member.getPassword()));
 
@@ -418,7 +426,14 @@ public class GymMemberDBAccess implements IGymMemberDA {
             statement.setString(4, member.getGender().getDatabaseValue());
             statement.setString(5, member.getEmail());
             setNullableString(statement, 6, member.getPhone());
-            setNullableInteger(statement, 7, member.getLockerNumber(), Types.SMALLINT);
+
+            Integer lockerNumber = getLockerNumberToSave(member);
+            if (lockerNumber == null) {
+                statement.setNull(7, java.sql.Types.INTEGER);
+            } else {
+                statement.setInt(7, lockerNumber);
+            }
+
             statement.setString(8, member.getUsername());
             statement.setString(9, PasswordUtil.hashIfNeeded(member.getPassword()));
             statement.setInt(10, member.getId());
@@ -850,7 +865,6 @@ public class GymMemberDBAccess implements IGymMemberDA {
         try {
             connection.rollback();
         } catch (SQLException ignored) {
-            // Aucun affichage dans la couche DataAccess.
         }
     }
 
@@ -862,7 +876,6 @@ public class GymMemberDBAccess implements IGymMemberDA {
         try {
             connection.setAutoCommit(previousAutoCommit);
         } catch (SQLException ignored) {
-            // Aucun affichage dans la couche DataAccess.
         }
     }
 
@@ -892,5 +905,188 @@ public class GymMemberDBAccess implements IGymMemberDA {
         }
 
         return null;
+    }
+
+    @Override
+    public void insertExistingPersonAsGymMember(GymMember member)
+            throws AddGymMemberException, DuplicateGymMemberException {
+        boolean previousAutoCommit = true;
+
+        try {
+            connection = getConnection();
+            previousAutoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+
+            if (existsByIdInGymMember(member.getId())) {
+                throw new DuplicateGymMemberException(
+                        String.valueOf(member.getId()),
+                        "Ce compte est déjà inscrit comme membre."
+                );
+            }
+
+            int subscriptionId = insertSubscription(member.getEnrollment());
+
+            Integer lockerNumber = getLockerNumberToSave(member);
+            updatePersonLockerNumber(member.getId(), lockerNumber);
+
+            insertGymMemberForExistingPerson(member, subscriptionId);
+
+            connection.commit();
+
+        } catch (DuplicateGymMemberException exception) {
+            rollback();
+            throw exception;
+
+        } catch (SQLException exception) {
+            rollback();
+            throw new AddGymMemberException(
+                    String.valueOf(member.getId()),
+                    "Erreur lors de l'inscription du compte existant."
+            );
+
+        } finally {
+            restoreAutoCommit(previousAutoCommit);
+        }
+    }
+
+    private int insertSubscription(Subscription subscription)
+            throws SQLException, AddGymMemberException {
+        String sql = """
+            INSERT INTO subscription (
+                type,
+                price,
+                duration_months
+            )
+            VALUES (?, ?, ?)
+            """;
+
+        try (PreparedStatement statement = connection.prepareStatement(
+                sql,
+                Statement.RETURN_GENERATED_KEYS
+        )) {
+            statement.setString(1, subscription.getType().getDatabaseValue());
+            statement.setDouble(2, subscription.getPrice());
+            statement.setInt(3, subscription.getDurationMonths());
+
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new AddGymMemberException(
+                        "subscription",
+                        "Aucun abonnement n'a été ajouté."
+                );
+            }
+
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                }
+
+                throw new AddGymMemberException(
+                        "subscriptionId",
+                        "Impossible de récupérer l'identifiant de l'abonnement créé."
+                );
+            }
+        }
+    }
+
+    private void insertGymMemberForExistingPerson(GymMember member, int subscriptionId)
+        throws SQLException, AddGymMemberException {
+        String sql = """
+        INSERT INTO gym_member (
+            person_id,
+            wants_locker,
+            weight,
+            height,
+            enrollment
+        )
+        VALUES (?, ?, ?, ?, ?)
+        """;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, member.getId());
+            statement.setBoolean(2, member.getWantsLocker());
+            statement.setDouble(3, member.getWeight());
+            statement.setInt(4, member.getHeight());
+            statement.setInt(5, subscriptionId);
+
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new AddGymMemberException(
+                        "gymMember",
+                        "Aucun membre n'a été ajouté."
+                );
+            }
+        }
+    }
+
+    private boolean existsByIdInGymMember(int personId) throws SQLException {
+        String sql = """
+            SELECT COUNT(*) AS member_count
+            FROM gym_member
+            WHERE person_id = ?
+            """;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, personId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("member_count") > 0;
+                }
+
+                return false;
+            }
+        }
+    }
+
+    private Integer getNextAvailableLockerNumber() throws SQLException {
+        String sql = """
+            SELECT COALESCE(MAX(locker_number), 0) + 1 AS next_locker_number
+            FROM person
+            WHERE locker_number IS NOT NULL
+            """;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            if (resultSet.next()) {
+                return resultSet.getInt("next_locker_number");
+            }
+
+            return 1;
+        }
+    }
+
+    private Integer getLockerNumberToSave(GymMember member) throws SQLException {
+        if (!member.getWantsLocker()) {
+            return null;
+        }
+
+        if (member.getLockerNumber() != null) {
+            return member.getLockerNumber();
+        }
+
+        return getNextAvailableLockerNumber();
+    }
+
+    private void updatePersonLockerNumber(int personId, Integer lockerNumber) throws SQLException {
+        String sql = """
+            UPDATE person
+            SET locker_number = ?
+            WHERE id = ?
+            """;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            if (lockerNumber == null) {
+                statement.setNull(1, java.sql.Types.INTEGER);
+            } else {
+                statement.setInt(1, lockerNumber);
+            }
+
+            statement.setInt(2, personId);
+            statement.executeUpdate();
+        }
     }
 }

@@ -31,9 +31,9 @@ public class GymMemberListView {
         root = new BorderPane();
         memberTable = new TableView<>();
         addButton = new Button("Inscription");
-        refreshButton = new Button("Rafraichir");
+        refreshButton = new Button("Rafraîchir");
         updateButton = new Button("Modifier");
-        deleteButton = new Button("Supprimer le membre selectionne");
+        deleteButton = new Button("Supprimer le membre selectionné");
 
         createColumns();
 
@@ -84,7 +84,7 @@ public class GymMemberListView {
                 new ReadOnlyObjectWrapper<>(cellData.getValue().getId())
         );
 
-        TableColumn<GymMember, String> firstNameColumn = new TableColumn<>("Prenom");
+        TableColumn<GymMember, String> firstNameColumn = new TableColumn<>("Prénom");
         firstNameColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getFirstName())
         );

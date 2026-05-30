@@ -122,7 +122,7 @@ public class SponsoredMemberSearchView {
                 new ReadOnlyObjectWrapper<>(cellData.getValue().getSubscriptionPrice())
         );
 
-        TableColumn<SponsoredMemberSearchResult, Integer> durationColumn = new TableColumn<>("Duree");
+        TableColumn<SponsoredMemberSearchResult, Integer> durationColumn = new TableColumn<>("Durée");
         durationColumn.setCellValueFactory(cellData ->
                 new ReadOnlyObjectWrapper<>(cellData.getValue().getSubscriptionDurationMonths())
         );

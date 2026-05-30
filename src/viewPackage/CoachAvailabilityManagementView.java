@@ -58,15 +58,15 @@ public class CoachAvailabilityManagementView {
         return ViewInputHelper.getRequiredDate(
                 dateField,
                 "La date est obligatoire.",
-                "La date doit respecter le format yyyy-mm-dd."
+                "La date doit réspecter le format yyyy-mm-dd."
         );
     }
 
     public LocalTime getStartTime() {
         return ViewInputHelper.getRequiredTime(
                 startTimeField,
-                "L'heure de debut est obligatoire.",
-                "L'heure doit respecter le format hh:mm."
+                "L'heure de début est obligatoire.",
+                "L'heure doit réspecter le format hh:mm."
         );
     }
 
@@ -74,7 +74,7 @@ public class CoachAvailabilityManagementView {
         return ViewInputHelper.getRequiredTime(
                 endTimeField,
                 "L'heure de fin est obligatoire.",
-                "L'heure doit respecter le format hh:mm."
+                "L'heure doit réspecter le format hh:mm."
         );
     }
 
@@ -84,7 +84,7 @@ public class CoachAvailabilityManagementView {
         endTimeField = new TextField();
         addButton = new Button("Ajouter");
         deleteButton = new Button("Supprimer");
-        refreshButton = new Button("Rafraichir");
+        refreshButton = new Button("Rafraîchir");
 
         dateField.setPromptText("yyyy-mm-dd");
         startTimeField.setPromptText("hh:mm");
@@ -102,7 +102,7 @@ public class CoachAvailabilityManagementView {
                 new SimpleStringProperty(String.valueOf(cellData.getValue().getAvailableDate()))
         );
 
-        TableColumn<CoachAvailability, String> startColumn = new TableColumn<>("Debut");
+        TableColumn<CoachAvailability, String> startColumn = new TableColumn<>("Début");
         startColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(String.valueOf(cellData.getValue().getStartTime()))
         );
@@ -112,7 +112,7 @@ public class CoachAvailabilityManagementView {
                 new SimpleStringProperty(String.valueOf(cellData.getValue().getEndTime()))
         );
 
-        TableColumn<CoachAvailability, Boolean> bookedColumn = new TableColumn<>("Reserve");
+        TableColumn<CoachAvailability, Boolean> bookedColumn = new TableColumn<>("Réservé");
         bookedColumn.setCellValueFactory(cellData ->
                 new ReadOnlyObjectWrapper<>(cellData.getValue().isBooked())
         );
@@ -129,7 +129,7 @@ public class CoachAvailabilityManagementView {
         availabilityTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         availabilityTable.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-        Label titleLabel = new Label("Mes disponibilites");
+        Label titleLabel = new Label("Mes disponibilités");
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
         GridPane formGrid = new GridPane();
@@ -139,7 +139,7 @@ public class CoachAvailabilityManagementView {
 
         formGrid.add(new Label("Date"), 0, 0);
         formGrid.add(dateField, 1, 0);
-        formGrid.add(new Label("Debut"), 2, 0);
+        formGrid.add(new Label("Début"), 2, 0);
         formGrid.add(startTimeField, 3, 0);
         formGrid.add(new Label("Fin"), 4, 0);
         formGrid.add(endTimeField, 5, 0);

@@ -110,7 +110,6 @@ public class Person {
 
     public void setPhone(String phone) throws InvalidPhoneException {
         if (phone != null) {
-            // Conversion automatique 0 → +32
             if (phone.startsWith("0")) {
                 phone = "+32" + phone.substring(1);
             }

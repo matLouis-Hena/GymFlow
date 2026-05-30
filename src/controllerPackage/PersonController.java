@@ -56,7 +56,7 @@ public class PersonController {
     public void createPerson(Person person) {
         try {
             personManager.createPerson(person);
-            mainView.showInformationMessage("Compte cree avec succes.");
+            mainView.showInformationMessage("Compte créé avec succès.");
             showPersons();
         } catch (AddPersonException exception) {
             mainView.showErrorMessage(exception.getMessage());
@@ -68,7 +68,7 @@ public class PersonController {
             int id = personManager.createPerson(person);
             Person createdPerson = personManager.getPersonById(id);
             UserRole userRole = personManager.getUserRoleByPersonId(id);
-            mainView.showInformationMessage("Compte cree avec succes.");
+            mainView.showInformationMessage("Compte créé avec succès.");
             mainView.login(createdPerson, userRole);
         } catch (AddPersonException | ReadPersonException exception) {
             mainView.showErrorMessage(exception.getMessage());

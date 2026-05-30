@@ -38,7 +38,7 @@ public class AppointmentBookingView {
         availabilityTable = new TableView<>();
         roomComboBox = new ComboBox<>();
         objectiveField = new TextField();
-        bookingButton = new Button("Reserver");
+        bookingButton = new Button("Réserver");
         cancelButton = new Button("Annuler");
 
         fillSpecialities(specialities);
@@ -67,7 +67,7 @@ public class AppointmentBookingView {
         String value = specialityComboBox.getSelectionModel().getSelectedItem();
 
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("La specialite est obligatoire.");
+            throw new IllegalArgumentException("La spécialité est obligatoire.");
         }
 
         return value;
@@ -85,7 +85,7 @@ public class AppointmentBookingView {
         AvailableCoachSearchResult result = availabilityTable.getSelectionModel().getSelectedItem();
 
         if (result == null) {
-            throw new IllegalArgumentException("Veuillez selectionner un creneau.");
+            throw new IllegalArgumentException("Veuillez séléctionner un créneau.");
         }
 
         return result.getAvailabilityId();
@@ -124,9 +124,9 @@ public class AppointmentBookingView {
         criteriaGrid.setVgap(10);
         criteriaGrid.setAlignment(Pos.CENTER);
 
-        criteriaGrid.add(new Label("Specialite"), 0, 0);
+        criteriaGrid.add(new Label("Spécialité"), 0, 0);
         criteriaGrid.add(specialityComboBox, 1, 0);
-        criteriaGrid.add(new Label("Date debut (yyyy-mm-dd)"), 0, 1);
+        criteriaGrid.add(new Label("Date début (yyyy-mm-dd)"), 0, 1);
         criteriaGrid.add(startDateField, 1, 1);
         criteriaGrid.add(new Label("Date fin (yyyy-mm-dd)"), 0, 2);
         criteriaGrid.add(endDateField, 1, 2);
@@ -155,7 +155,7 @@ public class AppointmentBookingView {
     }
 
     private void createColumns() {
-        TableColumn<AvailableCoachSearchResult, Integer> idColumn = new TableColumn<>("Creneau");
+        TableColumn<AvailableCoachSearchResult, Integer> idColumn = new TableColumn<>("Créneau");
         idColumn.setCellValueFactory(cellData ->
                 new ReadOnlyObjectWrapper<>(cellData.getValue().getAvailabilityId())
         );
@@ -220,7 +220,7 @@ public class AppointmentBookingView {
         try {
             return LocalDate.parse(value.trim());
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("La date doit respecter le format yyyy-mm-dd.");
+            throw new IllegalArgumentException("La date doit réspecter le format yyyy-mm-dd.");
         }
     }
 }

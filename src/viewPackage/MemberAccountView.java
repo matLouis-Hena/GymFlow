@@ -44,15 +44,15 @@ public class MemberAccountView {
     }
 
     public GymMember createUpdatedMember() throws Exception {
-        Double weight = ViewInputHelper.getRequiredDouble(weightField, "Le poids doit etre un nombre.");
-        Integer height = ViewInputHelper.getRequiredInteger(heightField, "La taille doit etre un nombre.");
+        Double weight = ViewInputHelper.getRequiredDouble(weightField, "Le poids doit être un nombre.");
+        Integer height = ViewInputHelper.getRequiredInteger(heightField, "La taille doit être un nombre.");
 
         if (weight <= 0) {
-            throw new IllegalArgumentException("Le poids doit etre superieur a 0.");
+            throw new IllegalArgumentException("Le poids doit être superieur à 0.");
         }
 
         if (height <= 0) {
-            throw new IllegalArgumentException("La taille doit etre superieure a 0.");
+            throw new IllegalArgumentException("La taille doit être superieure à 0.");
         }
 
         return new GymMember(
@@ -89,7 +89,7 @@ public class MemberAccountView {
         gridPane.setVgap(10);
         gridPane.setAlignment(Pos.CENTER);
 
-        gridPane.add(new Label("Prenom"), 0, 0);
+        gridPane.add(new Label("Prénom"), 0, 0);
         gridPane.add(new Label(member.getFirstName()), 1, 0);
         gridPane.add(new Label("Nom"), 0, 1);
         gridPane.add(new Label(member.getLastName()), 1, 1);
@@ -97,11 +97,11 @@ public class MemberAccountView {
         gridPane.add(new Label(member.getUsername()), 1, 2);
         gridPane.add(new Label("Email"), 0, 3);
         gridPane.add(new Label(member.getEmail()), 1, 3);
-        gridPane.add(new Label("Telephone"), 0, 4);
+        gridPane.add(new Label("Téléphone"), 0, 4);
         gridPane.add(new Label(ViewInputHelper.getNullableText(member.getPhone())), 1, 4);
         gridPane.add(new Label("Casier"), 0, 5);
         gridPane.add(new Label(ViewInputHelper.getNullableText(member.getLockerNumber())), 1, 5);
-        gridPane.add(new Label("Casier demande"), 0, 6);
+        gridPane.add(new Label("Casier demandé"), 0, 6);
         gridPane.add(new Label(member.getWantsLocker() ? "Oui" : "Non"), 1, 6);
         gridPane.add(new Label("Poids"), 0, 7);
         gridPane.add(weightField, 1, 7);

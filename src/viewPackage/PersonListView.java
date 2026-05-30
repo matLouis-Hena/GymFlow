@@ -27,7 +27,7 @@ public class PersonListView {
     public PersonListView(List<Person> persons) {
         root = new BorderPane();
         personTable = new TableView<>();
-        refreshButton = new Button("Rafraichir");
+        refreshButton = new Button("Rafraîchir");
 
         createColumns();
 
@@ -62,7 +62,7 @@ public class PersonListView {
                 new ReadOnlyObjectWrapper<>(cellData.getValue().getId())
         );
 
-        TableColumn<Person, String> firstNameColumn = new TableColumn<>("Prenom");
+        TableColumn<Person, String> firstNameColumn = new TableColumn<>("Prénom");
         firstNameColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getFirstName())
         );
@@ -87,7 +87,7 @@ public class PersonListView {
                 new SimpleStringProperty(cellData.getValue().getEmail())
         );
 
-        TableColumn<Person, String> phoneColumn = new TableColumn<>("Telephone");
+        TableColumn<Person, String> phoneColumn = new TableColumn<>("Téléphone");
         phoneColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(ViewInputHelper.getNullableText(cellData.getValue().getPhone()))
         );

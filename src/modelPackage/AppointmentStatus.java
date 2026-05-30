@@ -2,11 +2,11 @@ package modelPackage;
 
 public enum AppointmentStatus {
     PENDING("En attente", "Le rendez-vous est en attente de confirmation"),
-    CONFIRMED("Confirme", "Le rendez-vous est confirme"),
-    DONE("Fini", "Le rendez-vous a ete effectue"),
-    CANCELLED_BY_COACH("Annule par coach", "Le rendez-vous a ete annule par le coach"),
-    CANCELLED_BY_MEMBER("Annule par membre", "Le rendez-vous a ete annule par le membre"),
-    CANCELLED_BY_ADMIN("Annule par admin", "Le rendez-vous a ete annule par un administrateur");
+    CONFIRMED("Confirmé", "Le rendez-vous est confirmé"),
+    DONE("Fini", "Le rendez-vous à été effectué"),
+    CANCELLED_BY_COACH("Annulé par coach", "Le rendez-vous à été annule par le coach"),
+    CANCELLED_BY_MEMBER("Annulé par membre", "Le rendez-vous à été annule par le membre"),
+    CANCELLED_BY_ADMIN("Annulé par admin", "Le rendez-vous à été annule par un administrateur");
 
     private final String displayName;
     private final String description;

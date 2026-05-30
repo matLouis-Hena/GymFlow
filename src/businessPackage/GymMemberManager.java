@@ -290,4 +290,34 @@ public class GymMemberManager {
             throw new DeleteGymMemberException(String.valueOf(id), "L'identifiant doit être supérieur à 0.");
         }
     }
+
+    private void validateExistingPersonMemberForAdd(GymMember member) throws AddGymMemberException {
+        if (member == null) {
+            throw new AddGymMemberException("member", "Le membre ne peut pas être vide.");
+        }
+
+        if (member.getId() <= 0) {
+            throw new AddGymMemberException("personId", "L'identifiant du compte existant est invalide.");
+        }
+
+        if (member.getWeight() <= 0) {
+            throw new AddGymMemberException("weight", "Le poids du membre doit être supérieur à 0.");
+        }
+
+        if (member.getHeight() <= 0) {
+            throw new AddGymMemberException("height", "La taille du membre doit être supérieure à 0.");
+        }
+
+        if (member.getEnrollment() == null) {
+            throw new AddGymMemberException("enrollment", "L'abonnement du membre est obligatoire.");
+        }
+
+        if (member.getEnrollment().getType() == null) {
+            throw new AddGymMemberException("subscriptionType", "Le grade d'abonnement est obligatoire.");
+        }
+
+        if (member.getEnrollment().getDurationMonths() <= 0) {
+            throw new AddGymMemberException("durationMonths", "La durée de l'abonnement doit être supérieure à 0.");
+        }
+    }
 }

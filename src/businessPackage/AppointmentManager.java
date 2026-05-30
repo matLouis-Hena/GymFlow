@@ -69,6 +69,20 @@ public class AppointmentManager {
             );
         }
 
+        if (member.getEnrollment() == null || member.getEnrollment().getType() == null) {
+            throw new AppointmentBusinessException(
+                    String.valueOf(memberId),
+                    "Le membre sélectionné n'a pas d'abonnement valide."
+            );
+        }
+
+        if (!member.getEnrollment().getType().canBookCoach()) {
+            throw new AppointmentBusinessException(
+                    member.getEnrollment().getType().getDisplayValue(),
+                    "L'abonnement du membre ne permet pas de réserver un coach."
+            );
+        }
+
         CoachAvailability availability = coachAvailabilityDataAccess.getById(availabilityId);
 
         if (availability == null) {

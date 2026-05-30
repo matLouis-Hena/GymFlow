@@ -46,7 +46,7 @@ public class PersonFormView {
     }
 
     public Person createPerson() throws Exception {
-        String firstName = ViewInputHelper.getRequiredText(firstNameField, "Le prenom est obligatoire.");
+        String firstName = ViewInputHelper.getRequiredText(firstNameField, "Le prénom est obligatoire.");
         String lastName = ViewInputHelper.getRequiredText(lastNameField, "Le nom est obligatoire.");
         LocalDate birthDate = getBirthDate();
         Gender gender = getGender();
@@ -56,7 +56,7 @@ public class PersonFormView {
         String password = ViewInputHelper.getRequiredText(passwordField, "Le mot de passe est obligatoire.");
 
         if (birthDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("La date de naissance ne peut pas etre dans le futur.");
+            throw new IllegalArgumentException("La date de naissance ne peut pas être dans le futur.");
         }
 
         return new Person(
@@ -82,7 +82,7 @@ public class PersonFormView {
         phoneField = new TextField();
         usernameField = new TextField();
         passwordField = new PasswordField();
-        createAccountButton = new Button("Creer le compte");
+        createAccountButton = new Button("Créer le compte");
         cancelButton = new Button("Annuler");
 
         genderComboBox.getItems().add(Gender.MALE);
@@ -91,7 +91,7 @@ public class PersonFormView {
     }
 
     private void createForm() {
-        Label titleLabel = new Label("Creation d'un compte");
+        Label titleLabel = new Label("Création d'un compte");
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
         GridPane formGrid = new GridPane();
@@ -100,7 +100,7 @@ public class PersonFormView {
         formGrid.setVgap(10);
         formGrid.setAlignment(Pos.CENTER);
 
-        formGrid.add(new Label("Prenom *"), 0, 0);
+        formGrid.add(new Label("Prénom *"), 0, 0);
         formGrid.add(firstNameField, 1, 0);
         formGrid.add(new Label("Nom *"), 0, 1);
         formGrid.add(lastNameField, 1, 1);
@@ -110,7 +110,7 @@ public class PersonFormView {
         formGrid.add(genderComboBox, 1, 3);
         formGrid.add(new Label("Email *"), 0, 4);
         formGrid.add(emailField, 1, 4);
-        formGrid.add(new Label("Telephone"), 0, 5);
+        formGrid.add(new Label("Téléphone"), 0, 5);
         formGrid.add(phoneField, 1, 5);
         formGrid.add(new Label("Nom d'utilisateur *"), 0, 6);
         formGrid.add(usernameField, 1, 6);
@@ -133,7 +133,7 @@ public class PersonFormView {
         return ViewInputHelper.getRequiredDate(
                 birthDateField,
                 "La date de naissance est obligatoire.",
-                "La date de naissance doit respecter le format yyyy-mm-dd."
+                "La date de naissance doit réspecter le format yyyy-mm-dd."
         );
     }
 
