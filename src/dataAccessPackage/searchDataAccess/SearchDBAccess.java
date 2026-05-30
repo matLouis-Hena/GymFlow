@@ -40,7 +40,8 @@ public class SearchDBAccess implements ISearchDA {
                    sponsored_person.first_name,
                    sponsored_person.last_name,
                    sponsored_person.email,
-                   gm.is_active,
+                   gm.wants_locker,
+                   sponsored_person.locker_number,
                    gm.weight,
                    gm.height,
                    s.type AS subscription_type,
@@ -208,7 +209,8 @@ public class SearchDBAccess implements ISearchDA {
                     resultSet.getString("first_name"),
                     resultSet.getString("last_name"),
                     resultSet.getString("email"),
-                    resultSet.getBoolean("is_active"),
+                    resultSet.getBoolean("wants_locker"),
+                    getNullableInteger(resultSet, "locker_number"),
                     resultSet.getDouble("weight"),
                     resultSet.getInt("height"),
                     SubscriptionType.fromDatabaseValue(resultSet.getString("subscription_type")),
@@ -246,6 +248,16 @@ public class SearchDBAccess implements ISearchDA {
         }
 
         return statuses[statusIndex];
+    }
+
+    private Integer getNullableInteger(ResultSet resultSet, String columnName) throws SQLException {
+        int value = resultSet.getInt(columnName);
+
+        if (resultSet.wasNull()) {
+            return null;
+        }
+
+        return value;
     }
 
     private Connection getConnection() throws SQLException {

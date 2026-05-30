@@ -15,7 +15,6 @@ import modelPackage.GymMember;
 import modelPackage.searchResult.AppointmentSearchResult;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class AppointmentSearchView {
@@ -121,7 +120,7 @@ public class AppointmentSearchView {
 
         TableColumn<AppointmentSearchResult, String> objectiveColumn = new TableColumn<>("Objectif");
         objectiveColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(getNullableText(cellData.getValue().getObjective()))
+                new SimpleStringProperty(ViewInputHelper.getNullableText(cellData.getValue().getObjective()))
         );
 
         TableColumn<AppointmentSearchResult, String> statusColumn = new TableColumn<>("Statut");
@@ -131,7 +130,7 @@ public class AppointmentSearchView {
 
         TableColumn<AppointmentSearchResult, String> roomColumn = new TableColumn<>("Salle");
         roomColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(getNullableText(cellData.getValue().getRoomName()))
+                new SimpleStringProperty(ViewInputHelper.getNullableText(cellData.getValue().getRoomName()))
         );
 
         resultTable.getColumns().add(idColumn);
@@ -167,24 +166,11 @@ public class AppointmentSearchView {
     }
 
     private LocalDate getDate(TextField textField, String message) {
-        String value = textField.getText();
-
-        if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException(message);
-        }
-
-        try {
-            return LocalDate.parse(value.trim());
-        } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("La date doit respecter le format yyyy-mm-dd.");
-        }
+        return ViewInputHelper.getRequiredDate(
+                textField,
+                message,
+                "La date doit respecter le format yyyy-mm-dd."
+        );
     }
 
-    private String getNullableText(Object value) {
-        if (value == null) {
-            return "";
-        }
-
-        return String.valueOf(value);
-    }
 }

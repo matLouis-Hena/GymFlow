@@ -67,7 +67,7 @@ public class PersonDBAccess implements IPersonDA {
             """;
 
     private static final String SELECT_MEMBER_BY_PERSON_ID_SQL = """
-            SELECT is_active
+            SELECT person_id
             FROM gym_member
             WHERE person_id = ?
             """;
@@ -169,9 +169,7 @@ public class PersonDBAccess implements IPersonDA {
                 return UserRole.COACH;
             }
 
-            Boolean isActiveMember = getMemberActiveValue(id);
-
-            if (isActiveMember != null && isActiveMember) {
+            if (existsByPersonId(id, SELECT_MEMBER_BY_PERSON_ID_SQL)) {
                 return UserRole.MEMBER_WITH_SUBSCRIPTION;
             }
 
@@ -307,20 +305,6 @@ public class PersonDBAccess implements IPersonDA {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 return resultSet.next();
-            }
-        }
-    }
-
-    private Boolean getMemberActiveValue(int id) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_MEMBER_BY_PERSON_ID_SQL)) {
-            statement.setInt(1, id);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getBoolean("is_active");
-                }
-
-                return null;
             }
         }
     }

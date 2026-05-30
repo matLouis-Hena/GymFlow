@@ -69,13 +69,6 @@ public class AppointmentManager {
             );
         }
 
-        if (!member.getIsActive()) {
-            throw new AppointmentBusinessException(
-                    String.valueOf(memberId),
-                    "Le membre sélectionné est inactif."
-            );
-        }
-
         CoachAvailability availability = coachAvailabilityDataAccess.getById(availabilityId);
 
         if (availability == null) {
@@ -156,6 +149,7 @@ public class AppointmentManager {
     }
 
     public List<Appointment> getAllAppointments() throws ReadAppointmentException {
+        updatePastAppointmentsBeforeListing();
         return appointmentDataAccess.getAll();
     }
 
@@ -163,6 +157,7 @@ public class AppointmentManager {
             throws ReadAppointmentException, AppointmentBusinessException {
         validateId(memberId, "memberId", "L'identifiant du membre doit être supérieur à 0.");
 
+        updatePastAppointmentsBeforeListing();
         return appointmentDataAccess.getByMemberId(memberId);
     }
 
@@ -170,6 +165,7 @@ public class AppointmentManager {
             throws ReadAppointmentException, AppointmentBusinessException {
         validateId(coachId, "coachId", "L'identifiant du coach doit être supérieur à 0.");
 
+        updatePastAppointmentsBeforeListing();
         return appointmentDataAccess.getByCoachId(coachId);
     }
 
@@ -183,6 +179,13 @@ public class AppointmentManager {
             throw new AppointmentBusinessException(
                     String.valueOf(appointmentId),
                     "Un rendez-vous annulé ne peut pas être confirmé."
+            );
+        }
+
+        if (appointment.getStatus() != AppointmentStatus.PENDING) {
+            throw new AppointmentBusinessException(
+                    String.valueOf(appointmentId),
+                    "Seul un rendez-vous en attente peut etre confirmé."
             );
         }
 
@@ -213,6 +216,18 @@ public class AppointmentManager {
         cancelAppointment(
                 appointmentId,
                 AppointmentStatus.CANCELLED_BY_COACH,
+                cancellationReason
+        );
+    }
+
+    public void cancelAppointmentByAdmin(int appointmentId, String cancellationReason)
+            throws ReadAppointmentException,
+            UpdateAppointmentException,
+            UpdateCoachAvailabilityException,
+            AppointmentBusinessException {
+        cancelAppointment(
+                appointmentId,
+                AppointmentStatus.CANCELLED_BY_ADMIN,
                 cancellationReason
         );
     }
@@ -304,7 +319,19 @@ public class AppointmentManager {
 
     private boolean isCancelled(Appointment appointment) {
         return appointment.getStatus() == AppointmentStatus.CANCELLED_BY_MEMBER
-                || appointment.getStatus() == AppointmentStatus.CANCELLED_BY_COACH;
+                || appointment.getStatus() == AppointmentStatus.CANCELLED_BY_COACH
+                || appointment.getStatus() == AppointmentStatus.CANCELLED_BY_ADMIN;
+    }
+
+    private void updatePastAppointmentsBeforeListing() throws ReadAppointmentException {
+        try {
+            appointmentDataAccess.updatePastConfirmedAppointments();
+        } catch (UpdateAppointmentException exception) {
+            throw new ReadAppointmentException(
+                    "pastAppointments",
+                    exception.getMessage()
+            );
+        }
     }
 
     private void validateId(int id, String wrongValue, String message) throws AppointmentBusinessException {
@@ -326,7 +353,6 @@ public class AppointmentManager {
         try {
             appointmentDataAccess.delete(appointmentId);
         } catch (DeleteAppointmentException ignored) {
-            // Nettoyage silencieux côté business.
         }
     }
 }

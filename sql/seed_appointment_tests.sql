@@ -77,10 +77,10 @@ ON DUPLICATE KEY UPDATE
 
 SET @subscription_id = LAST_INSERT_ID();
 
-INSERT INTO gym_member (person_id, is_active, weight, height, enrollment)
+INSERT INTO gym_member (person_id, wants_locker, weight, height, enrollment)
 VALUES (@member_id, b'1', 70.50, 175, @subscription_id)
 ON DUPLICATE KEY UPDATE
-    is_active = b'1',
+    wants_locker = b'1',
     weight = VALUES(weight),
     height = VALUES(height),
     enrollment = VALUES(enrollment);

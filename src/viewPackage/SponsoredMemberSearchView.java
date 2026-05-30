@@ -92,9 +92,14 @@ public class SponsoredMemberSearchView {
                 new SimpleStringProperty(cellData.getValue().getEmail())
         );
 
-        TableColumn<SponsoredMemberSearchResult, Boolean> activeColumn = new TableColumn<>("Actif");
-        activeColumn.setCellValueFactory(cellData ->
-                new ReadOnlyObjectWrapper<>(cellData.getValue().getIsActive())
+        TableColumn<SponsoredMemberSearchResult, Boolean> wantsLockerColumn = new TableColumn<>("Veut casier");
+        wantsLockerColumn.setCellValueFactory(cellData ->
+                new ReadOnlyObjectWrapper<>(cellData.getValue().getWantsLocker())
+        );
+
+        TableColumn<SponsoredMemberSearchResult, Integer> lockerNumberColumn = new TableColumn<>("Casier");
+        lockerNumberColumn.setCellValueFactory(cellData ->
+                new ReadOnlyObjectWrapper<>(cellData.getValue().getLockerNumber())
         );
 
         TableColumn<SponsoredMemberSearchResult, Double> weightColumn = new TableColumn<>("Poids");
@@ -125,7 +130,8 @@ public class SponsoredMemberSearchView {
         resultTable.getColumns().add(idColumn);
         resultTable.getColumns().add(nameColumn);
         resultTable.getColumns().add(emailColumn);
-        resultTable.getColumns().add(activeColumn);
+        resultTable.getColumns().add(wantsLockerColumn);
+        resultTable.getColumns().add(lockerNumberColumn);
         resultTable.getColumns().add(weightColumn);
         resultTable.getColumns().add(heightColumn);
         resultTable.getColumns().add(subscriptionColumn);

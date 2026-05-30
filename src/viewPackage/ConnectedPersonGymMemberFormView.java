@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -20,7 +21,7 @@ public class ConnectedPersonGymMemberFormView {
     private final BorderPane root;
     private final Person person;
 
-    private TextField lockerNumberField;
+    private CheckBox wantsLockerCheckBox;
     private TextField weightField;
     private TextField heightField;
     private TextField sponsorUsernameField;
@@ -52,25 +53,15 @@ public class ConnectedPersonGymMemberFormView {
     }
 
     public String getSponsorUsername() {
-        String value = sponsorUsernameField.getText();
-
-        if (value == null || value.trim().isEmpty()) {
-            return null;
-        }
-
-        return value.trim();
+        return ViewInputHelper.getOptionalText(sponsorUsernameField);
     }
 
     public GymMember createGymMember() throws Exception {
-        Integer lockerNumber = getOptionalInteger(lockerNumberField, "Le numero de casier doit etre un nombre.");
-        Double weight = getRequiredDouble(weightField, "Le poids doit etre un nombre.");
-        Integer height = getRequiredInteger(heightField, "La taille doit etre un nombre.");
+        boolean wantsLocker = wantsLockerCheckBox.isSelected();
+        Double weight = ViewInputHelper.getRequiredDouble(weightField, "Le poids doit etre un nombre.");
+        Integer height = ViewInputHelper.getRequiredInteger(heightField, "La taille doit etre un nombre.");
         SubscriptionType subscriptionType = getSubscriptionType();
-        Integer durationMonths = getRequiredInteger(durationField, "La duree doit etre un nombre.");
-
-        if (lockerNumber != null && lockerNumber <= 0) {
-            throw new IllegalArgumentException("Le numero de casier doit etre superieur a 0.");
-        }
+        Integer durationMonths = ViewInputHelper.getRequiredInteger(durationField, "La duree doit etre un nombre.");
 
         if (weight <= 0) {
             throw new IllegalArgumentException("Le poids doit etre superieur a 0.");
@@ -94,10 +85,10 @@ public class ConnectedPersonGymMemberFormView {
                 person.getGender(),
                 person.getEmail(),
                 person.getPhone(),
-                lockerNumber,
+                null,
                 person.getUsername(),
                 person.getPassword(),
-                true,
+                wantsLocker,
                 weight,
                 height,
                 subscription
@@ -105,7 +96,7 @@ public class ConnectedPersonGymMemberFormView {
     }
 
     private void createFields() {
-        lockerNumberField = new TextField();
+        wantsLockerCheckBox = new CheckBox();
         weightField = new TextField();
         heightField = new TextField();
         sponsorUsernameField = new TextField();
@@ -121,10 +112,6 @@ public class ConnectedPersonGymMemberFormView {
         subscriptionTypeComboBox.getItems().add(SubscriptionType.PREMIUM);
 
         durationField.setText("1");
-
-        if (person.getLockerNumber() != null) {
-            lockerNumberField.setText(String.valueOf(person.getLockerNumber()));
-        }
 
         subscriptionTypeComboBox.setOnAction(event -> updatePriceLabels());
         durationField.setOnKeyReleased(event -> updatePriceLabels());
@@ -151,8 +138,8 @@ public class ConnectedPersonGymMemberFormView {
         formGrid.setAlignment(Pos.CENTER);
 
         formGrid.add(accountLabel, 0, 0, 2, 1);
-        formGrid.add(new Label("Numero de casier"), 0, 1);
-        formGrid.add(lockerNumberField, 1, 1);
+        formGrid.add(new Label("Souhaite un casier"), 0, 1);
+        formGrid.add(wantsLockerCheckBox, 1, 1);
         formGrid.add(new Label("Poids *"), 0, 2);
         formGrid.add(weightField, 1, 2);
         formGrid.add(new Label("Taille *"), 0, 3);
@@ -207,57 +194,4 @@ public class ConnectedPersonGymMemberFormView {
         return subscriptionType;
     }
 
-    private String getRequiredText(TextField textField, String message) {
-        String value = textField.getText();
-
-        if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException(message);
-        }
-
-        return value.trim();
-    }
-
-    private String getOptionalText(TextField textField) {
-        String value = textField.getText();
-
-        if (value == null || value.trim().isEmpty()) {
-            return null;
-        }
-
-        return value.trim();
-    }
-
-    private Double getRequiredDouble(TextField textField, String message) {
-        String value = getRequiredText(textField, message);
-
-        try {
-            return Double.parseDouble(value);
-        } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    private Integer getRequiredInteger(TextField textField, String message) {
-        String value = getRequiredText(textField, message);
-
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    private Integer getOptionalInteger(TextField textField, String message) {
-        String value = getOptionalText(textField);
-
-        if (value == null) {
-            return null;
-        }
-
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException(message);
-        }
-    }
 }

@@ -12,7 +12,6 @@ import modelPackage.CoachAvailability;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class CoachAvailabilityManagementView {
@@ -56,19 +55,27 @@ public class CoachAvailabilityManagementView {
     }
 
     public LocalDate getDate() {
-        try {
-            return LocalDate.parse(getRequiredText(dateField, "La date est obligatoire."));
-        } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("La date doit respecter le format yyyy-mm-dd.");
-        }
+        return ViewInputHelper.getRequiredDate(
+                dateField,
+                "La date est obligatoire.",
+                "La date doit respecter le format yyyy-mm-dd."
+        );
     }
 
     public LocalTime getStartTime() {
-        return getTime(startTimeField, "L'heure de debut est obligatoire.");
+        return ViewInputHelper.getRequiredTime(
+                startTimeField,
+                "L'heure de debut est obligatoire.",
+                "L'heure doit respecter le format hh:mm."
+        );
     }
 
     public LocalTime getEndTime() {
-        return getTime(endTimeField, "L'heure de fin est obligatoire.");
+        return ViewInputHelper.getRequiredTime(
+                endTimeField,
+                "L'heure de fin est obligatoire.",
+                "L'heure doit respecter le format hh:mm."
+        );
     }
 
     private void createFields() {
@@ -148,23 +155,4 @@ public class CoachAvailabilityManagementView {
         root.setCenter(container);
     }
 
-    private LocalTime getTime(TextField textField, String message) {
-        String value = getRequiredText(textField, message);
-
-        try {
-            return LocalTime.parse(value);
-        } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("L'heure doit respecter le format hh:mm.");
-        }
-    }
-
-    private String getRequiredText(TextField textField, String message) {
-        String value = textField.getText();
-
-        if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException(message);
-        }
-
-        return value.trim();
-    }
 }

@@ -34,7 +34,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
 
         String insertGymMemberSql =
                 "INSERT INTO gym_member " +
-                        "(person_id, is_active, weight, height, enrollment) " +
+                        "(person_id, wants_locker, weight, height, enrollment) " +
                         "VALUES (?, ?, ?, ?, ?)";
 
         boolean previousAutoCommit = true;
@@ -47,6 +47,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
             validateMemberBeforeInsert(member);
             checkEmailAndUsernameAvailabilityForInsert(member);
 
+            assignLockerForInsert(member);
             int personId = insertPerson(member, insertPersonSql);
             int subscriptionId = insertSubscription(member.getEnrollment(), insertSubscriptionSql);
             insertGymMember(member, personId, subscriptionId, insertGymMemberSql);
@@ -97,7 +98,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
 
         String insertGymMemberSql =
                 "INSERT INTO gym_member " +
-                        "(person_id, is_active, weight, height, enrollment) " +
+                        "(person_id, wants_locker, weight, height, enrollment) " +
                         "VALUES (?, ?, ?, ?, ?)";
 
         boolean previousAutoCommit = true;
@@ -110,6 +111,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
             validateMemberBeforeInsert(member);
             checkPersonExists(member.getId());
             checkPersonIsNotAlreadyMember(member.getId());
+            assignLockerForInsert(member);
             updateLockerNumber(member, updateLockerSql);
 
             int subscriptionId = insertSubscription(member.getEnrollment(), insertSubscriptionSql);
@@ -145,7 +147,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
         String sql =
                 "SELECT p.id, p.first_name, p.last_name, p.birth_date, p.gender, " +
                         "       p.email, p.phone, p.locker_number, p.username, p.password, " +
-                        "       gm.is_active, gm.weight, gm.height, " +
+                        "       gm.wants_locker, gm.weight, gm.height, " +
                         "       s.id AS subscription_id, s.type AS subscription_type, " +
                         "       s.price AS subscription_price, s.duration_months AS subscription_duration_months " +
                         "FROM person p " +
@@ -182,7 +184,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
         String sql =
                 "SELECT p.id, p.first_name, p.last_name, p.birth_date, p.gender, " +
                         "       p.email, p.phone, p.locker_number, p.username, p.password, " +
-                        "       gm.is_active, gm.weight, gm.height, " +
+                        "       gm.wants_locker, gm.weight, gm.height, " +
                         "       s.id AS subscription_id, s.type AS subscription_type, " +
                         "       s.price AS subscription_price, s.duration_months AS subscription_duration_months " +
                         "FROM person p " +
@@ -228,7 +230,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
 
         String updateGymMemberSql =
                 "UPDATE gym_member " +
-                        "SET is_active = ?, weight = ?, height = ?, enrollment = ? " +
+                        "SET wants_locker = ?, weight = ?, height = ?, enrollment = ? " +
                         "WHERE person_id = ?";
 
         boolean previousAutoCommit = true;
@@ -239,6 +241,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
             connection.setAutoCommit(false);
 
             checkEmailAndUsernameAvailabilityForUpdate(member);
+            assignLockerForUpdate(member);
 
             updatePerson(member, updatePersonSql);
             updateSubscription(member.getEnrollment(), updateSubscriptionSql);
@@ -391,7 +394,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
             throws SQLException, AddGymMemberException {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, personId);
-            statement.setBoolean(2, member.getIsActive());
+            statement.setBoolean(2, member.getWantsLocker());
             statement.setDouble(3, member.getWeight());
             statement.setInt(4, member.getHeight());
             statement.setInt(5, subscriptionId);
@@ -447,6 +450,60 @@ public class GymMemberDBAccess implements IGymMemberDA {
         }
     }
 
+    private void assignLockerForInsert(GymMember member) throws SQLException, AddGymMemberException {
+        try {
+            assignLockerIfNeeded(member);
+        } catch (InvalidLockerNumberException exception) {
+            throw new AddGymMemberException(
+                    "lockerNumber",
+                    "Erreur lors de l'attribution du casier."
+            );
+        }
+    }
+
+    private void assignLockerForUpdate(GymMember member) throws SQLException, UpdateGymMemberException {
+        try {
+            assignLockerIfNeeded(member);
+        } catch (InvalidLockerNumberException exception) {
+            throw new UpdateGymMemberException(
+                    String.valueOf(member.getId()),
+                    "Erreur lors de l'attribution du casier."
+            );
+        }
+    }
+
+    private void assignLockerIfNeeded(GymMember member) throws SQLException, InvalidLockerNumberException {
+        if (!member.getWantsLocker()) {
+            member.setLockerNumber(null);
+            return;
+        }
+
+        if (member.getLockerNumber() == null) {
+            member.setLockerNumber(getNextLockerNumber());
+        }
+    }
+
+    private int getNextLockerNumber() throws SQLException {
+        String sql =
+                "SELECT MAX(locker_number) AS max_locker_number " +
+                        "FROM person";
+
+        try (
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()
+        ) {
+            if (resultSet.next()) {
+                int maxLockerNumber = resultSet.getInt("max_locker_number");
+
+                if (!resultSet.wasNull()) {
+                    return maxLockerNumber + 1;
+                }
+            }
+
+            return 1;
+        }
+    }
+
     private void updateSubscription(Subscription subscription, String sql)
             throws SQLException, UpdateGymMemberException {
         if (subscription == null) {
@@ -489,7 +546,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
         }
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setBoolean(1, member.getIsActive());
+            statement.setBoolean(1, member.getWantsLocker());
             statement.setDouble(2, member.getWeight());
             statement.setInt(3, member.getHeight());
             statement.setInt(4, member.getEnrollment().getId());
@@ -601,7 +658,7 @@ public class GymMemberDBAccess implements IGymMemberDA {
                     getNullableInteger(resultSet, "locker_number"),
                     resultSet.getString("username"),
                     resultSet.getString("password"),
-                    resultSet.getBoolean("is_active"),
+                    resultSet.getBoolean("wants_locker"),
                     resultSet.getDouble("weight"),
                     resultSet.getInt("height"),
                     enrollment

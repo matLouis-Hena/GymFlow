@@ -6,24 +6,24 @@ import java.time.LocalDate;
 
 public class GymMember extends Person {
 
-    private boolean isActive;
+    private boolean wantsLocker;
     private Double weight;
     private Integer height;
     private Subscription enrollment;
 
     public GymMember(int id, String firstName, String lastName, LocalDate birthDate, Gender gender, String email, String phone, Integer lockerNumber, String username, String password,
-                     boolean isActive, Double weight, Integer height, Subscription enrollment)
+                     boolean wantsLocker, Double weight, Integer height, Subscription enrollment)
             throws InvalidFirstNameException, InvalidLastNameException, InvalidGenderException, InvalidEmailException, InvalidPhoneException, InvalidLockerNumberException, InvalidUsernameException, InvalidPasswordException, InvalidWeightException, InvalidHeightException {
         super(id, firstName, lastName, birthDate, gender, email, phone, lockerNumber, username, password);
 
-        setIsActive(isActive);
+        setWantsLocker(wantsLocker);
         setWeight(weight);
         setHeight(height);
         setEnrollment(enrollment);
     }
 
-    public boolean getIsActive() {
-        return isActive;
+    public boolean getWantsLocker() {
+        return wantsLocker;
     }
 
     public Double getWeight() {
@@ -37,8 +37,8 @@ public class GymMember extends Person {
         return enrollment;
     }
 
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
+    public void setWantsLocker(boolean wantsLocker) {
+        this.wantsLocker = wantsLocker;
     }
 
     public void setWeight(Double weight) throws InvalidWeightException {

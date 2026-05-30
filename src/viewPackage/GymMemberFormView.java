@@ -13,7 +13,6 @@ import modelPackage.Subscription;
 import modelPackage.SubscriptionType;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 
 public class GymMemberFormView {
 
@@ -26,7 +25,7 @@ public class GymMemberFormView {
     private ComboBox<Gender> genderComboBox;
     private TextField emailField;
     private TextField phoneField;
-    private TextField lockerNumberField;
+    private CheckBox wantsLockerCheckBox;
     private TextField usernameField;
     private PasswordField passwordField;
     private TextField weightField;
@@ -72,13 +71,7 @@ public class GymMemberFormView {
             return null;
         }
 
-        String value = sponsorUsernameField.getText();
-
-        if (value == null || value.trim().isEmpty()) {
-            return null;
-        }
-
-        return value.trim();
+        return ViewInputHelper.getOptionalText(sponsorUsernameField);
     }
 
     public GymMember createGymMember() throws Exception {
@@ -88,14 +81,19 @@ public class GymMemberFormView {
             id = memberToUpdate.getId();
         }
 
-        String firstName = getRequiredText(firstNameField, "Le prenom est obligatoire.");
-        String lastName = getRequiredText(lastNameField, "Le nom est obligatoire.");
+        String firstName = ViewInputHelper.getRequiredText(firstNameField, "Le prenom est obligatoire.");
+        String lastName = ViewInputHelper.getRequiredText(lastNameField, "Le nom est obligatoire.");
         LocalDate birthDate = getBirthDate();
         Gender gender = getGender();
-        String email = getRequiredText(emailField, "L'email est obligatoire.");
-        String phone = getOptionalText(phoneField);
-        Integer lockerNumber = getOptionalInteger(lockerNumberField, "Le numero de casier doit etre un nombre.");
-        String username = getRequiredText(usernameField, "Le nom d'utilisateur est obligatoire.");
+        String email = ViewInputHelper.getRequiredText(emailField, "L'email est obligatoire.");
+        String phone = ViewInputHelper.getOptionalText(phoneField);
+        boolean wantsLocker = wantsLockerCheckBox.isSelected();
+        Integer lockerNumber = null;
+
+        if (memberToUpdate != null && wantsLocker) {
+            lockerNumber = memberToUpdate.getLockerNumber();
+        }
+        String username = ViewInputHelper.getRequiredText(usernameField, "Le nom d'utilisateur est obligatoire.");
 
         String password;
         if (memberToUpdate != null) {
@@ -106,14 +104,13 @@ public class GymMemberFormView {
                 password = enteredPassword;
             }
         } else {
-            password = getRequiredText(passwordField, "Le mot de passe est obligatoire.");
+            password = ViewInputHelper.getRequiredText(passwordField, "Le mot de passe est obligatoire.");
         }
 
-        boolean isActive = true;
-        Double weight = getRequiredDouble(weightField, "Le poids doit etre un nombre.");
-        Integer height = getRequiredInteger(heightField, "La taille doit etre un nombre.");
+        Double weight = ViewInputHelper.getRequiredDouble(weightField, "Le poids doit etre un nombre.");
+        Integer height = ViewInputHelper.getRequiredInteger(heightField, "La taille doit etre un nombre.");
         SubscriptionType subscriptionType = getSubscriptionType();
-        Integer durationMonths = getRequiredInteger(durationField, "La duree doit etre un nombre.");
+        Integer durationMonths = ViewInputHelper.getRequiredInteger(durationField, "La duree doit etre un nombre.");
 
         if (birthDate.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("La date de naissance ne peut pas etre dans le futur.");
@@ -144,7 +141,7 @@ public class GymMemberFormView {
                 lockerNumber,
                 username,
                 password,
-                isActive,
+                wantsLocker,
                 weight,
                 height,
                 subscription
@@ -158,7 +155,7 @@ public class GymMemberFormView {
         genderComboBox = new ComboBox<>();
         emailField = new TextField();
         phoneField = new TextField();
-        lockerNumberField = new TextField();
+        wantsLockerCheckBox = new CheckBox();
         usernameField = new TextField();
         passwordField = new PasswordField();
         weightField = new TextField();
@@ -215,8 +212,8 @@ public class GymMemberFormView {
         formGrid.add(emailField, 1, 4);
         formGrid.add(new Label("Telephone"), 0, 5);
         formGrid.add(phoneField, 1, 5);
-        formGrid.add(new Label("Numero de casier"), 0, 6);
-        formGrid.add(lockerNumberField, 1, 6);
+        formGrid.add(new Label("Souhaite un casier"), 0, 6);
+        formGrid.add(wantsLockerCheckBox, 1, 6);
         formGrid.add(new Label("Nom d'utilisateur *"), 0, 7);
         formGrid.add(usernameField, 1, 7);
         formGrid.add(new Label("Mot de passe *"), 0, 8);
@@ -253,7 +250,7 @@ public class GymMemberFormView {
         genderComboBox.getSelectionModel().select(memberToUpdate.getGender());
         emailField.setText(memberToUpdate.getEmail());
         setNullableText(phoneField, memberToUpdate.getPhone());
-        setNullableText(lockerNumberField, memberToUpdate.getLockerNumber());
+        wantsLockerCheckBox.setSelected(memberToUpdate.getWantsLocker());
         usernameField.setText(memberToUpdate.getUsername());
         passwordField.clear();
         passwordField.setPromptText("Laisser vide pour garder le mot de passe actuel");
@@ -297,34 +294,12 @@ public class GymMemberFormView {
         return new Subscription(subscriptionId, subscriptionType, durationMonths);
     }
 
-    private String getRequiredText(TextField textField, String message) {
-        String value = textField.getText();
-
-        if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException(message);
-        }
-
-        return value.trim();
-    }
-
-    private String getOptionalText(TextField textField) {
-        String value = textField.getText();
-
-        if (value == null || value.trim().isEmpty()) {
-            return null;
-        }
-
-        return value.trim();
-    }
-
     private LocalDate getBirthDate() {
-        String value = getRequiredText(birthDateField, "La date de naissance est obligatoire.");
-
-        try {
-            return LocalDate.parse(value);
-        } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("La date de naissance doit respecter le format yyyy-mm-dd.");
-        }
+        return ViewInputHelper.getRequiredDate(
+                birthDateField,
+                "La date de naissance est obligatoire.",
+                "La date de naissance doit respecter le format yyyy-mm-dd."
+        );
     }
 
     private Gender getGender() {
@@ -345,40 +320,6 @@ public class GymMemberFormView {
         }
 
         return subscriptionType;
-    }
-
-    private Double getRequiredDouble(TextField textField, String message) {
-        String value = getRequiredText(textField, message);
-
-        try {
-            return Double.parseDouble(value);
-        } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    private Integer getRequiredInteger(TextField textField, String message) {
-        String value = getRequiredText(textField, message);
-
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    private Integer getOptionalInteger(TextField textField, String message) {
-        String value = getOptionalText(textField);
-
-        if (value == null) {
-            return null;
-        }
-
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException(message);
-        }
     }
 
     private void setNullableText(TextField textField, Object value) {

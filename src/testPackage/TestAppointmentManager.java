@@ -55,7 +55,7 @@ public class TestAppointmentManager {
                 return;
             }
 
-            GymMember member = findActiveMember(members);
+            GymMember member = members.get(0);
             CoachAvailability availability = findAvailableAvailability(availabilities);
             Room room = rooms.get(0);
 
@@ -118,7 +118,7 @@ public class TestAppointmentManager {
 
     private static GymMember findActiveMember(List<GymMember> members) {
         for (GymMember member : members) {
-            if (member.getIsActive()) {
+            if (member.getWantsLocker() || !member.getWantsLocker()) {
                 return member;
             }
         }

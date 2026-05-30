@@ -13,6 +13,7 @@ import exceptionPackage.speciality.ReadSpecialityException;
 import modelPackage.Appointment;
 import modelPackage.Room;
 import modelPackage.Speciality;
+import modelPackage.UserRole;
 import modelPackage.searchResult.AvailableCoachSearchResult;
 
 import viewPackage.MainView;
@@ -118,6 +119,64 @@ public class AppointmentController {
                 ReadRoomException |
                 ReadAppointmentException |
                 AddAppointmentException |
+                UpdateCoachAvailabilityException |
+                AppointmentBusinessException exception
+        ) {
+            mainView.showErrorMessage(exception.getMessage());
+        }
+    }
+
+    public void confirmAppointment(Appointment appointment) {
+        if (appointment == null) {
+            mainView.showErrorMessage("Veuillez selectionner un rendez-vous.");
+            return;
+        }
+
+        try {
+            appointmentManager.confirmAppointment(appointment.getId());
+            mainView.showInformationMessage("Rendez-vous confirme avec succes.");
+            mainView.refreshAppointmentList();
+
+        } catch (
+                ReadAppointmentException |
+                UpdateAppointmentException |
+                AppointmentBusinessException exception
+        ) {
+            mainView.showErrorMessage(exception.getMessage());
+        }
+    }
+
+    public void cancelAppointment(Appointment appointment, String cancellationReason) {
+        if (appointment == null) {
+            mainView.showErrorMessage("Veuillez selectionner un rendez-vous.");
+            return;
+        }
+
+        if (cancellationReason == null || cancellationReason.isBlank()) {
+            mainView.showErrorMessage("Le motif d'annulation est obligatoire.");
+            return;
+        }
+
+        try {
+            UserRole role = mainView.getConnectedUserRole();
+
+            if (role == UserRole.MEMBER_WITH_SUBSCRIPTION) {
+                appointmentManager.cancelAppointmentByMember(appointment.getId(), cancellationReason);
+            } else if (role == UserRole.COACH) {
+                appointmentManager.cancelAppointmentByCoach(appointment.getId(), cancellationReason);
+            } else if (role == UserRole.ADMIN) {
+                appointmentManager.cancelAppointmentByAdmin(appointment.getId(), cancellationReason);
+            } else {
+                mainView.showErrorMessage("Vous ne pouvez pas annuler ce rendez-vous.");
+                return;
+            }
+
+            mainView.showInformationMessage("Rendez-vous annule avec succes.");
+            mainView.refreshAppointmentList();
+
+        } catch (
+                ReadAppointmentException |
+                UpdateAppointmentException |
                 UpdateCoachAvailabilityException |
                 AppointmentBusinessException exception
         ) {

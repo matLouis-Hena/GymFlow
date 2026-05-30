@@ -26,9 +26,6 @@ public class MainView {
     private SponsoredMemberSearchView sponsoredMemberSearchView;
     private AvailableCoachSearchView availableCoachSearchView;
     private AppointmentBookingView appointmentBookingView;
-    private AppointmentListView appointmentListView;
-    private MemberAccountView memberAccountView;
-    private CoachAvailabilityManagementView coachAvailabilityManagementView;
     private Label infoBannerLabel;
     private InfoBannerThread infoBannerThread;
 
@@ -64,6 +61,10 @@ public class MainView {
 
     public Person getConnectedPerson() {
         return connectedPerson;
+    }
+
+    public UserRole getConnectedUserRole() {
+        return connectedUserRole;
     }
 
     public void login(Person person, UserRole userRole) {
@@ -255,7 +256,7 @@ public class MainView {
     }
 
     public void showMemberAccount(GymMember member, String sponsorText) {
-        memberAccountView = new MemberAccountView(member, sponsorText);
+        MemberAccountView memberAccountView = new MemberAccountView(member, sponsorText);
 
         memberAccountView.getSaveButton().setOnAction(event -> {
             try {
@@ -400,27 +401,58 @@ public class MainView {
     }
 
     public void showAppointmentList(List<modelPackage.Appointment> appointments) {
-        appointmentListView = new AppointmentListView(appointments);
+        AppointmentListView appointmentListView = new AppointmentListView(appointments);
+        appointmentListView.getConfirmButton().setVisible(connectedUserRole == UserRole.COACH);
+        appointmentListView.getConfirmButton().setManaged(connectedUserRole == UserRole.COACH);
+        appointmentListView.getCancelButton().setVisible(
+                connectedUserRole == UserRole.MEMBER_WITH_SUBSCRIPTION
+                        || connectedUserRole == UserRole.COACH
+                        || connectedUserRole == UserRole.ADMIN
+        );
+        appointmentListView.getCancelButton().setManaged(appointmentListView.getCancelButton().isVisible());
 
         appointmentListView.getRefreshButton().setOnAction(event -> {
-            if (appointmentController == null || connectedPerson == null) {
+            refreshAppointmentList();
+        });
+
+        appointmentListView.getConfirmButton().setOnAction(event -> {
+            if (appointmentController != null) {
+                appointmentController.confirmAppointment(appointmentListView.getSelectedAppointment());
+            }
+        });
+
+        appointmentListView.getCancelButton().setOnAction(event -> {
+            if (appointmentController == null) {
                 return;
             }
 
-            if (connectedUserRole == UserRole.MEMBER_WITH_SUBSCRIPTION) {
-                appointmentController.showAppointmentsForMember(connectedPerson.getId());
-            } else if (connectedUserRole == UserRole.COACH) {
-                appointmentController.showAppointmentsForCoach(connectedPerson.getId());
-            } else if (connectedUserRole == UserRole.ADMIN) {
-                appointmentController.showAppointmentList();
+            String reason = askText("Motif d'annulation", "Motif");
+
+            if (reason != null) {
+                appointmentController.cancelAppointment(appointmentListView.getSelectedAppointment(), reason);
             }
         });
 
         root.setCenter(appointmentListView.getRoot());
     }
 
+    public void refreshAppointmentList() {
+        if (appointmentController == null || connectedPerson == null) {
+            return;
+        }
+
+        if (connectedUserRole == UserRole.MEMBER_WITH_SUBSCRIPTION) {
+            appointmentController.showAppointmentsForMember(connectedPerson.getId());
+        } else if (connectedUserRole == UserRole.COACH) {
+            appointmentController.showAppointmentsForCoach(connectedPerson.getId());
+        } else if (connectedUserRole == UserRole.ADMIN) {
+            appointmentController.showAppointmentList();
+        }
+    }
+
     public void showCoachAvailabilityManagement(List<CoachAvailability> availabilities) {
-        coachAvailabilityManagementView = new CoachAvailabilityManagementView(availabilities);
+        CoachAvailabilityManagementView coachAvailabilityManagementView =
+                new CoachAvailabilityManagementView(availabilities);
 
         coachAvailabilityManagementView.getAddButton().setOnAction(event -> {
             try {
@@ -699,5 +731,14 @@ public class MainView {
         return alert.showAndWait()
                 .filter(buttonType -> buttonType.getButtonData().isDefaultButton())
                 .isPresent();
+    }
+
+    public String askText(String title, String message) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle(title);
+        dialog.setHeaderText(null);
+        dialog.setContentText(message);
+
+        return dialog.showAndWait().orElse(null);
     }
 }

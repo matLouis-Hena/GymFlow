@@ -89,7 +89,7 @@ public class PersonListView {
 
         TableColumn<Person, String> phoneColumn = new TableColumn<>("Telephone");
         phoneColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(getNullableText(cellData.getValue().getPhone()))
+                new SimpleStringProperty(ViewInputHelper.getNullableText(cellData.getValue().getPhone()))
         );
 
         TableColumn<Person, String> usernameColumn = new TableColumn<>("Username");
@@ -107,11 +107,4 @@ public class PersonListView {
         personTable.getColumns().add(usernameColumn);
     }
 
-    private String getNullableText(Object value) {
-        if (value == null) {
-            return "";
-        }
-
-        return String.valueOf(value);
-    }
 }

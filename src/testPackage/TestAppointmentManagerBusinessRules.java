@@ -161,8 +161,7 @@ public class TestAppointmentManagerBusinessRules {
             LocalDate date
     ) throws Exception {
         for (GymMember member : members) {
-            if (member.getIsActive()
-                    && !appointmentDataAccess.existsForMemberOnDate(member.getId(), date)) {
+            if (!appointmentDataAccess.existsForMemberOnDate(member.getId(), date)) {
                 return member;
             }
         }

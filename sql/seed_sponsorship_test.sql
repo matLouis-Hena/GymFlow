@@ -42,7 +42,7 @@ ON DUPLICATE KEY UPDATE
 
 SET @subscription_id = LAST_INSERT_ID();
 
-INSERT INTO gym_member (person_id, is_active, weight, height, enrollment)
+INSERT INTO gym_member (person_id, wants_locker, weight, height, enrollment)
 VALUES (@sponsored_id, b'1', 74.00, 181, @subscription_id);
 
 INSERT INTO sponsorship (sponsor_id, sponsored_id, start_date)

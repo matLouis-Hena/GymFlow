@@ -8,7 +8,8 @@ public class SponsoredMemberSearchResult {
     private String firstName;
     private String lastName;
     private String email;
-    private boolean isActive;
+    private boolean wantsLocker;
+    private Integer lockerNumber;
     private double weight;
     private int height;
     private SubscriptionType subscriptionType;
@@ -20,7 +21,8 @@ public class SponsoredMemberSearchResult {
             String firstName,
             String lastName,
             String email,
-            boolean isActive,
+            boolean wantsLocker,
+            Integer lockerNumber,
             double weight,
             int height,
             SubscriptionType subscriptionType,
@@ -31,7 +33,8 @@ public class SponsoredMemberSearchResult {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.isActive = isActive;
+        this.wantsLocker = wantsLocker;
+        this.lockerNumber = lockerNumber;
         this.weight = weight;
         this.height = height;
         this.subscriptionType = subscriptionType;
@@ -55,8 +58,12 @@ public class SponsoredMemberSearchResult {
         return email;
     }
 
-    public boolean getIsActive() {
-        return isActive;
+    public boolean getWantsLocker() {
+        return wantsLocker;
+    }
+
+    public Integer getLockerNumber() {
+        return lockerNumber;
     }
 
     public double getWeight() {

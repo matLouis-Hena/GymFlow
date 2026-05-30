@@ -71,7 +71,7 @@ VALUES (@admin_id, 2);
 INSERT INTO person
     (first_name, last_name, birth_date, gender, email, phone, locker_number, username, password)
 VALUES
-    ('Membre', 'Role', '2002-04-15', 'FEMALE', 'membre.role@test.com', '+32470111002', 12, 'membrerole', 'membrerole123');
+    ('Membre', 'Role', '2002-04-15', 'FEMALE', 'membre.role@test.com', '+32470111002', 1, 'membrerole', 'membrerole123');
 
 SET @member_id = LAST_INSERT_ID();
 
@@ -82,7 +82,7 @@ ON DUPLICATE KEY UPDATE
 
 SET @subscription_id = LAST_INSERT_ID();
 
-INSERT INTO gym_member (person_id, is_active, weight, height, enrollment)
+INSERT INTO gym_member (person_id, wants_locker, weight, height, enrollment)
 VALUES (@member_id, b'1', 68.50, 172, @subscription_id);
 
 -- Coach.

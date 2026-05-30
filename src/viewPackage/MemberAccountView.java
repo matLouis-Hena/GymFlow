@@ -44,8 +44,8 @@ public class MemberAccountView {
     }
 
     public GymMember createUpdatedMember() throws Exception {
-        Double weight = getRequiredDouble(weightField, "Le poids doit etre un nombre.");
-        Integer height = getRequiredInteger(heightField, "La taille doit etre un nombre.");
+        Double weight = ViewInputHelper.getRequiredDouble(weightField, "Le poids doit etre un nombre.");
+        Integer height = ViewInputHelper.getRequiredInteger(heightField, "La taille doit etre un nombre.");
 
         if (weight <= 0) {
             throw new IllegalArgumentException("Le poids doit etre superieur a 0.");
@@ -66,7 +66,7 @@ public class MemberAccountView {
                 member.getLockerNumber(),
                 member.getUsername(),
                 member.getPassword(),
-                member.getIsActive(),
+                member.getWantsLocker(),
                 weight,
                 height,
                 member.getEnrollment()
@@ -98,17 +98,19 @@ public class MemberAccountView {
         gridPane.add(new Label("Email"), 0, 3);
         gridPane.add(new Label(member.getEmail()), 1, 3);
         gridPane.add(new Label("Telephone"), 0, 4);
-        gridPane.add(new Label(getNullableText(member.getPhone())), 1, 4);
+        gridPane.add(new Label(ViewInputHelper.getNullableText(member.getPhone())), 1, 4);
         gridPane.add(new Label("Casier"), 0, 5);
-        gridPane.add(new Label(getNullableText(member.getLockerNumber())), 1, 5);
-        gridPane.add(new Label("Poids"), 0, 6);
-        gridPane.add(weightField, 1, 6);
-        gridPane.add(new Label("Taille"), 0, 7);
-        gridPane.add(heightField, 1, 7);
-        gridPane.add(new Label("Abonnement"), 0, 8);
-        gridPane.add(new Label(member.getEnrollment().toString()), 1, 8);
-        gridPane.add(new Label("Parrainage"), 0, 9);
-        gridPane.add(new Label(sponsorText), 1, 9);
+        gridPane.add(new Label(ViewInputHelper.getNullableText(member.getLockerNumber())), 1, 5);
+        gridPane.add(new Label("Casier demande"), 0, 6);
+        gridPane.add(new Label(member.getWantsLocker() ? "Oui" : "Non"), 1, 6);
+        gridPane.add(new Label("Poids"), 0, 7);
+        gridPane.add(weightField, 1, 7);
+        gridPane.add(new Label("Taille"), 0, 8);
+        gridPane.add(heightField, 1, 8);
+        gridPane.add(new Label("Abonnement"), 0, 9);
+        gridPane.add(new Label(member.getEnrollment().toString()), 1, 9);
+        gridPane.add(new Label("Parrainage"), 0, 10);
+        gridPane.add(new Label(sponsorText), 1, 10);
 
         HBox buttonBox = new HBox(10, saveButton, backButton);
         buttonBox.setAlignment(Pos.CENTER);
@@ -120,41 +122,4 @@ public class MemberAccountView {
         root.setCenter(container);
     }
 
-    private String getNullableText(Object value) {
-        if (value == null) {
-            return "";
-        }
-
-        return String.valueOf(value);
-    }
-
-    private String getRequiredText(TextField textField, String message) {
-        String value = textField.getText();
-
-        if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException(message);
-        }
-
-        return value.trim();
-    }
-
-    private Double getRequiredDouble(TextField textField, String message) {
-        String value = getRequiredText(textField, message);
-
-        try {
-            return Double.parseDouble(value);
-        } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    private Integer getRequiredInteger(TextField textField, String message) {
-        String value = getRequiredText(textField, message);
-
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException(message);
-        }
-    }
 }

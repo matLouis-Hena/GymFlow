@@ -23,11 +23,15 @@ public class AppointmentListView {
     private final BorderPane root;
     private final TableView<Appointment> appointmentTable;
     private final Button refreshButton;
+    private final Button confirmButton;
+    private final Button cancelButton;
 
     public AppointmentListView(List<Appointment> appointments) {
         root = new BorderPane();
         appointmentTable = new TableView<>();
         refreshButton = new Button("Rafraichir");
+        confirmButton = new Button("Confirmer");
+        cancelButton = new Button("Annuler le rendez-vous");
 
         createColumns();
         createView(appointments);
@@ -39,6 +43,18 @@ public class AppointmentListView {
 
     public Button getRefreshButton() {
         return refreshButton;
+    }
+
+    public Button getConfirmButton() {
+        return confirmButton;
+    }
+
+    public Button getCancelButton() {
+        return cancelButton;
+    }
+
+    public Appointment getSelectedAppointment() {
+        return appointmentTable.getSelectionModel().getSelectedItem();
     }
 
     private void createColumns() {
@@ -84,7 +100,7 @@ public class AppointmentListView {
 
         TableColumn<Appointment, String> statusColumn = new TableColumn<>("Statut");
         statusColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(String.valueOf(cellData.getValue().getStatus()))
+                new SimpleStringProperty(cellData.getValue().getStatus().getDisplayName())
         );
 
         TableColumn<Appointment, String> cancellationReasonColumn = new TableColumn<>("Motif annulation");
@@ -112,7 +128,7 @@ public class AppointmentListView {
         Label titleLabel = new Label("Liste des rendez-vous");
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
-        HBox buttonBox = new HBox(10, refreshButton);
+        HBox buttonBox = new HBox(10, refreshButton, confirmButton, cancelButton);
         buttonBox.setAlignment(Pos.CENTER);
 
         VBox container = new VBox(15, titleLabel, appointmentTable, buttonBox);

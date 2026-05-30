@@ -55,7 +55,7 @@ public class AppointmentDBAccess implements IAppointmentDA {
             INNER JOIN coach_availability ca ON a.availability_id = ca.id
             WHERE a.member_id = ?
               AND ca.available_date = ?
-              AND a.status NOT IN (?, ?)
+              AND a.status NOT IN (?, ?, ?)
             """;
 
     private static final String DELETE_APPOINTMENT_SQL = """
@@ -238,6 +238,7 @@ public class AppointmentDBAccess implements IAppointmentDA {
                 statement.setDate(2, Date.valueOf(date));
                 statement.setInt(3, AppointmentStatus.CANCELLED_BY_COACH.ordinal());
                 statement.setInt(4, AppointmentStatus.CANCELLED_BY_MEMBER.ordinal());
+                statement.setInt(5, AppointmentStatus.CANCELLED_BY_ADMIN.ordinal());
 
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
@@ -252,6 +253,25 @@ public class AppointmentDBAccess implements IAppointmentDA {
             throw new ReadAppointmentException(
                     String.valueOf(memberId),
                     "Erreur lors de la vérification des rendez-vous du membre."
+            );
+        }
+    }
+
+    @Override
+    public void updatePastConfirmedAppointments() throws UpdateAppointmentException {
+        try {
+            connection = getConnection();
+
+            try (PreparedStatement statement = connection.prepareStatement(UPDATE_PAST_CONFIRMED_APPOINTMENTS_SQL)) {
+                statement.setInt(1, AppointmentStatus.DONE.ordinal());
+                statement.setInt(2, AppointmentStatus.CONFIRMED.ordinal());
+                statement.executeUpdate();
+            }
+
+        } catch (SQLException exception) {
+            throw new UpdateAppointmentException(
+                    "pastAppointments",
+                    "Erreur lors de la mise a jour des rendez-vous passes."
             );
         }
     }
@@ -449,6 +469,18 @@ public class AppointmentDBAccess implements IAppointmentDA {
         SET status = ?,
             cancellation_reason = ?
         WHERE id = ?
+        """;
+
+    private static final String UPDATE_PAST_CONFIRMED_APPOINTMENTS_SQL = """
+        UPDATE appointment a
+        INNER JOIN coach_availability ca ON a.availability_id = ca.id
+        SET a.status = ?,
+            a.cancellation_reason = NULL
+        WHERE a.status = ?
+          AND (
+                ca.available_date < CURDATE()
+                OR (ca.available_date = CURDATE() AND ca.end_time < CURTIME())
+          )
         """;
 
     private static final String SELECT_APPOINTMENTS_BY_COACH_ID_SQL = """

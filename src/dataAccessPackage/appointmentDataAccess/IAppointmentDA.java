@@ -23,6 +23,8 @@ public interface IAppointmentDA {
 
     boolean existsForMemberOnDate(int memberId, LocalDate date) throws ReadAppointmentException;
 
+    void updatePastConfirmedAppointments() throws UpdateAppointmentException;
+
     void updateStatus(int id, int status, String cancellationReason)
             throws UpdateAppointmentException;
 

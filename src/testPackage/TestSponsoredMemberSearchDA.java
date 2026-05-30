@@ -45,8 +45,8 @@ public class TestSponsoredMemberSearchDA {
                                 + result.getLastName()
                                 + " - "
                                 + result.getEmail()
-                                + " - actif : "
-                                + result.getIsActive()
+                                + " - veut casier : "
+                                + result.getWantsLocker()
                                 + " - "
                                 + result.getWeight()
                                 + "kg"

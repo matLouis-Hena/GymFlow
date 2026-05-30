@@ -11,7 +11,6 @@ import modelPackage.Gender;
 import modelPackage.Person;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 
 public class PersonFormView {
 
@@ -47,14 +46,14 @@ public class PersonFormView {
     }
 
     public Person createPerson() throws Exception {
-        String firstName = getRequiredText(firstNameField, "Le prenom est obligatoire.");
-        String lastName = getRequiredText(lastNameField, "Le nom est obligatoire.");
+        String firstName = ViewInputHelper.getRequiredText(firstNameField, "Le prenom est obligatoire.");
+        String lastName = ViewInputHelper.getRequiredText(lastNameField, "Le nom est obligatoire.");
         LocalDate birthDate = getBirthDate();
         Gender gender = getGender();
-        String email = getRequiredText(emailField, "L'email est obligatoire.");
-        String phone = getOptionalText(phoneField);
-        String username = getRequiredText(usernameField, "Le nom d'utilisateur est obligatoire.");
-        String password = getRequiredText(passwordField, "Le mot de passe est obligatoire.");
+        String email = ViewInputHelper.getRequiredText(emailField, "L'email est obligatoire.");
+        String phone = ViewInputHelper.getOptionalText(phoneField);
+        String username = ViewInputHelper.getRequiredText(usernameField, "Le nom d'utilisateur est obligatoire.");
+        String password = ViewInputHelper.getRequiredText(passwordField, "Le mot de passe est obligatoire.");
 
         if (birthDate.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("La date de naissance ne peut pas etre dans le futur.");
@@ -130,34 +129,12 @@ public class PersonFormView {
         root.setCenter(container);
     }
 
-    private String getRequiredText(TextField textField, String message) {
-        String value = textField.getText();
-
-        if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException(message);
-        }
-
-        return value.trim();
-    }
-
-    private String getOptionalText(TextField textField) {
-        String value = textField.getText();
-
-        if (value == null || value.trim().isEmpty()) {
-            return null;
-        }
-
-        return value.trim();
-    }
-
     private LocalDate getBirthDate() {
-        String value = getRequiredText(birthDateField, "La date de naissance est obligatoire.");
-
-        try {
-            return LocalDate.parse(value);
-        } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("La date de naissance doit respecter le format yyyy-mm-dd.");
-        }
+        return ViewInputHelper.getRequiredDate(
+                birthDateField,
+                "La date de naissance est obligatoire.",
+                "La date de naissance doit respecter le format yyyy-mm-dd."
+        );
     }
 
     private Gender getGender() {
