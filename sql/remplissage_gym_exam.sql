@@ -1,11 +1,9 @@
 -- -------------------------------------------------------
 -- Script de remplissage - Projet Java salle de sport
 --
--- Les mots de passe sont stockes sous forme de hash PBKDF2.
--- Les mots de passe en clair sont uniquement indiques en commentaire
--- pour permettre les tests dans l'application.
+-- Les mots de passe en clair sont uniquement indiques en commentaire pour permettre les tests
 --
--- Comptes crees :
+-- Comptes crees : username / password
 -- Admin :
 --   pierre.hontoir / phontoir145
 --
@@ -239,12 +237,6 @@ INSERT INTO coach_availability
     (id, person_id, available_date, start_time, end_time, is_booked)
 VALUES
     (12, 12, '2026-06-15', '10:00:00', '11:00:00', b'0');
-
--- ============================================================
--- Rendez-vous
--- Statuts : 0 = en attente, 1 = confirme, 2 = fini,
--- 3 = annule par coach, 4 = annule par membre, 5 = annule par admin.
--- ============================================================
 
 INSERT INTO appointment
     (id, member_id, availability_id, objective, room_id, status, cancellation_reason)

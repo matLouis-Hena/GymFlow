@@ -1,13 +1,10 @@
 -- ============================================
--- Creation de la base de donnees - Salle de sport
+-- Creation
 -- ============================================
 
 CREATE DATABASE IF NOT EXISTS gym_db;
 USE gym_db;
 
--- ============================================
--- DROP
--- ============================================
 DROP TABLE IF EXISTS appointment;
 DROP TABLE IF EXISTS coach_availability;
 DROP TABLE IF EXISTS sponsorship;
@@ -22,10 +19,6 @@ DROP TABLE IF EXISTS facility;
 DROP TABLE IF EXISTS speciality;
 DROP TABLE IF EXISTS room;
 DROP TABLE IF EXISTS person;
-
--- ============================================
--- 1. TABLES SANS FK
--- ============================================
 
 CREATE TABLE `person` (
     `id`            INT          NOT NULL AUTO_INCREMENT,
@@ -76,10 +69,6 @@ CREATE TABLE subscription (
     CHECK (duration_months > 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ============================================
--- 2. SOUS-TYPES (dependent de person)
--- ============================================
-
 CREATE TABLE `coach` (
     `person_id`  INT    NOT NULL,
     `has_degree` BIT(1) NOT NULL DEFAULT b'0',
@@ -108,10 +97,6 @@ CREATE TABLE `gym_member` (
     CONSTRAINT chk_height             CHECK (`height` > 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ============================================
--- 3. TABLES DE JONCTION SIMPLES
--- ============================================
-
 CREATE TABLE `access` (
     `subscription_id` INT         NOT NULL,
     `facility_name`   VARCHAR(50) NOT NULL,
@@ -138,10 +123,6 @@ CREATE TABLE `payment` (
     CONSTRAINT chk_amount        CHECK (`amount` > 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ============================================
--- 4. PARRAINAGE (depend de gym_member)
--- ============================================
-
 CREATE TABLE `sponsorship` (
     `id`           INT  NOT NULL AUTO_INCREMENT,
     `sponsor_id`   INT  NOT NULL,
@@ -154,10 +135,6 @@ CREATE TABLE `sponsorship` (
     CONSTRAINT chk_not_self      CHECK (`sponsor_id` <> `sponsored_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ============================================
--- 5. CALENDRIER COACH (depend de coach)
--- ============================================
-
 CREATE TABLE `coach_availability` (
     `id`             INT    NOT NULL AUTO_INCREMENT,
     `person_id`      INT    NOT NULL,
@@ -169,10 +146,6 @@ CREATE TABLE `coach_availability` (
     CONSTRAINT fk_availability_coach FOREIGN KEY (`person_id`) REFERENCES `coach` (`person_id`),
     CONSTRAINT chk_times             CHECK (`end_time` > `start_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ============================================
--- 6. RENDEZ-VOUS
--- ============================================
 
 CREATE TABLE `appointment` (
     `id`                  INT          NOT NULL AUTO_INCREMENT,
