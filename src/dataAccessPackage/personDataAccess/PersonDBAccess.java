@@ -107,7 +107,7 @@ public class PersonDBAccess implements IPersonDA {
             }
 
         } catch (SQLException exception) {
-            throw new AddPersonException("database", "Erreur lors de l'insertion de la personne.");
+            throw new AddPersonException("database", "Erreur lors de l'insertion de la personne." + exception.getMessage());
         }
     }
 
