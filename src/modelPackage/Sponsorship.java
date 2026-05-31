@@ -10,7 +10,7 @@ public class Sponsorship {
 
     public Sponsorship(int id, LocalDate startDate, GymMember sponsor, GymMember sponsored) {
         this.id = id;
-        this.startDate = LocalDate.now();
+        setStartDate(startDate);
         setSponsor(sponsor);
         setSponsored(sponsored);
     }
@@ -32,6 +32,10 @@ public class Sponsorship {
     }
 
     public void setStartDate(LocalDate startDate) {
+        if (startDate == null) {
+            throw new IllegalArgumentException("La date de début du parrainage ne peut pas être null");
+        }
+
         this.startDate = startDate;
     }
 
@@ -39,6 +43,7 @@ public class Sponsorship {
         if (sponsor == null) {
             throw new IllegalArgumentException("Le parrain ne peut pas être null");
         }
+
         this.sponsor = sponsor;
     }
 
@@ -46,6 +51,7 @@ public class Sponsorship {
         if (sponsored == null) {
             throw new IllegalArgumentException("Le filleul ne peut pas être null");
         }
+
         this.sponsored = sponsored;
     }
 }

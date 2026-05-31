@@ -1,8 +1,10 @@
 package modelPackage;
 
+import exceptionPackage.validation.InvalidDateException;
+import exceptionPackage.validation.InvalidTimeException;
+
 import java.sql.Time;
 import java.time.LocalDate;
-import exceptionPackage.*;
 
 public class CoachAvailability {
     private int id;

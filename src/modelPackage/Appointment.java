@@ -83,7 +83,8 @@ public class Appointment {
 
     public void setCancellationReason(String cancellationReason) {
         if ((this.status == AppointmentStatus.CANCELLED_BY_COACH
-                || this.status == AppointmentStatus.CANCELLED_BY_MEMBER)
+                || this.status == AppointmentStatus.CANCELLED_BY_MEMBER
+                || this.status == AppointmentStatus.CANCELLED_BY_ADMIN)
                 && (cancellationReason == null || cancellationReason.trim().isEmpty())) {
             throw new IllegalArgumentException("Une raison d'annulation est obligatoire si le rendez-vous est annulé");
         }

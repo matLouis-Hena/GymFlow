@@ -1,28 +1,17 @@
 package dataAccessPackage.personDataAccess;
 
 import dataAccessPackage.SingletonConnection;
-import exceptionPackage.InvalidEmailException;
-import exceptionPackage.InvalidFirstNameException;
-import exceptionPackage.InvalidGenderException;
-import exceptionPackage.InvalidLastNameException;
-import exceptionPackage.InvalidLockerNumberException;
-import exceptionPackage.InvalidPasswordException;
-import exceptionPackage.InvalidPhoneException;
-import exceptionPackage.InvalidUsernameException;
 import exceptionPackage.person.AddPersonException;
 import exceptionPackage.person.DeletePersonException;
 import exceptionPackage.person.ReadPersonException;
 import exceptionPackage.person.UpdatePersonException;
+import exceptionPackage.validation.*;
 import modelPackage.Gender;
 import modelPackage.Person;
+import modelPackage.UserRole;
+import securityPackage.PasswordUtil;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +54,24 @@ public class PersonDBAccess implements IPersonDA {
             WHERE id = ?
             """;
 
+    private static final String SELECT_ADMIN_BY_PERSON_ID_SQL = """
+            SELECT person_id
+            FROM admin
+            WHERE person_id = ?
+            """;
+
+    private static final String SELECT_COACH_BY_PERSON_ID_SQL = """
+            SELECT person_id
+            FROM coach
+            WHERE person_id = ?
+            """;
+
+    private static final String SELECT_MEMBER_BY_PERSON_ID_SQL = """
+            SELECT person_id
+            FROM gym_member
+            WHERE person_id = ?
+            """;
+
     private Connection connection;
 
     public PersonDBAccess() {
@@ -100,7 +107,7 @@ public class PersonDBAccess implements IPersonDA {
             }
 
         } catch (SQLException exception) {
-            throw new AddPersonException("database", "Erreur lors de l'insertion de la personne.");
+            throw new AddPersonException("database", "Erreur lors de l'insertion de la personne." + exception.getMessage());
         }
     }
 
@@ -146,6 +153,33 @@ public class PersonDBAccess implements IPersonDA {
 
         } catch (SQLException exception) {
             throw new ReadPersonException("database", "Erreur lors de la récupération des personnes.");
+        }
+    }
+
+    @Override
+    public UserRole getUserRoleByPersonId(int id) throws ReadPersonException {
+        try {
+            connection = getConnection();
+
+            if (existsByPersonId(id, SELECT_ADMIN_BY_PERSON_ID_SQL)) {
+                return UserRole.ADMIN;
+            }
+
+            if (existsByPersonId(id, SELECT_COACH_BY_PERSON_ID_SQL)) {
+                return UserRole.COACH;
+            }
+
+            if (existsByPersonId(id, SELECT_MEMBER_BY_PERSON_ID_SQL)) {
+                return UserRole.MEMBER_WITH_SUBSCRIPTION;
+            }
+
+            return UserRole.MEMBER_WITHOUT_SUBSCRIPTION;
+
+        } catch (SQLException exception) {
+            throw new ReadPersonException(
+                    String.valueOf(id),
+                    "Erreur lors de la recuperation du role de l'utilisateur."
+            );
         }
     }
 
@@ -216,7 +250,7 @@ public class PersonDBAccess implements IPersonDA {
         }
 
         statement.setString(8, person.getUsername());
-        statement.setString(9, person.getPassword());
+        statement.setString(9, PasswordUtil.hashIfNeeded(person.getPassword()));
     }
 
     private Person mapPerson(ResultSet resultSet) throws SQLException, ReadPersonException {
@@ -263,6 +297,16 @@ public class PersonDBAccess implements IPersonDA {
         }
 
         return value;
+    }
+
+    private boolean existsByPersonId(int id, String sql) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        }
     }
 
     private Connection getConnection() throws SQLException {
